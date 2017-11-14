@@ -396,5 +396,17 @@ namespace v2rayN.Mode
         /// 
         /// </summary>
         public string path { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Headers headers { get; set; }
+    }
+    public class Headers
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Host { get; set; }
     }
 }

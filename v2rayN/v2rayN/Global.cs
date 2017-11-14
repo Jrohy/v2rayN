@@ -8,12 +8,12 @@ namespace v2rayN
         /// <summary>
         /// 更新链接
         /// </summary>
-        public const string UpdateUrl = @"https://github.com/v2ray/v2rayN/releases";
+        public const string UpdateUrl = @"https://github.com/2dust/v2rayN/releases";
 
         /// <summary>
         /// 关于链接
         /// </summary>
-        public const string AboutUrl = @"https://github.com/v2ray/v2rayN";
+        public const string AboutUrl = @"https://github.com/2dust/v2rayN";
 
 
         /// <summary>

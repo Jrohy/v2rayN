@@ -375,7 +375,23 @@ namespace v2rayN.Handler
                     case "ws":
                         WsSettings wsSettings = new WsSettings();
                         wsSettings.connectionReuse = true;
-                        wsSettings.path = config.requestHost();
+
+                        string path = "";
+                        string host2 = "";
+                        //*ws(path+host),它们中间分号(;)隔开
+                        string[] arrParameter = config.requestHost().Replace(" ", "").Split(';');
+                        if (arrParameter.Length > 0)
+                        {
+                            path = arrParameter[0];
+                            wsSettings.path = path;
+                        }
+                        if (arrParameter.Length > 1)
+                        {
+                            host2 = arrParameter[1];
+                            wsSettings.headers = new Headers();
+                            wsSettings.headers.Host = host2;
+                        }
+
                         streamSettings.wsSettings = wsSettings;
                         break;
                     default:
