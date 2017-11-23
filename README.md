@@ -12,5 +12,5 @@ User manual
 https://www.v2ray.com/
 
 ### Donate
-If you like v2rayN and want to support the developer
+If you like v2rayN and want to support the developer  
 BTC: [1K69UnL44D5psuSgwrzFQCdjnRbvd5taE3](https://blockchain.info/address/1K69UnL44D5psuSgwrzFQCdjnRbvd5taE3 "1K69UnL44D5psuSgwrzFQCdjnRbvd5taE3")
