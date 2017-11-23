@@ -83,12 +83,12 @@ namespace v2rayN.Mode
         /// 监听状态 0-不改变 1-全局 2-PAC
         /// </summary>
         public int listenerType { get; set; }
-                
+
         /// <summary>
         /// 自定义GFWList url
         /// </summary>
         public string urlGFWList { get; set; }
-        
+
         #region 函数
 
         public string address()
@@ -190,6 +190,16 @@ namespace v2rayN.Mode
             }
             return localPort;
         }
+
+        public int configType()
+        {
+            if (index < 0)
+            {
+                return 0;
+            }
+            return vmess[index].configType;
+        }
+
         #endregion
 
     }
@@ -197,6 +207,35 @@ namespace v2rayN.Mode
     [Serializable]
     public class VmessItem
     {
+        public VmessItem()
+        {
+            address = string.Empty;
+            port = 0;
+            id = string.Empty;
+            alterId = 0;
+            security = string.Empty;
+            network = string.Empty;
+            remarks = string.Empty;
+            headerType = string.Empty;
+            requestHost = string.Empty;
+            streamSecurity = string.Empty;
+            configType = (int)EConfigType.Normally;
+        }
+
+        public string getSummary()
+        {
+            string summary = string.Empty;
+            if (configType == (int)EConfigType.Normally)
+            {
+                summary = string.Format("{0}({1}:{2})", remarks, address, port);
+            }
+            else
+            {
+                summary = string.Format("自定义配置--{0}", remarks);
+            }
+            return summary;
+        }
+
         /// <summary>
         /// 远程服务器地址
         /// </summary>
@@ -240,6 +279,11 @@ namespace v2rayN.Mode
         /// 底层传输安全
         /// </summary>
         public string streamSecurity { get; set; }
+
+        /// <summary>
+        /// config type(1=normal,2=custom)
+        /// </summary>
+        public int configType { get; set; }
 
     }
 

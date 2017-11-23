@@ -166,7 +166,7 @@ namespace v2rayN.Forms
             for (int k = 0; k < config.vmess.Count; k++)
             {
                 VmessItem item = config.vmess[k];
-                string name = string.Format("{0}({1}:{2})", item.remarks, item.address, item.port);
+                string name = item.getSummary();
 
                 ToolStripMenuItem ts = new ToolStripMenuItem(name);
                 ts.Tag = k;
@@ -234,14 +234,30 @@ namespace v2rayN.Forms
             {
                 return;
             }
-            AddServerForm fm = new AddServerForm();
-            fm.EditIndex = index;
-            if (fm.ShowDialog() == DialogResult.OK)
+
+            if (config.vmess[index].configType == (int)EConfigType.Normally)
             {
-                //刷新
-                RefreshServers();
-                LoadV2ray();
+                AddServerForm fm = new AddServerForm();
+                fm.EditIndex = index;
+                if (fm.ShowDialog() == DialogResult.OK)
+                {
+                    //刷新
+                    RefreshServers();
+                    LoadV2ray();
+                }
             }
+            else
+            {
+                AddServer2Form fm2 = new AddServer2Form();
+                fm2.EditIndex = index;
+                if (fm2.ShowDialog() == DialogResult.OK)
+                {
+                    //刷新
+                    RefreshServers();
+                    LoadV2ray();
+                }
+            }
+
         }
 
         private void menuAddServer_Click(object sender, EventArgs e)
@@ -312,6 +328,11 @@ namespace v2rayN.Forms
             {
                 return;
             }
+            if (config.vmess[index].configType != (int)EConfigType.Normally)
+            {
+                UI.Show("自定义配置，此功能无效");
+                return;
+            }
 
             SaveFileDialog fileDialog = new SaveFileDialog();
             fileDialog.Filter = "Config|*.json";
@@ -344,6 +365,11 @@ namespace v2rayN.Forms
             int index = GetLvSelectedIndex();
             if (index < 0)
             {
+                return;
+            }
+            if (config.vmess[index].configType != (int)EConfigType.Normally)
+            {
+                UI.Show("自定义配置，此功能无效");
                 return;
             }
 
@@ -380,6 +406,12 @@ namespace v2rayN.Forms
             {
                 return;
             }
+            if (config.vmess[index].configType != (int)EConfigType.Normally)
+            {
+                UI.Show("自定义配置，此功能无效");
+                return;
+            }
+
             QRCodeForm fm = new QRCodeForm();
             fm.Index = index;
             fm.ShowDialog();
@@ -453,6 +485,39 @@ namespace v2rayN.Forms
                 return index;
             }
         }
+
+        private void menuAddCustomServer_Click(object sender, EventArgs e)
+        {
+            UI.Show("注意,自定义配置：" +
+                    "\r\n完全依赖您自己的配置，不能使用所有设置功能。" +
+                    "\r\n在自定义配置inbound中有socks port等于设置中的port时，系统代理才可用");
+
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Multiselect = false;
+            fileDialog.Filter = "Config|*.json|所有文件|*.*";
+            if (fileDialog.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+            string fileName = fileDialog.FileName;
+            if (Utils.IsNullOrEmpty(fileName))
+            {
+                return;
+            }
+
+            if (ConfigHandler.AddCustomServer(ref config, fileName) == 0)
+            {
+                //刷新
+                RefreshServers();
+                LoadV2ray();
+                UI.Show(string.Format("成功导入自定义配置服务器"));
+            }
+            else
+            {
+                UI.Show(string.Format("导入自定义配置服务器失败"));
+            }
+        }
+
 
         #endregion
 
@@ -735,6 +800,7 @@ namespace v2rayN.Forms
             menuSysAgentMode.Enabled = isChecked;
         }
         #endregion
+
 
 
     }

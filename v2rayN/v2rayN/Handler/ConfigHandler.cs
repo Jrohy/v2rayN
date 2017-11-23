@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using v2rayN.Mode;
 
 namespace v2rayN.Handler
@@ -126,6 +128,7 @@ namespace v2rayN.Handler
         /// <returns></returns>
         public static int AddServer(ref Config config, VmessItem vmessItem, int index)
         {
+            vmessItem.configType = (int)EConfigType.Normally;
             if (index >= 0)
             {
                 //修改
@@ -206,6 +209,7 @@ namespace v2rayN.Handler
             }
 
             VmessItem vmessItem = new VmessItem();
+            vmessItem.configType = config.vmess[index].configType;
             vmessItem.address = config.vmess[index].address;
             vmessItem.port = config.vmess[index].port;
             vmessItem.id = config.vmess[index].id;
@@ -408,6 +412,65 @@ namespace v2rayN.Handler
 
             }
             Global.reloadV2ray = true;
+
+            ToJsonFile(config);
+
+            return 0;
+        }
+
+        /// <summary>
+        /// 添加自定义服务器
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static int AddCustomServer(ref Config config, string fileName)
+        {
+            string newFileName = string.Empty;
+            newFileName = string.Format("{0}.json", Utils.GetGUID());
+            newFileName = Path.Combine(Utils.GetTempPath(), newFileName);
+
+            try
+            {
+                File.Copy(fileName, newFileName);
+            }
+            catch
+            {
+                return -1;
+            }
+
+            VmessItem vmessItem = new VmessItem();
+            vmessItem.address = newFileName;
+            vmessItem.configType = (int)EConfigType.Custom;
+            vmessItem.remarks = string.Format("import custom@{0}", DateTime.Now.ToShortDateString());
+
+            config.vmess.Add(vmessItem);
+            if (config.vmess.Count == 1)
+            {
+                config.index = 0;
+                Global.reloadV2ray = true;
+            }
+
+            ToJsonFile(config);
+
+            return 0;
+        }
+
+        /// <summary>
+        /// 添加服务器或编辑
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="vmessItem"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public static int EditCustomServer(ref Config config, VmessItem vmessItem, int index)
+        {
+            //修改
+            config.vmess[index] = vmessItem;
+            if (config.index.Equals(index))
+            {
+                Global.reloadV2ray = true;
+            }
 
             ToJsonFile(config);
 

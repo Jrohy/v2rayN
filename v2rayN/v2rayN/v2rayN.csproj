@@ -38,6 +38,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,6 +48,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>v2ray.ico</ApplicationIcon>
@@ -91,6 +93,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\AddServer2Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AddServer2Form.Designer.cs">
+      <DependentUpon>AddServer2Form.cs</DependentUpon>
+    </Compile>
     <Compile Include="HttpProxyHandler\PACFileWatcherHandle.cs" />
     <Compile Include="HttpProxyHandler\PrivoxyHandler.cs" />
     <Compile Include="HttpProxyHandler\PACListHandle.cs" />
@@ -99,6 +107,7 @@
     <Compile Include="HttpProxyHandler\HttpProxyHandle.cs" />
     <Compile Include="Mode\EMove.cs" />
     <Compile Include="Mode\SysproxyConfig.cs" />
+    <Compile Include="Mode\EConfigType.cs" />
     <Compile Include="StringEx.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -164,6 +173,9 @@
     <EmbeddedResource Include="Forms\QRCodeForm.resx">
       <DependentUpon>QRCodeForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AddServer2Form.resx">
+      <DependentUpon>AddServer2Form.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -174,6 +186,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

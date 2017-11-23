@@ -54,6 +54,8 @@
             this.menuCopyServer = new System.Windows.Forms.ToolStripMenuItem();
             this.menuSetDefaultServer = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuAddCustomServer = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuMoveTop = new System.Windows.Forms.ToolStripMenuItem();
             this.menuMoveUp = new System.Windows.Forms.ToolStripMenuItem();
             this.menuMoveDown = new System.Windows.Forms.ToolStripMenuItem();
@@ -113,7 +115,7 @@
             this.cmsMain.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.cmsMain.ShowCheckMargin = true;
             this.cmsMain.ShowImageMargin = false;
-            this.cmsMain.Size = new System.Drawing.Size(197, 214);
+            this.cmsMain.Size = new System.Drawing.Size(197, 192);
             // 
             // menuSysAgentEnabled
             // 
@@ -225,6 +227,8 @@
             this.menuCopyServer,
             this.menuSetDefaultServer,
             this.toolStripSeparator3,
+            this.menuAddCustomServer,
+            this.toolStripSeparator1,
             this.menuMoveTop,
             this.menuMoveUp,
             this.menuMoveDown,
@@ -237,7 +241,7 @@
             this.menuShareQRCode});
             this.cmsLv.Name = "cmsLv";
             this.cmsLv.OwnerItem = this.tsbServer;
-            this.cmsLv.Size = new System.Drawing.Size(227, 286);
+            this.cmsLv.Size = new System.Drawing.Size(227, 336);
             // 
             // menuAddServer
             // 
@@ -271,6 +275,18 @@
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(223, 6);
+            // 
+            // menuAddCustomServer
+            // 
+            this.menuAddCustomServer.Name = "menuAddCustomServer";
+            this.menuAddCustomServer.Size = new System.Drawing.Size(226, 22);
+            this.menuAddCustomServer.Text = "添加自定义配置服务器";
+            this.menuAddCustomServer.Click += new System.EventHandler(this.menuAddCustomServer_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(223, 6);
             // 
             // menuMoveTop
             // 
@@ -565,6 +581,8 @@
         private System.Windows.Forms.ToolStripMenuItem menuUpdatePACList;
         private System.Windows.Forms.ToolStripMenuItem menuSysAgentEnabled;
         private System.Windows.Forms.ToolStripMenuItem menuCopyPACUrl;
+        private System.Windows.Forms.ToolStripMenuItem menuAddCustomServer;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using v2rayN.Mode;
 
 namespace v2rayN.Handler
@@ -39,6 +40,10 @@ namespace v2rayN.Handler
                 }
 
                 msg = "初始化配置";
+                if (config.configType() == (int)EConfigType.Custom)
+                {
+                    return GenerateClientCustomConfig(config, fileName, out msg);
+                }
 
                 //取得默认配置
                 string result = Utils.GetEmbedText(SampleClient);
@@ -421,6 +426,48 @@ namespace v2rayN.Handler
             }
             catch
             {
+            }
+            return 0;
+        }
+
+
+        /// <summary>
+        /// 生成v2ray的客户端配置文件(自定义配置)
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="fileName"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        public static int GenerateClientCustomConfig(Config config, string fileName, out string msg)
+        {
+            msg = string.Empty;
+
+            try
+            {
+                //检查GUI设置
+                if (config == null
+                    || config.index < 0
+                    || config.vmess.Count <= 0
+                    || config.index > config.vmess.Count - 1
+                    )
+                {
+                    msg = "请先检查服务器设置";
+                    return -1;
+                }
+
+                string addressFileName = config.address();
+                if (File.Exists(fileName))
+                {
+                    File.Delete(fileName);
+                }
+                File.Copy(addressFileName, fileName);
+
+                msg = string.Format("配置成功 \r\n自定义配置--{0}", config.remarks());
+            }
+            catch
+            {
+                msg = "异常，生成默认配置文件失败";
+                return -1;
             }
             return 0;
         }
