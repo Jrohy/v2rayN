@@ -413,9 +413,9 @@
             this.chkBypassChinasites.AutoSize = true;
             this.chkBypassChinasites.Location = new System.Drawing.Point(15, 20);
             this.chkBypassChinasites.Name = "chkBypassChinasites";
-            this.chkBypassChinasites.Size = new System.Drawing.Size(96, 16);
+            this.chkBypassChinasites.Size = new System.Drawing.Size(198, 16);
             this.chkBypassChinasites.TabIndex = 10;
-            this.chkBypassChinasites.Text = "绕过大陆地址";
+            this.chkBypassChinasites.Text = "绕过大陆地址(需要Core v2.46+)";
             this.chkBypassChinasites.UseVisualStyleBackColor = true;
             // 
             // chkBypassChinaip
@@ -423,9 +423,9 @@
             this.chkBypassChinaip.AutoSize = true;
             this.chkBypassChinaip.Location = new System.Drawing.Point(15, 42);
             this.chkBypassChinaip.Name = "chkBypassChinaip";
-            this.chkBypassChinaip.Size = new System.Drawing.Size(84, 16);
+            this.chkBypassChinaip.Size = new System.Drawing.Size(186, 16);
             this.chkBypassChinaip.TabIndex = 11;
-            this.chkBypassChinaip.Text = "绕过大陆IP";
+            this.chkBypassChinaip.Text = "绕过大陆IP(需要Core v2.46+)";
             this.chkBypassChinaip.UseVisualStyleBackColor = true;
             // 
             // tabPage6

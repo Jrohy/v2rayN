@@ -206,17 +206,29 @@ namespace v2rayN.Handler
                     //绕过大陆网址
                     if (config.chinasites)
                     {
+                        //RulesItem rulesItem = new RulesItem();
+                        //rulesItem.type = "chinasites";
+                        //rulesItem.outboundTag = Global.directTag;
+                        //v2rayConfig.routing.settings.rules.Add(rulesItem);
                         RulesItem rulesItem = new RulesItem();
-                        rulesItem.type = "chinasites";
+                        rulesItem.type = "field";
                         rulesItem.outboundTag = Global.directTag;
+                        rulesItem.domain = new List<string>();
+                        rulesItem.domain.Add("geosite:cn");
                         v2rayConfig.routing.settings.rules.Add(rulesItem);
                     }
                     //绕过大陆ip
                     if (config.chinaip)
                     {
+                        //RulesItem rulesItem = new RulesItem();
+                        //rulesItem.type = "chinaip";
+                        //rulesItem.outboundTag = Global.directTag;
+                        //v2rayConfig.routing.settings.rules.Add(rulesItem);
                         RulesItem rulesItem = new RulesItem();
-                        rulesItem.type = "chinaip";
+                        rulesItem.type = "field";
                         rulesItem.outboundTag = Global.directTag;
+                        rulesItem.ip = new List<string>();
+                        rulesItem.ip.Add("geoip:cn");
                         v2rayConfig.routing.settings.rules.Add(rulesItem);
                     }
                 }
