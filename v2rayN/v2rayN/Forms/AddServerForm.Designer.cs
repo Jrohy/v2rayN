@@ -33,6 +33,7 @@
             this.btnGUID = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label17 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
@@ -67,7 +68,6 @@
             this.MenuItemImportServer = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuItemImportClipboard = new System.Windows.Forms.ToolStripMenuItem();
-            this.label17 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -152,6 +152,15 @@
             this.groupBox2.TabIndex = 21;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "不清楚则保持默认值";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(471, 94);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(191, 12);
+            this.label17.TabIndex = 25;
+            this.label17.Text = "3)ws path+host(中间分号(;)隔开)";
             // 
             // label16
             // 
@@ -460,15 +469,6 @@
             this.MenuItemImportClipboard.Text = "从剪贴板导入URL";
             this.MenuItemImportClipboard.Click += new System.EventHandler(this.MenuItemImportClipboard_Click);
             // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(471, 94);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(191, 12);
-            this.label17.TabIndex = 25;
-            this.label17.Text = "3)ws path+host(中间分号(;)隔开)";
-            // 
             // AddServerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -481,7 +481,7 @@
             this.Controls.Add(this.menuServer);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "AddServerForm";
-            this.Text = "编辑或添加服务器";
+            this.Text = "编辑或添加[VMess]服务器";
             this.Load += new System.EventHandler(this.AddServerForm_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

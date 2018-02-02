@@ -80,9 +80,13 @@ namespace v2rayN
         public const string blockTag = "blockout";
 
         /// <summary>
-        /// vmess协议
+        /// vmess
         /// </summary>
         public const string vmessProtocol = "vmess://";
+        /// <summary>
+        /// shadowsocks
+        /// </summary>
+        public const string ssProtocol = "ss://";
 
         #endregion
 
@@ -97,7 +101,7 @@ namespace v2rayN
         /// 是否开启全局代理(http)
         /// </summary>
         public static bool sysAgent { get; set; }
-        
+
         /// <summary>
         /// socks端口号
         /// </summary>

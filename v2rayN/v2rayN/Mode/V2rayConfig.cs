@@ -146,6 +146,10 @@ namespace v2rayN.Mode
         /// 
         /// </summary>
         public List<VnextItem> vnext { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<ServersItem> servers { get; set; }
     }
 
     public class VnextItem
@@ -162,6 +166,37 @@ namespace v2rayN.Mode
         /// 
         /// </summary>
         public List<UsersItem> users { get; set; }
+    }
+    public class ServersItem
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public string email { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string address { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string method { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool ota { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string password { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int port { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int level { get; set; }
     }
 
     public class Mux

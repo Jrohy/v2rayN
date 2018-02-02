@@ -30,7 +30,16 @@
             }
           ]
         }
-      ]
+      ],
+		"servers": [{
+			"email": "v2rayn@v2ray.com",
+			"address": "v2ray.cool",
+			"method": "aes-256-cfb",
+			"ota": false,
+			"password": "password",
+			"port": 10086,
+			"level": 1
+		}]
     },
     "streamSettings": {
         "network": "tcp"

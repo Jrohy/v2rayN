@@ -73,12 +73,12 @@ namespace v2rayN.Handler
                 //路由
                 routing(config, ref v2rayConfig);
 
-                //vmess协议服务器配置
+                //outbound
                 outbound(config, ref v2rayConfig);
 
                 Utils.ToJsonFile(v2rayConfig, fileName);
 
-                msg = string.Format("配置成功 \r\n{0}({1}:{2})", config.remarks(), config.address(), config.port());
+                msg = string.Format("配置成功 \r\n{0}", config.getSummary());
             }
             catch
             {
@@ -300,41 +300,73 @@ namespace v2rayN.Handler
         {
             try
             {
-                VnextItem vnextItem;
-                if (v2rayConfig.outbound.settings.vnext.Count <= 0)
+                if (config.configType() == (int)EConfigType.Vmess)
                 {
-                    vnextItem = new VnextItem();
-                    v2rayConfig.outbound.settings.vnext.Add(vnextItem);
-                }
-                else
-                {
-                    vnextItem = v2rayConfig.outbound.settings.vnext[0];
-                }
-                //远程服务器地址和端口
-                vnextItem.address = config.address();
-                vnextItem.port = config.port();
+                    VnextItem vnextItem;
+                    if (v2rayConfig.outbound.settings.vnext.Count <= 0)
+                    {
+                        vnextItem = new VnextItem();
+                        v2rayConfig.outbound.settings.vnext.Add(vnextItem);
+                    }
+                    else
+                    {
+                        vnextItem = v2rayConfig.outbound.settings.vnext[0];
+                    }
+                    //远程服务器地址和端口
+                    vnextItem.address = config.address();
+                    vnextItem.port = config.port();
 
-                UsersItem usersItem;
-                if (vnextItem.users.Count <= 0)
-                {
-                    usersItem = new UsersItem();
-                    vnextItem.users.Add(usersItem);
-                }
-                else
-                {
-                    usersItem = vnextItem.users[0];
-                }
-                //远程服务器用户ID
-                usersItem.id = config.id();
-                usersItem.alterId = config.alterId();
-                usersItem.security = config.security();
+                    UsersItem usersItem;
+                    if (vnextItem.users.Count <= 0)
+                    {
+                        usersItem = new UsersItem();
+                        vnextItem.users.Add(usersItem);
+                    }
+                    else
+                    {
+                        usersItem = vnextItem.users[0];
+                    }
+                    //远程服务器用户ID
+                    usersItem.id = config.id();
+                    usersItem.alterId = config.alterId();
+                    usersItem.security = config.security();
 
-                //Mux
-                v2rayConfig.outbound.mux.enabled = config.muxEnabled;
+                    //Mux
+                    v2rayConfig.outbound.mux.enabled = config.muxEnabled;
 
-                //远程服务器底层传输配置
-                StreamSettings streamSettings = v2rayConfig.outbound.streamSettings;
-                boundStreamSettings(config, "out", ref streamSettings);
+                    //远程服务器底层传输配置
+                    StreamSettings streamSettings = v2rayConfig.outbound.streamSettings;
+                    boundStreamSettings(config, "out", ref streamSettings);
+
+                    v2rayConfig.outbound.protocol = "vmess";
+                    v2rayConfig.outbound.settings.servers = null;
+                }
+                else if (config.configType() == (int)EConfigType.Shadowsocks)
+                {
+                    ServersItem serversItem;
+                    if (v2rayConfig.outbound.settings.servers.Count <= 0)
+                    {
+                        serversItem = new ServersItem();
+                        v2rayConfig.outbound.settings.servers.Add(serversItem);
+                    }
+                    else
+                    {
+                        serversItem = v2rayConfig.outbound.settings.servers[0];
+                    }
+                    //远程服务器地址和端口
+                    serversItem.address = config.address();
+                    serversItem.port = config.port();
+                    serversItem.password = config.id();
+                    serversItem.method = config.security();
+
+                    serversItem.ota = false;
+                    serversItem.level = 1;
+
+                    v2rayConfig.outbound.mux.enabled = false;
+
+                    v2rayConfig.outbound.protocol = "shadowsocks";
+                    v2rayConfig.outbound.settings.vnext = null;
+                }
             }
             catch
             {
@@ -474,7 +506,7 @@ namespace v2rayN.Handler
                 }
                 File.Copy(addressFileName, fileName);
 
-                msg = string.Format("配置成功 \r\n自定义配置--{0}", config.remarks());
+                msg = string.Format("配置成功 \r\n{0}", config.getSummary());
             }
             catch
             {
@@ -541,7 +573,7 @@ namespace v2rayN.Handler
 
                 Utils.ToJsonFile(v2rayConfig, fileName);
 
-                msg = string.Format("配置成功 \r\n{0}({1}:{2})", config.remarks(), config.address(), config.port());
+                msg = string.Format("配置成功 \r\n{0}", config.getSummary());
             }
             catch
             {
@@ -836,40 +868,72 @@ namespace v2rayN.Handler
                     msg = "读取配置文件失败";
                     return null;
                 }
-                if (!result.StartsWith(Global.vmessProtocol))
+
+                if (result.StartsWith(Global.vmessProtocol))
                 {
-                    msg = "非vmess协议";
+                    vmessItem.configType = (int)EConfigType.Vmess;
+                    result = result.Substring(Global.vmessProtocol.Length);
+                    result = Utils.Base64Decode(result);
+
+                    //转成Json
+                    VmessQRCode vmessQRCode = Utils.FromJson<VmessQRCode>(result);
+                    if (vmessQRCode == null)
+                    {
+                        msg = "转换配置文件失败";
+                        return null;
+                    }
+                    vmessItem.security = Global.DefaultSecurity;
+                    vmessItem.network = Global.DefaultNetwork;
+                    vmessItem.headerType = Global.None;
+
+                    vmessItem.remarks = vmessQRCode.ps;
+                    vmessItem.address = vmessQRCode.add;
+                    vmessItem.port = Convert.ToInt32(vmessQRCode.port);
+                    vmessItem.id = vmessQRCode.id;
+                    vmessItem.alterId = Convert.ToInt32(vmessQRCode.aid);
+                    vmessItem.network = vmessQRCode.net;
+                    vmessItem.headerType = vmessQRCode.type;
+                    vmessItem.requestHost = vmessQRCode.host;
+                    vmessItem.streamSecurity = vmessQRCode.tls;
+                }
+                else if (result.StartsWith(Global.ssProtocol))
+                {
+                    msg = "配置格式不正确";
+
+                    vmessItem.configType = (int)EConfigType.Shadowsocks;
+                    result = result.Substring(Global.ssProtocol.Length);
+                    int indexRemark = result.IndexOf("#");
+                    if (indexRemark > 0)
+                    {
+                        result = result.Substring(0, indexRemark);
+                    }
+                    result = Utils.Base64Decode(result);
+
+                    string[] arr1 = result.Split('@');
+                    if (arr1.Length != 2)
+                    {
+                        return null;
+                    }
+                    string[] arr21 = arr1[0].Split(':');
+                    string[] arr22 = arr1[1].Split(':');
+                    if (arr21.Length != 2 || arr21.Length != 2)
+                    {
+                        return null;
+                    }
+                    vmessItem.address = arr22[0];
+                    vmessItem.port = Convert.ToInt32(arr22[1]);
+                    vmessItem.security = arr21[0];
+                    vmessItem.id = arr21[1];
+                }
+                else
+                {
+                    msg = "非vmess或ss协议";
                     return null;
                 }
-                result = result.Substring(Global.vmessProtocol.Length);
-                //解码
-                result = Utils.Base64Decode(result);
-
-                //转成Json
-                VmessQRCode vmessQRCode = Utils.FromJson<VmessQRCode>(result);
-                if (vmessQRCode == null)
-                {
-                    msg = "转换配置文件失败";
-                    return null;
-                }
-
-                vmessItem.security = Global.DefaultSecurity;
-                vmessItem.network = Global.DefaultNetwork;
-                vmessItem.headerType = Global.None;
-
-                vmessItem.remarks = vmessQRCode.ps;
-                vmessItem.address = vmessQRCode.add;
-                vmessItem.port = Convert.ToInt32(vmessQRCode.port);
-                vmessItem.id = vmessQRCode.id;
-                vmessItem.alterId = Convert.ToInt32(vmessQRCode.aid);
-                vmessItem.network = vmessQRCode.net;
-                vmessItem.headerType = vmessQRCode.type;
-                vmessItem.requestHost = vmessQRCode.host;
-                vmessItem.streamSecurity = vmessQRCode.tls;
             }
             catch
             {
-                msg = "异常，不是正确的客户端配置文件，请检查";
+                msg = "异常，不是正确的配置，请检查";
                 return null;
             }
 

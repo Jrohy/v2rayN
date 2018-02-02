@@ -128,7 +128,7 @@ namespace v2rayN.Handler
         /// <returns></returns>
         public static int AddServer(ref Config config, VmessItem vmessItem, int index)
         {
-            vmessItem.configType = (int)EConfigType.Normally;
+            vmessItem.configType = (int)EConfigType.Vmess;
             if (index >= 0)
             {
                 //修改
@@ -281,30 +281,50 @@ namespace v2rayN.Handler
         /// </summary>
         /// <param name="config"></param>
         /// <param name="index"></param>
-        /// <param name="vmessQRCode"></param>
         /// <returns></returns>
-        public static int GetVmessQRCode(Config config, int index, ref VmessQRCode vmessQRCode)
+        public static string GetVmessQRCode(Config config, int index)
         {
             try
             {
+                string url = string.Empty;
+
                 VmessItem vmessItem = config.vmess[index];
+                if (vmessItem.configType == (int)EConfigType.Vmess)
+                {
+                    VmessQRCode vmessQRCode = new VmessQRCode();
+                    vmessQRCode.ps = vmessItem.remarks.Trim(); //备注也许很长 ;
+                    vmessQRCode.add = vmessItem.address;
+                    vmessQRCode.port = vmessItem.port.ToString();
+                    vmessQRCode.id = vmessItem.id;
+                    vmessQRCode.aid = vmessItem.alterId.ToString();
+                    vmessQRCode.net = vmessItem.network;
+                    vmessQRCode.type = vmessItem.headerType;
+                    vmessQRCode.host = vmessItem.requestHost;
+                    vmessQRCode.tls = vmessItem.streamSecurity;
 
-                vmessQRCode = new VmessQRCode();
-                vmessQRCode.ps = vmessItem.remarks.Trim(); //备注也许很长 ;
-                vmessQRCode.add = vmessItem.address;
-                vmessQRCode.port = vmessItem.port.ToString();
-                vmessQRCode.id = vmessItem.id;
-                vmessQRCode.aid = vmessItem.alterId.ToString();
-                vmessQRCode.net = vmessItem.network;
-                vmessQRCode.type = vmessItem.headerType;
-                vmessQRCode.host = vmessItem.requestHost;
-                vmessQRCode.tls = vmessItem.streamSecurity;
+                    url = Utils.ToJson(vmessQRCode);
+                    url = Utils.Base64Encode(url);
+                    url = string.Format("{0}{1}", Global.vmessProtocol, url);
 
-                return 0;
+                }
+                else if (vmessItem.configType == (int)EConfigType.Shadowsocks)
+                {
+                    url = string.Format("{0}:{1}@{2}:{3}",
+                        vmessItem.security,
+                        vmessItem.id,
+                        vmessItem.address,
+                        vmessItem.port);
+                    url = Utils.Base64Encode(url);
+                    url = string.Format("{0}{1}", Global.ssProtocol, url);
+                }
+                else
+                {
+                }
+                return url;
             }
             catch
             {
-                return -1;
+                return "";
             }
         }
 
@@ -477,5 +497,39 @@ namespace v2rayN.Handler
             return 0;
         }
 
+        /// <summary>
+        /// 添加服务器或编辑
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="vmessItem"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public static int AddShadowsocksServer(ref Config config, VmessItem vmessItem, int index)
+        {
+            vmessItem.configType = (int)EConfigType.Shadowsocks;
+            if (index >= 0)
+            {
+                //修改
+                config.vmess[index] = vmessItem;
+                if (config.index.Equals(index))
+                {
+                    Global.reloadV2ray = true;
+                }
+            }
+            else
+            {
+                //添加
+                config.vmess.Add(vmessItem);
+                if (config.vmess.Count == 1)
+                {
+                    config.index = 0;
+                    Global.reloadV2ray = true;
+                }
+            }
+
+            ToJsonFile(config);
+
+            return 0;
+        }
     }
 }

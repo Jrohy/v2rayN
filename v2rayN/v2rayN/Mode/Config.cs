@@ -200,6 +200,15 @@ namespace v2rayN.Mode
             return vmess[index].configType;
         }
 
+        public string getSummary()
+        {
+            if (index < 0)
+            {
+                return string.Empty;
+            }
+            return vmess[index].getSummary();
+        }
+
         #endregion
 
     }
@@ -219,19 +228,24 @@ namespace v2rayN.Mode
             headerType = string.Empty;
             requestHost = string.Empty;
             streamSecurity = string.Empty;
-            configType = (int)EConfigType.Normally;
+            configType = (int)EConfigType.Vmess;
         }
 
         public string getSummary()
         {
             string summary = string.Empty;
-            if (configType == (int)EConfigType.Normally)
+            summary = string.Format("{0}-", ((EConfigType)configType).ToString());
+            if (configType == (int)EConfigType.Vmess)
             {
-                summary = string.Format("{0}({1}:{2})", remarks, address, port);
+                summary += string.Format("{0}({1}:{2})", remarks, address, port);
+            }
+            else if (configType == (int)EConfigType.Shadowsocks)
+            {
+                summary += string.Format("{0}({1}:{2})", remarks, address, port);
             }
             else
             {
-                summary = string.Format("自定义配置--{0}", remarks);
+                summary += string.Format("{0}", remarks);
             }
             return summary;
         }

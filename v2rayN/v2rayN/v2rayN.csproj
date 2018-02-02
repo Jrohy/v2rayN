@@ -67,16 +67,6 @@
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
-    <Reference Include="Gma.QrCodeNet.Encoding, Version=0.4.0.0, Culture=neutral, PublicKeyToken=e8a75d24b142be49, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\Gma.QrCodeNet.Encoding.dll</HintPath>
-      <Private>False</Private>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Microsoft.Server.Common, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\JsonValue.0.6.0\lib\40\Microsoft.Server.Common.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>.\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
@@ -91,6 +81,14 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="zxing">
+      <HintPath>.\zxing.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="zxing.presentation">
+      <HintPath>.\zxing.presentation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Forms\AddServer2Form.cs">
@@ -98,6 +96,18 @@
     </Compile>
     <Compile Include="Forms\AddServer2Form.Designer.cs">
       <DependentUpon>AddServer2Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\AddServer3Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AddServer3Form.Designer.cs">
+      <DependentUpon>AddServer3Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\QRCodeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\QRCodeControl.Designer.cs">
+      <DependentUpon>QRCodeControl.cs</DependentUpon>
     </Compile>
     <Compile Include="HttpProxyHandler\PACFileWatcherHandle.cs" />
     <Compile Include="HttpProxyHandler\PrivoxyHandler.cs" />
@@ -123,12 +133,6 @@
     </Compile>
     <Compile Include="Forms\BaseForm.Designer.cs">
       <DependentUpon>BaseForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\QRCodeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\QRCodeForm.Designer.cs">
-      <DependentUpon>QRCodeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Global.cs" />
     <Compile Include="Handler\QRCodeHelper.cs" />
@@ -166,15 +170,19 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OptionSettingForm.resx">
       <DependentUpon>OptionSettingForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\QRCodeForm.resx">
-      <DependentUpon>QRCodeForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\QRCodeControl.resx">
+      <DependentUpon>QRCodeControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AddServer2Form.resx">
       <DependentUpon>AddServer2Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AddServer3Form.resx">
+      <DependentUpon>AddServer3Form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -253,10 +261,9 @@
     <None Include="Resources\minimize.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Gma.QrCodeNet.Encoding.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Resources\privoxy_conf.txt" />
+    <EmbeddedResource Include="zxing.presentation.dll" />
+    <EmbeddedResource Include="zxing.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

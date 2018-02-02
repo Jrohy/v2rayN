@@ -49,13 +49,14 @@
             this.menuExit = new System.Windows.Forms.ToolStripMenuItem();
             this.bgwPing = new System.ComponentModel.BackgroundWorker();
             this.cmsLv = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.menuAddServer = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuAddVmessServer = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuAddShadowsocksServer = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuAddCustomServer = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuRemoveServer = new System.Windows.Forms.ToolStripMenuItem();
             this.menuCopyServer = new System.Windows.Forms.ToolStripMenuItem();
             this.menuSetDefaultServer = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuAddCustomServer = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuMoveTop = new System.Windows.Forms.ToolStripMenuItem();
             this.menuMoveUp = new System.Windows.Forms.ToolStripMenuItem();
             this.menuMoveDown = new System.Windows.Forms.ToolStripMenuItem();
@@ -65,13 +66,13 @@
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.menuExport2ClientConfig = new System.Windows.Forms.ToolStripMenuItem();
             this.menuExport2ServerConfig = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuShareQRCode = new System.Windows.Forms.ToolStripMenuItem();
             this.tsbServer = new System.Windows.Forms.ToolStripDropDownButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.txtMsgBox = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lvServers = new System.Windows.Forms.ListView();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.qrCodeControl = new v2rayN.Forms.QRCodeControl();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tsMain = new System.Windows.Forms.ToolStrip();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -84,7 +85,10 @@
             this.cmsLv.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.tsMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -222,13 +226,14 @@
             // 
             this.cmsLv.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.cmsLv.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuAddServer,
+            this.menuAddVmessServer,
+            this.menuAddShadowsocksServer,
+            this.menuAddCustomServer,
+            this.toolStripSeparator1,
             this.menuRemoveServer,
             this.menuCopyServer,
             this.menuSetDefaultServer,
             this.toolStripSeparator3,
-            this.menuAddCustomServer,
-            this.toolStripSeparator1,
             this.menuMoveTop,
             this.menuMoveUp,
             this.menuMoveDown,
@@ -237,18 +242,36 @@
             this.menuPingServer,
             this.toolStripSeparator6,
             this.menuExport2ClientConfig,
-            this.menuExport2ServerConfig,
-            this.menuShareQRCode});
+            this.menuExport2ServerConfig});
             this.cmsLv.Name = "cmsLv";
             this.cmsLv.OwnerItem = this.tsbServer;
             this.cmsLv.Size = new System.Drawing.Size(227, 336);
             // 
-            // menuAddServer
+            // menuAddVmessServer
             // 
-            this.menuAddServer.Name = "menuAddServer";
-            this.menuAddServer.Size = new System.Drawing.Size(226, 22);
-            this.menuAddServer.Text = "添加一个服务器";
-            this.menuAddServer.Click += new System.EventHandler(this.menuAddServer_Click);
+            this.menuAddVmessServer.Name = "menuAddVmessServer";
+            this.menuAddVmessServer.Size = new System.Drawing.Size(226, 22);
+            this.menuAddVmessServer.Text = "添加[VMess]服务器";
+            this.menuAddVmessServer.Click += new System.EventHandler(this.menuAddVmessServer_Click);
+            // 
+            // menuAddShadowsocksServer
+            // 
+            this.menuAddShadowsocksServer.Name = "menuAddShadowsocksServer";
+            this.menuAddShadowsocksServer.Size = new System.Drawing.Size(226, 22);
+            this.menuAddShadowsocksServer.Text = "添加[Shadowsocks]服务器";
+            this.menuAddShadowsocksServer.Click += new System.EventHandler(this.menuAddShadowsocksServer_Click);
+            // 
+            // menuAddCustomServer
+            // 
+            this.menuAddCustomServer.Name = "menuAddCustomServer";
+            this.menuAddCustomServer.Size = new System.Drawing.Size(226, 22);
+            this.menuAddCustomServer.Text = "添加自定义配置服务器";
+            this.menuAddCustomServer.Click += new System.EventHandler(this.menuAddCustomServer_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(223, 6);
             // 
             // menuRemoveServer
             // 
@@ -275,18 +298,6 @@
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(223, 6);
-            // 
-            // menuAddCustomServer
-            // 
-            this.menuAddCustomServer.Name = "menuAddCustomServer";
-            this.menuAddCustomServer.Size = new System.Drawing.Size(226, 22);
-            this.menuAddCustomServer.Text = "添加自定义配置服务器";
-            this.menuAddCustomServer.Click += new System.EventHandler(this.menuAddCustomServer_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(223, 6);
             // 
             // menuMoveTop
             // 
@@ -347,13 +358,6 @@
             this.menuExport2ServerConfig.Text = "导出所选服务器为服务端配置";
             this.menuExport2ServerConfig.Click += new System.EventHandler(this.menuExport2ServerConfig_Click);
             // 
-            // menuShareQRCode
-            // 
-            this.menuShareQRCode.Name = "menuShareQRCode";
-            this.menuShareQRCode.Size = new System.Drawing.Size(226, 22);
-            this.menuShareQRCode.Text = "分享服务器配置";
-            this.menuShareQRCode.Click += new System.EventHandler(this.menuShareQRCode_Click);
-            // 
             // tsbServer
             // 
             this.tsbServer.DropDown = this.cmsLv;
@@ -368,7 +372,7 @@
             // 
             this.groupBox2.Controls.Add(this.txtMsgBox);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox2.Location = new System.Drawing.Point(0, 451);
+            this.groupBox2.Location = new System.Drawing.Point(0, 475);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(893, 176);
             this.groupBox2.TabIndex = 4;
@@ -393,15 +397,31 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.lvServers);
-            this.groupBox1.Controls.Add(this.dataGridView1);
+            this.groupBox1.Controls.Add(this.splitContainer1);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 61);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(893, 390);
+            this.groupBox1.Size = new System.Drawing.Size(893, 414);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "服务器列表";
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(3, 17);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.lvServers);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.qrCodeControl);
+            this.splitContainer1.Size = new System.Drawing.Size(887, 394);
+            this.splitContainer1.SplitterDistance = 532;
+            this.splitContainer1.TabIndex = 2;
             // 
             // lvServers
             // 
@@ -412,24 +432,23 @@
             this.lvServers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lvServers.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem1});
-            this.lvServers.Location = new System.Drawing.Point(3, 17);
+            this.lvServers.Location = new System.Drawing.Point(0, 0);
             this.lvServers.Name = "lvServers";
             this.lvServers.ShowGroups = false;
-            this.lvServers.Size = new System.Drawing.Size(887, 370);
+            this.lvServers.Size = new System.Drawing.Size(532, 394);
             this.lvServers.TabIndex = 1;
             this.lvServers.UseCompatibleStateImageBehavior = false;
             this.lvServers.View = System.Windows.Forms.View.Details;
+            this.lvServers.SelectedIndexChanged += new System.EventHandler(this.lvServers_SelectedIndexChanged);
             this.lvServers.DoubleClick += new System.EventHandler(this.lvServers_DoubleClick);
             // 
-            // dataGridView1
+            // qrCodeControl
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 17);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowTemplate.Height = 23;
-            this.dataGridView1.Size = new System.Drawing.Size(887, 370);
-            this.dataGridView1.TabIndex = 0;
+            this.qrCodeControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.qrCodeControl.Location = new System.Drawing.Point(0, 0);
+            this.qrCodeControl.Name = "qrCodeControl";
+            this.qrCodeControl.Size = new System.Drawing.Size(351, 394);
+            this.qrCodeControl.TabIndex = 0;
             // 
             // panel1
             // 
@@ -505,7 +524,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(893, 627);
+            this.ClientSize = new System.Drawing.Size(893, 651);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.panel1);
@@ -524,7 +543,10 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.tsMain.ResumeLayout(false);
             this.tsMain.PerformLayout();
             this.ResumeLayout(false);
@@ -535,7 +557,6 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox txtMsgBox;
         private System.Windows.Forms.ListView lvServers;
@@ -548,7 +569,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.ComponentModel.BackgroundWorker bgwPing;
         private System.Windows.Forms.ContextMenuStrip cmsLv;
-        private System.Windows.Forms.ToolStripMenuItem menuAddServer;
+        private System.Windows.Forms.ToolStripMenuItem menuAddVmessServer;
         private System.Windows.Forms.ToolStripMenuItem menuRemoveServer;
         private System.Windows.Forms.ToolStripMenuItem menuSetDefaultServer;
         private System.Windows.Forms.ToolStripMenuItem menuCopyServer;
@@ -567,7 +588,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem menuAbout;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
-        private System.Windows.Forms.ToolStripMenuItem menuShareQRCode;
         private System.Windows.Forms.ToolStripMenuItem menuMoveTop;
         private System.Windows.Forms.ToolStripMenuItem menuMoveUp;
         private System.Windows.Forms.ToolStripMenuItem menuMoveDown;
@@ -583,6 +603,9 @@
         private System.Windows.Forms.ToolStripMenuItem menuCopyPACUrl;
         private System.Windows.Forms.ToolStripMenuItem menuAddCustomServer;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem menuAddShadowsocksServer;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private QRCodeControl qrCodeControl;
     }
 }
 

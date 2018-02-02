@@ -149,7 +149,7 @@
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "AddServer2Form";
-            this.Text = "编辑服务器";
+            this.Text = "编辑自定义配置服务器";
             this.Load += new System.EventHandler(this.AddServer2Form_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

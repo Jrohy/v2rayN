@@ -111,15 +111,16 @@ namespace v2rayN.Forms
             lvServers.MultiSelect = false;
             lvServers.HeaderStyle = ColumnHeaderStyle.Nonclickable;
 
-            lvServers.Columns.Add("活动", 40, HorizontalAlignment.Center);
-            lvServers.Columns.Add("别名(remarks)", 120, HorizontalAlignment.Left);
-            lvServers.Columns.Add("地址(address)", 110, HorizontalAlignment.Left);
-            lvServers.Columns.Add("端口(port)", 80, HorizontalAlignment.Left);
-            lvServers.Columns.Add("用户ID(id)", 110, HorizontalAlignment.Left);
-            lvServers.Columns.Add("额外ID(alterId)", 110, HorizontalAlignment.Left);
-            lvServers.Columns.Add("加密方式(security)", 120, HorizontalAlignment.Left);
-            lvServers.Columns.Add("传输协议(network)", 120, HorizontalAlignment.Left);
-            lvServers.Columns.Add("延迟(Latency)", 100, HorizontalAlignment.Left);
+            lvServers.Columns.Add("", 30, HorizontalAlignment.Center);
+            lvServers.Columns.Add("服务类型", 80, HorizontalAlignment.Left);
+            lvServers.Columns.Add("别名", 100, HorizontalAlignment.Left);
+            lvServers.Columns.Add("地址", 100, HorizontalAlignment.Left);
+            lvServers.Columns.Add("端口", 60, HorizontalAlignment.Left);
+            //lvServers.Columns.Add("用户ID(id)", 110, HorizontalAlignment.Left);
+            //lvServers.Columns.Add("额外ID(alterId)", 110, HorizontalAlignment.Left);
+            lvServers.Columns.Add("加密方式", 100, HorizontalAlignment.Left);
+            //lvServers.Columns.Add("传输协议(network)", 120, HorizontalAlignment.Left);
+            lvServers.Columns.Add("延迟", 50, HorizontalAlignment.Left);
 
         }
 
@@ -142,18 +143,18 @@ namespace v2rayN.Forms
                 ListViewItem lvItem = new ListViewItem(new string[]
                 {
                     def,
+                    ((EConfigType)item.configType).ToString(),
                     item.remarks,
                     item.address,
                     item.port.ToString(),
-                    item.id,
-                    item.alterId.ToString(),
+                    //item.id,
+                    //item.alterId.ToString(),
                     item.security,
-                    item.network,
+                    //item.network,
                     ""
                 });
                 lvServers.Items.Add(lvItem);
             }
-
         }
 
         /// <summary>
@@ -190,6 +191,26 @@ namespace v2rayN.Forms
             catch
             {
             }
+        }
+
+        private void lvServers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int index = -1;
+            try
+            {
+                if (lvServers.SelectedIndices.Count > 0)
+                {
+                    index = lvServers.SelectedIndices[0];
+                }
+            }
+            catch
+            {
+            }
+            if (index < 0)
+            {
+                return;
+            }
+            qrCodeControl.showQRCode(index, config);
         }
 
         #endregion
@@ -235,9 +256,20 @@ namespace v2rayN.Forms
                 return;
             }
 
-            if (config.vmess[index].configType == (int)EConfigType.Normally)
+            if (config.vmess[index].configType == (int)EConfigType.Vmess)
             {
                 AddServerForm fm = new AddServerForm();
+                fm.EditIndex = index;
+                if (fm.ShowDialog() == DialogResult.OK)
+                {
+                    //刷新
+                    RefreshServers();
+                    LoadV2ray();
+                }
+            }
+            else if (config.vmess[index].configType == (int)EConfigType.Shadowsocks)
+            {
+                AddServer3Form fm = new AddServer3Form();
                 fm.EditIndex = index;
                 if (fm.ShowDialog() == DialogResult.OK)
                 {
@@ -260,7 +292,7 @@ namespace v2rayN.Forms
 
         }
 
-        private void menuAddServer_Click(object sender, EventArgs e)
+        private void menuAddVmessServer_Click(object sender, EventArgs e)
         {
             AddServerForm fm = new AddServerForm();
             fm.EditIndex = -1;
@@ -328,9 +360,9 @@ namespace v2rayN.Forms
             {
                 return;
             }
-            if (config.vmess[index].configType != (int)EConfigType.Normally)
+            if (config.vmess[index].configType != (int)EConfigType.Vmess)
             {
-                UI.Show("自定义配置，此功能无效");
+                UI.Show("非Vmess服务，此功能无效");
                 return;
             }
 
@@ -367,9 +399,9 @@ namespace v2rayN.Forms
             {
                 return;
             }
-            if (config.vmess[index].configType != (int)EConfigType.Normally)
+            if (config.vmess[index].configType != (int)EConfigType.Vmess)
             {
-                UI.Show("自定义配置，此功能无效");
+                UI.Show("非Vmess服务，此功能无效");
                 return;
             }
 
@@ -397,24 +429,6 @@ namespace v2rayN.Forms
             {
                 UI.Show(string.Format("服务端配置文件保存在:{0}", fileName));
             }
-        }
-
-        private void menuShareQRCode_Click(object sender, EventArgs e)
-        {
-            int index = GetLvSelectedIndex();
-            if (index < 0)
-            {
-                return;
-            }
-            if (config.vmess[index].configType != (int)EConfigType.Normally)
-            {
-                UI.Show("自定义配置，此功能无效");
-                return;
-            }
-
-            QRCodeForm fm = new QRCodeForm();
-            fm.Index = index;
-            fm.ShowDialog();
         }
 
         private void tsbOptionSetting_Click(object sender, EventArgs e)
@@ -518,6 +532,19 @@ namespace v2rayN.Forms
             }
         }
 
+        private void menuAddShadowsocksServer_Click(object sender, EventArgs e)
+        {
+            HideForm();
+            AddServer3Form fm = new AddServer3Form();
+            fm.EditIndex = -1;
+            if (fm.ShowDialog() == DialogResult.OK)
+            {
+                //刷新
+                RefreshServers();
+                LoadV2ray();
+            }
+            ShowForm();
+        }
 
         #endregion
 
@@ -648,6 +675,10 @@ namespace v2rayN.Forms
             {
                 for (int k = 0; k < config.vmess.Count; k++)
                 {
+                    if (config.vmess[k].configType == (int)EConfigType.Custom)
+                    {
+                        continue;
+                    }
                     long time = Utils.Ping(config.vmess[k].address);
                     bgwPing.ReportProgress(k, string.Format("{0}ms", time));
                 }
@@ -800,7 +831,6 @@ namespace v2rayN.Forms
             menuSysAgentMode.Enabled = isChecked;
         }
         #endregion
-
 
 
     }
