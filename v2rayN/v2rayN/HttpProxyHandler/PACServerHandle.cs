@@ -59,13 +59,14 @@ namespace v2rayN.HttpProxyHandler
                         requestContext.Response.StatusCode = 200;
                         requestContext.Response.ContentType = "application/x-ns-proxy-autoconfig";
                         requestContext.Response.ContentEncoding = Encoding.UTF8;
-                        if (!File.Exists(PAC_FILE))
+                        string strPacFile = Utils.GetPath(PAC_FILE);
+                        if (!File.Exists(strPacFile))
                         {
                             //TODO:暂时没解决更新PAC列表的问题，用直接解压现有PAC解决
                             //new PACListHandle().UpdatePACFromGFWList(cfg);
-                            FileManager.UncompressFile(PAC_FILE, Resources.pac_txt);
+                            FileManager.UncompressFile(strPacFile, Resources.pac_txt);
                         }
-                        var pac = File.ReadAllText(PAC_FILE, Encoding.UTF8);
+                        var pac = File.ReadAllText(strPacFile, Encoding.UTF8);
                         pac = pac.Replace("__PROXY__", proxy);
                         byte[] buffer = System.Text.Encoding.UTF8.GetBytes(pac);
                         //对客户端输出相应信息.  
