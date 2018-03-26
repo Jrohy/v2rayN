@@ -819,8 +819,12 @@ namespace v2rayN.Forms
                     }
                     catch (Exception)
                     {
-                        if(UI.ShowYesNo("下载失败!!是否用默认浏览器下载，然后自行解压安装?") == DialogResult.Yes)
+                        if (UI.ShowYesNo("下载失败!!是否用默认浏览器下载，然后自行解压安装?") == DialogResult.Yes)
+                        {
+                            Global.reloadV2ray = true;
+                            LoadV2ray();
                             System.Diagnostics.Process.Start(latestDownloadUrl + downloadFileName);
+                        }
                     }
                     finally
                     {
