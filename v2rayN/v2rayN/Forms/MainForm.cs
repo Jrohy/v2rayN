@@ -9,6 +9,7 @@ using v2rayN.Handler;
 using v2rayN.HttpProxyHandler;
 using v2rayN.Mode;
 using v2rayN.Tool;
+using static System.Windows.Forms.ListView;
 using static v2rayN.Forms.PerPixelAlphaForm;
 
 namespace v2rayN.Forms
@@ -137,6 +138,7 @@ namespace v2rayN.Forms
         private void RefreshServersView()
         {
             lvServers.Items.Clear();
+            lvServers.MultiSelect = true;
 
             for (int k = 0; k < config.vmess.Count; k++)
             {
@@ -313,35 +315,44 @@ namespace v2rayN.Forms
 
         private void menuRemoveServer_Click(object sender, EventArgs e)
         {
-            int index = GetLvSelectedIndex();
-            if (index < 0)
+            SelectedIndexCollection selectCollection = lvServers.SelectedIndices;
+            if (selectCollection.Count < 0)
             {
                 return;
             }
-            if (UI.ShowYesNo("是否确定移除服务器?") == DialogResult.No)
+            if (UI.ShowYesNo("是否确定移除所选服务器?") == DialogResult.No)
             {
                 return;
             }
-            if (ConfigHandler.RemoveServer(ref config, index) == 0)
+
+            for(int i = 0; i < selectCollection.Count; i++)
             {
-                //刷新
-                RefreshServers();
-                LoadV2ray();
+                if (ConfigHandler.RemoveServer(ref config, selectCollection[i] - i) < 0)
+                {
+                    break;
+                }
             }
+            //刷新
+            RefreshServers();
+            LoadV2ray();
         }
 
         private void menuCopyServer_Click(object sender, EventArgs e)
         {
-            int index = GetLvSelectedIndex();
-            if (index < 0)
+            SelectedIndexCollection selectCollection = lvServers.SelectedIndices;
+            if (selectCollection.Count < 0)
             {
                 return;
             }
-            if (ConfigHandler.CopyServer(ref config, index) == 0)
+            for (int i = 0; i < selectCollection.Count; i++)
             {
-                //刷新
-                RefreshServers();
+                if (ConfigHandler.CopyServer(ref config, selectCollection[i]) < 0)
+                {
+                    break;
+                }
             }
+            //刷新
+            RefreshServers();
         }
 
         private void menuSetDefaultServer_Click(object sender, EventArgs e)
