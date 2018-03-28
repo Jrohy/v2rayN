@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
@@ -705,10 +706,15 @@ namespace v2rayN.Forms
                                 (int)(rect.Height * dpi));
                             splash.Size = new Size(fullImage.Width, fullImage.Height);
 
-                            VmessItem vmessItem = V2rayConfigHandler.ImportFromStrConfig(out string msg, url);
-                            if (vmessItem != null && ConfigHandler.AddServer(ref config, vmessItem, -1) == 0)
+                            List<VmessItem> vmessItems = V2rayConfigHandler.ImportFromStrConfig(out string msg, url);
+                            if (vmessItems != null && vmessItems.Count > 0)
                             {
+                                foreach (VmessItem vmessItem in vmessItems)
+                                {
+                                    if (ConfigHandler.AddServer(ref config, vmessItem, -1) != 0)
+                                        break;
 
+                                }
                                 splash.Show();
                                 //刷新
                                 RefreshServers();
@@ -731,13 +737,19 @@ namespace v2rayN.Forms
 
         private void menuClipboardImportVmess_Click(object sender, EventArgs e)
         {
-            VmessItem vmessItem = V2rayConfigHandler.ImportFromClipboardConfig(out string msg);
-            if (vmessItem != null && ConfigHandler.AddServer(ref config, vmessItem, -1) == 0)
+            List<VmessItem> vmessItems = V2rayConfigHandler.ImportFromClipboardConfig(out string msg);
+            if (vmessItems != null && vmessItems.Count > 0)
             {
+                foreach(VmessItem vmessItem in vmessItems)
+                {
+                    if (ConfigHandler.AddServer(ref config, vmessItem, -1) != 0)
+                        break;
+                }
                 //刷新
                 RefreshServers();
                 LoadV2ray();
                 ShowForm();
+
             }
             else
             {

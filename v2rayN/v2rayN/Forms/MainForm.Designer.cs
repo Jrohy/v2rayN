@@ -46,6 +46,7 @@
             this.menuScanScreenQRCode = new System.Windows.Forms.ToolStripMenuItem();
             this.menuClipboardImportVmess = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuUpdateV2Ray = new System.Windows.Forms.ToolStripMenuItem();
             this.menuUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.menuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
@@ -84,7 +85,6 @@
             this.tsbReload = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbClose = new System.Windows.Forms.ToolStripButton();
-            this.menuUpdateV2Ray = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsMain.SuspendLayout();
             this.cmsLv.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -127,13 +127,13 @@
             this.cmsMain.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.cmsMain.ShowCheckMargin = true;
             this.cmsMain.ShowImageMargin = false;
-            this.cmsMain.Size = new System.Drawing.Size(216, 286);
+            this.cmsMain.Size = new System.Drawing.Size(204, 286);
             this.cmsMain.Opening += new System.ComponentModel.CancelEventHandler(this.cmsMain_Opening);
             // 
             // menuSysAgentEnabled
             // 
             this.menuSysAgentEnabled.Name = "menuSysAgentEnabled";
-            this.menuSysAgentEnabled.Size = new System.Drawing.Size(215, 22);
+            this.menuSysAgentEnabled.Size = new System.Drawing.Size(203, 22);
             this.menuSysAgentEnabled.Text = "启用系统代理";
             this.menuSysAgentEnabled.Click += new System.EventHandler(this.menuSysAgentEnabled_Click);
             // 
@@ -145,7 +145,7 @@
             this.toolStripMenuItem2,
             this.menuKeep});
             this.menuSysAgentMode.Name = "menuSysAgentMode";
-            this.menuSysAgentMode.Size = new System.Drawing.Size(215, 22);
+            this.menuSysAgentMode.Size = new System.Drawing.Size(203, 22);
             this.menuSysAgentMode.Text = "系统代理模式";
             // 
             // menuGlobal
@@ -177,70 +177,77 @@
             // menuServers
             // 
             this.menuServers.Name = "menuServers";
-            this.menuServers.Size = new System.Drawing.Size(215, 22);
+            this.menuServers.Size = new System.Drawing.Size(203, 22);
             this.menuServers.Text = "服务器";
             // 
             // menuUpdatePACList
             // 
             this.menuUpdatePACList.Name = "menuUpdatePACList";
-            this.menuUpdatePACList.Size = new System.Drawing.Size(215, 22);
+            this.menuUpdatePACList.Size = new System.Drawing.Size(203, 22);
             this.menuUpdatePACList.Text = "更新PAC(需要系统代理)";
             this.menuUpdatePACList.Click += new System.EventHandler(this.menuUpdatePACList_Click);
             // 
             // menuCopyPACUrl
             // 
             this.menuCopyPACUrl.Name = "menuCopyPACUrl";
-            this.menuCopyPACUrl.Size = new System.Drawing.Size(215, 22);
+            this.menuCopyPACUrl.Size = new System.Drawing.Size(203, 22);
             this.menuCopyPACUrl.Text = "复制本地PAC网址";
             this.menuCopyPACUrl.Click += new System.EventHandler(this.menuCopyPACUrl_Click);
             // 
             // toolStripSeparator10
             // 
             this.toolStripSeparator10.Name = "toolStripSeparator10";
-            this.toolStripSeparator10.Size = new System.Drawing.Size(212, 6);
+            this.toolStripSeparator10.Size = new System.Drawing.Size(200, 6);
             // 
             // menuScanScreenQRCode
             // 
             this.menuScanScreenQRCode.Name = "menuScanScreenQRCode";
-            this.menuScanScreenQRCode.Size = new System.Drawing.Size(215, 22);
+            this.menuScanScreenQRCode.Size = new System.Drawing.Size(203, 22);
             this.menuScanScreenQRCode.Text = "二维码扫描..";
             this.menuScanScreenQRCode.Click += new System.EventHandler(this.menuScreenQRCodeScan_Click);
             // 
             // menuClipboardImportVmess
             // 
             this.menuClipboardImportVmess.Name = "menuClipboardImportVmess";
-            this.menuClipboardImportVmess.Size = new System.Drawing.Size(215, 22);
-            this.menuClipboardImportVmess.Text = "剪贴板导入vmess://链接..";
+            this.menuClipboardImportVmess.Size = new System.Drawing.Size(203, 22);
+            this.menuClipboardImportVmess.Text = "剪贴板批量导入链接..";
             this.menuClipboardImportVmess.Click += new System.EventHandler(this.menuClipboardImportVmess_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(212, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(200, 6);
+            // 
+            // menuUpdateV2Ray
+            // 
+            this.menuUpdateV2Ray.Name = "menuUpdateV2Ray";
+            this.menuUpdateV2Ray.Size = new System.Drawing.Size(203, 22);
+            this.menuUpdateV2Ray.Text = "更新V2Ray";
+            this.menuUpdateV2Ray.Click += new System.EventHandler(this.menuUpdateV2Ray_Click);
             // 
             // menuUpdate
             // 
             this.menuUpdate.Name = "menuUpdate";
-            this.menuUpdate.Size = new System.Drawing.Size(215, 22);
+            this.menuUpdate.Size = new System.Drawing.Size(203, 22);
             this.menuUpdate.Text = "检查更新";
             this.menuUpdate.Click += new System.EventHandler(this.menuUpdate_Click);
             // 
             // menuAbout
             // 
             this.menuAbout.Name = "menuAbout";
-            this.menuAbout.Size = new System.Drawing.Size(215, 22);
+            this.menuAbout.Size = new System.Drawing.Size(203, 22);
             this.menuAbout.Text = "关于";
             this.menuAbout.Click += new System.EventHandler(this.menuAbout_Click);
             // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(212, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(200, 6);
             // 
             // menuExit
             // 
             this.menuExit.Name = "menuExit";
-            this.menuExit.Size = new System.Drawing.Size(215, 22);
+            this.menuExit.Size = new System.Drawing.Size(203, 22);
             this.menuExit.Text = "退出";
             this.menuExit.Click += new System.EventHandler(this.menuExit_Click);
             // 
@@ -547,13 +554,6 @@
             this.tsbClose.Text = "  最小化  ";
             this.tsbClose.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.tsbClose.Click += new System.EventHandler(this.tsbClose_Click);
-            // 
-            // menuUpdateV2Ray
-            // 
-            this.menuUpdateV2Ray.Name = "menuUpdateV2Ray";
-            this.menuUpdateV2Ray.Size = new System.Drawing.Size(215, 22);
-            this.menuUpdateV2Ray.Text = "更新V2Ray";
-            this.menuUpdateV2Ray.Click += new System.EventHandler(this.menuUpdateV2Ray_Click);
             // 
             // MainForm
             // 

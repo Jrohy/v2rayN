@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using v2rayN.Handler;
@@ -189,18 +190,18 @@ namespace v2rayN.Forms
             ClearServer();
 
             string msg;
-            VmessItem vmessItem = V2rayConfigHandler.ImportFromClipboardConfig(out msg);
-            if (vmessItem == null)
+            List<VmessItem> vmessItems = V2rayConfigHandler.ImportFromClipboardConfig(out msg);
+            if (vmessItems == null || vmessItems.Count == 0)
             {
                 UI.Show(msg);
                 return;
             }
 
-            txtAddress.Text = vmessItem.address;
-            txtPort.Text = vmessItem.port.ToString();
-            cmbSecurity.Text = vmessItem.security;
-            txtId.Text = vmessItem.id;
-            txtRemarks.Text = vmessItem.remarks;
+            txtAddress.Text = vmessItems[0].address;
+            txtPort.Text = vmessItems[0].port.ToString();
+            cmbSecurity.Text = vmessItems[0].security;
+            txtId.Text = vmessItems[0].id;
+            txtRemarks.Text = vmessItems[0].remarks;
         }
 
         private void menuItemScanScreen_Click(object sender, EventArgs e)
