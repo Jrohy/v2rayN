@@ -450,6 +450,28 @@ namespace v2rayN.Forms
             }
         }
 
+        private void menuVmessExport2ClipBoard_Click(object sender, EventArgs e)
+        {
+            SelectedIndexCollection selectCollection = lvServers.SelectedIndices;
+            if (selectCollection.Count < 0)
+            {
+                return;
+            }
+            List<string> urls = new List<string>();
+            for (int i = 0; i < selectCollection.Count; i++)
+            {
+                string url = ConfigHandler.GetVmessQRCode(config, selectCollection[i]);
+                urls.Add(url);
+            }
+
+            if (urls.Count > 0)
+            {
+                string result = String.Join(" ", urls.ToArray());
+                Utils.SetClipboardData(result);
+                UI.Show("链接已复制到剪切板");
+            }
+        }
+
         private void tsbOptionSetting_Click(object sender, EventArgs e)
         {
             OptionSettingForm fm = new OptionSettingForm();
@@ -1062,5 +1084,6 @@ namespace v2rayN.Forms
         {
 
         }
+
     }
 }

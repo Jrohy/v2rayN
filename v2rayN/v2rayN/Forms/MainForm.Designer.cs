@@ -85,6 +85,7 @@
             this.tsbReload = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbClose = new System.Windows.Forms.ToolStripButton();
+            this.menuVmessExport2ClipBoard = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsMain.SuspendLayout();
             this.cmsLv.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -127,7 +128,7 @@
             this.cmsMain.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.cmsMain.ShowCheckMargin = true;
             this.cmsMain.ShowImageMargin = false;
-            this.cmsMain.Size = new System.Drawing.Size(204, 286);
+            this.cmsMain.Size = new System.Drawing.Size(204, 264);
             this.cmsMain.Opening += new System.ComponentModel.CancelEventHandler(this.cmsMain_Opening);
             // 
             // menuSysAgentEnabled
@@ -277,10 +278,10 @@
             this.menuPingServer,
             this.toolStripSeparator6,
             this.menuExport2ClientConfig,
-            this.menuExport2ServerConfig});
+            this.menuExport2ServerConfig,
+            this.menuVmessExport2ClipBoard});
             this.cmsLv.Name = "cmsLv";
-            this.cmsLv.OwnerItem = this.tsbServer;
-            this.cmsLv.Size = new System.Drawing.Size(233, 314);
+            this.cmsLv.Size = new System.Drawing.Size(233, 358);
             // 
             // menuAddVmessServer
             // 
@@ -555,6 +556,13 @@
             this.tsbClose.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.tsbClose.Click += new System.EventHandler(this.tsbClose_Click);
             // 
+            // menuVmessExport2ClipBoard
+            // 
+            this.menuVmessExport2ClipBoard.Name = "menuVmessExport2ClipBoard";
+            this.menuVmessExport2ClipBoard.Size = new System.Drawing.Size(232, 22);
+            this.menuVmessExport2ClipBoard.Text = "批量导出服务器链接到剪贴板";
+            this.menuVmessExport2ClipBoard.Click += new System.EventHandler(this.menuVmessExport2ClipBoard_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -645,6 +653,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuScanScreenQRCode;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
         private System.Windows.Forms.ToolStripMenuItem menuUpdateV2Ray;
+        private System.Windows.Forms.ToolStripMenuItem menuVmessExport2ClipBoard;
     }
 }
 
