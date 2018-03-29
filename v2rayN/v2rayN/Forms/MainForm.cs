@@ -779,36 +779,6 @@ namespace v2rayN.Forms
             }
         }
 
-        private void HttpDownloadFile(string url, string path, bool overwrite, Action<string, long, long> callback = null)
-        {
-            // 设置参数
-            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
-            //发送请求并获取相应回应数据
-            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-            //获取文件名
-            string fileName = response.Headers["Content-Disposition"];//attachment;filename=FileName.txt
-            if (string.IsNullOrEmpty(fileName))
-                fileName = response.ResponseUri.Segments[response.ResponseUri.Segments.Length - 1];
-            else
-                fileName = fileName.Remove(0, fileName.IndexOf("filename=") + 9);
-            //直到request.GetResponse()程序才开始向目标网页发送Post请求
-            using (Stream responseStream = response.GetResponseStream())
-            {
-                long totalLength = response.ContentLength;
-                //创建本地文件写入流
-                using (Stream stream = new FileStream(Path.Combine(path, fileName), overwrite ? FileMode.Create : FileMode.CreateNew))
-                {
-                    byte[] bArr = new byte[1024];
-                    int size;
-                    while ((size = responseStream.Read(bArr, 0, bArr.Length)) > 0)
-                    {
-                        stream.Write(bArr, 0, size);
-                        callback?.Invoke(fileName, totalLength, stream.Length);
-                    }
-                }
-            }
-        }
-
         private void menuUpdateV2Ray_Click(object sender, EventArgs e)
         {
             string downloadUrl = "https://github.com/v2ray/v2ray-core/releases/download/{0}/";
