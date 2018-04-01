@@ -779,78 +779,103 @@ namespace v2rayN.Forms
             }
         }
 
-        private void menuUpdateV2Ray_Click(object sender, EventArgs e)
+        private void DownloadV2Ray(IAsyncResult result)
         {
             string downloadUrl = "https://github.com/v2ray/v2ray-core/releases/download/{0}/";
-            string latestUrl = "https://github.com/v2ray/v2ray-core/releases/latest";
+
             string downloadFileName = "v2ray-windows-64.zip";
+
+            if ((result.AsyncState as HttpWebRequest)?.EndGetResponse(result) is HttpWebResponse response)
+            {
+                //获取响应完成得到的最新版下载链接
+                string redirectUrl = response.ResponseUri.AbsoluteUri;
+                //截取出最新版v2ray的版本号
+                string version = redirectUrl.Substring(redirectUrl.LastIndexOf("/", StringComparison.Ordinal) + 1);
+
+                if (UI.ShowYesNo($"检测到最新的v2ray版本为:{version},是否下载安装?") == DialogResult.Yes)
+                {
+
+                    string msg = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss ") +
+                                 "已提交下载任务，正在排队下载(为保证快速下载安装，期间请尽量不产生其他方面代理流量)";
+                    if (this.txtMsgBox.InvokeRequired)
+                    {
+                        // 当一个控件的InvokeRequired属性值为真时，说明有一个创建它以外的线程想访问它
+                        this.txtMsgBox.Invoke((Action<string>) ShowMsg, msg);
+                    }
+                    else
+                    {
+                        ShowMsg(msg);
+                    }
+
+                    string latestDownloadUrl = string.Format(downloadUrl, version);
+
+
+                    WebClient client = new WebClient();
+
+                    client.DownloadProgressChanged += (sender1, args) =>
+                    {
+                        ShowMsg(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss ") +
+                                $"当前接收到{Utils.HumanReadableFilesize(args.BytesReceived)}，文件大小总共{Utils.HumanReadableFilesize(args.TotalBytesToReceive)}，进度为{args.ProgressPercentage}%");
+                    };
+
+                    client.DownloadFileCompleted += (sender2, args) =>
+                    {
+                        try
+                        {
+                            CloseV2ray();
+
+                            //解压
+                            using (ZipArchive archive = ZipFile.OpenRead(downloadFileName))
+                            {
+                                foreach (ZipArchiveEntry entry in archive.Entries)
+                                {
+                                    //如果是文件夹则跳过
+                                    if (entry.Length == 0)
+                                        continue;
+                                    entry.ExtractToFile(Path.Combine(".", entry.Name), true);
+                                }
+                            }
+
+                            Global.reloadV2ray = true;
+                            LoadV2ray();
+
+                            UI.Show("下载安装完成!");
+
+                        }
+                        catch (Exception)
+                        {
+                            if (UI.ShowYesNo("下载失败!!是否用默认浏览器下载，然后自行解压安装?") == DialogResult.Yes)
+                            {
+                                Global.reloadV2ray = true;
+                                LoadV2ray();
+                                System.Diagnostics.Process.Start(latestDownloadUrl + downloadFileName);
+                            }
+                        }
+                        finally
+                        {
+                            //删除文件
+                            File.Delete(downloadFileName);
+                        }
+                    };
+
+                    //异步下载
+                    client.DownloadFileAsync(new Uri(latestDownloadUrl + downloadFileName), downloadFileName);
+                }
+            }
+        }
+
+        private void menuUpdateV2Ray_Click(object sender, EventArgs e)
+        {
+            string latestUrl = "https://github.com/v2ray/v2ray-core/releases/latest";
 
             //https的链接需设置
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             //通过latestUrl的重定向来获取v2ray的最新版本号
             WebRequest req = WebRequest.Create(latestUrl);
-            HttpWebResponse response = (HttpWebResponse)req.GetResponse();
-            string redirectUrl = response.ResponseUri.AbsoluteUri;
-            string version = redirectUrl.Substring(redirectUrl.LastIndexOf("/") + 1);
 
-            if (UI.ShowYesNo(string.Format("检测到最新的v2ray版本为:{0},是否下载安装?", version)) == DialogResult.Yes)
-            {
-
-                ShowMsg(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss ") + "已提交下载任务，正在排队下载(为保证快速下载安装，期间请尽量不产生其他方面代理流量)");
-                string latestDownloadUrl = string.Format(downloadUrl, version);
-
-
-                WebClient client = new WebClient();
-
-                client.DownloadProgressChanged += (sender1, args) =>
-                {
-                    ShowMsg(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss ") + string.Format("当前接收到{0}，文件大小总共{1}，进度为{2}%", Utils.HumanReadableFilesize(args.BytesReceived), Utils.HumanReadableFilesize(args.TotalBytesToReceive), args.ProgressPercentage));
-                };
-
-                client.DownloadFileCompleted += (sender2, args) =>
-                {
-                    try
-                    {
-                        CloseV2ray();
-
-                        //解压
-                        using (ZipArchive archive = ZipFile.OpenRead(downloadFileName))
-                        {
-                            foreach (ZipArchiveEntry entry in archive.Entries)
-                            {
-                                //如果是文件夹则跳过
-                                if (entry.Length == 0)
-                                    continue;
-                                entry.ExtractToFile(Path.Combine(".", entry.Name), true);
-                            }
-                        }
-
-                        Global.reloadV2ray = true;
-                        LoadV2ray();
-
-                        UI.Show("下载安装完成!");
-
-                    }
-                    catch (Exception)
-                    {
-                        if (UI.ShowYesNo("下载失败!!是否用默认浏览器下载，然后自行解压安装?") == DialogResult.Yes)
-                        {
-                            Global.reloadV2ray = true;
-                            LoadV2ray();
-                            System.Diagnostics.Process.Start(latestDownloadUrl + downloadFileName);
-                        }
-                    }
-                    finally
-                    {
-                        //删除文件
-                        File.Delete(downloadFileName);
-                    }
-                };
-
-                //异步下载
-                client.DownloadFileAsync(new Uri(latestDownloadUrl + downloadFileName), downloadFileName);
-            }
+            //异步加载链接使得UI线程不会卡死
+            req.BeginGetResponse(new AsyncCallback(DownloadV2Ray), req);
 
         }
 
