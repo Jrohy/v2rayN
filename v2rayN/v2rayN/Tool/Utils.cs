@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
@@ -413,6 +415,29 @@ namespace v2rayN
             return roundtripTime;
         }
 
+        /// <summary>
+        /// 取得本机 IP Address
+        /// </summary>
+        /// <returns></returns>
+        public static List<string> GetHostIPAddress()
+        {
+            List<string> lstIPAddress = new List<string>();
+            try
+            {
+                IPHostEntry IpEntry = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (IPAddress ipa in IpEntry.AddressList)
+                {
+                    if (ipa.AddressFamily == AddressFamily.InterNetwork)
+                        lstIPAddress.Add(ipa.ToString());
+                }
+            }
+            catch
+            {
+            }
+            return lstIPAddress;
+        }
+
+
         #endregion
 
         #region 杂项
@@ -467,7 +492,7 @@ namespace v2rayN
             string strData = string.Empty;
             try
             {
-                IDataObject data = Clipboard.GetDataObject();             
+                IDataObject data = Clipboard.GetDataObject();
                 if (data.GetDataPresent(DataFormats.Text))
                 {
                     strData = data.GetData(DataFormats.Text).ToString();
@@ -488,7 +513,7 @@ namespace v2rayN
         {
             try
             {
-                Clipboard.SetText(strData);            
+                Clipboard.SetText(strData);
             }
             catch
             {
@@ -510,7 +535,7 @@ namespace v2rayN
             }
             return string.Empty;
         }
-        
+
         #endregion
 
         #region TempPath

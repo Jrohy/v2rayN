@@ -15,6 +15,10 @@ namespace v2rayN
         /// </summary>
         public const string AboutUrl = @"https://github.com/2dust/v2rayN";
 
+        /// <summary>
+        /// Donate
+        /// </summary>
+        public const string DonateUrl = @"https://www.paypal.me/CaptainIronNG/18";
 
         /// <summary>
         /// 本软件配置文件名
@@ -88,6 +92,11 @@ namespace v2rayN
         /// </summary>
         public const string ssProtocol = "ss://";
 
+        /// <summary>
+        /// pac
+        /// </summary>
+        public const string PAC_FILE = "pac.txt";
+
         #endregion
 
         #region 全局变量
@@ -116,7 +125,6 @@ namespace v2rayN
         /// PAC监听端口号
         /// </summary>
         public static int pacPort { get; set; }
-
 
         #endregion
 

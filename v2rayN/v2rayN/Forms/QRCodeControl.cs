@@ -36,5 +36,11 @@ namespace v2rayN.Forms
             }
         }
 
+        private void chkShow_CheckedChanged(object sender, System.EventArgs e)
+        {
+            picQRCode.Visible =
+            txtUrl.Visible = chkShow.Checked;
+        }
+
     }
 }

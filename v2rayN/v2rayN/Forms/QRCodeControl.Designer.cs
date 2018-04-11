@@ -28,64 +28,66 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.txtUrl = new System.Windows.Forms.TextBox();
             this.picQRCode = new System.Windows.Forms.PictureBox();
-            this.groupBox1.SuspendLayout();
+            this.chkShow = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.picQRCode)).BeginInit();
             this.SuspendLayout();
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.txtUrl);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox1.Location = new System.Drawing.Point(0, 351);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(356, 90);
-            this.groupBox1.TabIndex = 1;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "URL";
-            // 
             // txtUrl
             // 
-            this.txtUrl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtUrl.Location = new System.Drawing.Point(3, 17);
+            this.txtUrl.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.txtUrl.Location = new System.Drawing.Point(0, 371);
             this.txtUrl.Multiline = true;
             this.txtUrl.Name = "txtUrl";
             this.txtUrl.ReadOnly = true;
-            this.txtUrl.Size = new System.Drawing.Size(350, 70);
+            this.txtUrl.Size = new System.Drawing.Size(356, 70);
             this.txtUrl.TabIndex = 0;
             // 
             // picQRCode
             // 
             this.picQRCode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.picQRCode.Location = new System.Drawing.Point(0, 0);
+            this.picQRCode.Location = new System.Drawing.Point(0, 16);
             this.picQRCode.Name = "picQRCode";
-            this.picQRCode.Size = new System.Drawing.Size(356, 351);
-            this.picQRCode.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.picQRCode.Size = new System.Drawing.Size(356, 355);
+            this.picQRCode.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picQRCode.TabIndex = 24;
             this.picQRCode.TabStop = false;
+            // 
+            // chkShow
+            // 
+            this.chkShow.AutoSize = true;
+            this.chkShow.Checked = true;
+            this.chkShow.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkShow.Dock = System.Windows.Forms.DockStyle.Top;
+            this.chkShow.Location = new System.Drawing.Point(0, 0);
+            this.chkShow.Name = "chkShow";
+            this.chkShow.Size = new System.Drawing.Size(356, 16);
+            this.chkShow.TabIndex = 25;
+            this.chkShow.Text = "显示分享内容";
+            this.chkShow.UseVisualStyleBackColor = true;
+            this.chkShow.CheckedChanged += new System.EventHandler(this.chkShow_CheckedChanged);
             // 
             // QRCodeControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.picQRCode);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.txtUrl);
+            this.Controls.Add(this.chkShow);
             this.Name = "QRCodeControl";
             this.Size = new System.Drawing.Size(356, 441);
             this.Load += new System.EventHandler(this.QRCodeControl_Load);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picQRCode)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox txtUrl;
         private System.Windows.Forms.PictureBox picQRCode;
+        private System.Windows.Forms.CheckBox chkShow;
     }
 }

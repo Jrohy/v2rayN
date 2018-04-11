@@ -43,6 +43,7 @@
             this.menuUpdatePACList = new System.Windows.Forms.ToolStripMenuItem();
             this.menuCopyPACUrl = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuDonate = new System.Windows.Forms.ToolStripMenuItem();
             this.menuUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.menuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
@@ -111,6 +112,7 @@
             this.menuUpdatePACList,
             this.menuCopyPACUrl,
             this.toolStripSeparator2,
+            this.menuDonate,
             this.menuUpdate,
             this.menuAbout,
             this.toolStripSeparator8,
@@ -119,7 +121,7 @@
             this.cmsMain.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.cmsMain.ShowCheckMargin = true;
             this.cmsMain.ShowImageMargin = false;
-            this.cmsMain.Size = new System.Drawing.Size(197, 192);
+            this.cmsMain.Size = new System.Drawing.Size(197, 236);
             // 
             // menuSysAgentEnabled
             // 
@@ -190,6 +192,13 @@
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(193, 6);
             // 
+            // menuDonate
+            // 
+            this.menuDonate.Name = "menuDonate";
+            this.menuDonate.Size = new System.Drawing.Size(196, 22);
+            this.menuDonate.Text = "捐赠";
+            this.menuDonate.Click += new System.EventHandler(this.menuDonate_Click);
+            // 
             // menuUpdate
             // 
             this.menuUpdate.Name = "menuUpdate";
@@ -245,7 +254,7 @@
             this.menuExport2ServerConfig});
             this.cmsLv.Name = "cmsLv";
             this.cmsLv.OwnerItem = this.tsbServer;
-            this.cmsLv.Size = new System.Drawing.Size(227, 336);
+            this.cmsLv.Size = new System.Drawing.Size(227, 314);
             // 
             // menuAddVmessServer
             // 
@@ -606,6 +615,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuAddShadowsocksServer;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private QRCodeControl qrCodeControl;
+        private System.Windows.Forms.ToolStripMenuItem menuDonate;
     }
 }
 

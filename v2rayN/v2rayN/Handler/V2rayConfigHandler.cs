@@ -102,6 +102,8 @@ namespace v2rayN.Handler
                 if (config.logEnabled)
                 {
                     v2rayConfig.log.loglevel = config.loglevel;
+                    v2rayConfig.log.access = Utils.GetPath("Vaccess.log");
+                    v2rayConfig.log.error = Utils.GetPath("Verror.log");
                 }
                 else
                 {
@@ -442,6 +444,14 @@ namespace v2rayN.Handler
                         }
 
                         streamSettings.wsSettings = wsSettings;
+                        break;
+                    //h2
+                    case "h2":
+                        HttpSettings httpSettings = new HttpSettings();
+
+                        httpSettings.path = config.requestHost().Replace(" ", "");
+
+                        streamSettings.httpSettings = httpSettings;
                         break;
                     default:
                         //tcp带http伪装

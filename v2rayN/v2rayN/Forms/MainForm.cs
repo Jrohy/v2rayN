@@ -639,7 +639,10 @@ namespace v2rayN.Forms
             //System.Environment.Exit(System.Environment.ExitCode);
             Application.Exit();
         }
-
+        private void menuDonate_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(Global.DonateUrl);
+        }
         private void menuUpdate_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start(Global.UpdateUrl);
@@ -831,6 +834,8 @@ namespace v2rayN.Forms
             menuSysAgentMode.Enabled = isChecked;
         }
         #endregion
+
+
 
 
     }

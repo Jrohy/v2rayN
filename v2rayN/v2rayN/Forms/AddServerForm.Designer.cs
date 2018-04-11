@@ -68,6 +68,7 @@
             this.MenuItemImportServer = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuItemImportClipboard = new System.Windows.Forms.ToolStripMenuItem();
+            this.label18 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -135,6 +136,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label18);
             this.groupBox2.Controls.Add(this.label17);
             this.groupBox2.Controls.Add(this.label16);
             this.groupBox2.Controls.Add(this.label14);
@@ -156,7 +158,7 @@
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(471, 94);
+            this.label17.Location = new System.Drawing.Point(471, 92);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(191, 12);
             this.label17.TabIndex = 25;
@@ -165,7 +167,7 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(471, 77);
+            this.label16.Location = new System.Drawing.Point(471, 73);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(59, 12);
             this.label16.TabIndex = 24;
@@ -174,7 +176,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(471, 59);
+            this.label14.Location = new System.Drawing.Point(471, 54);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(155, 12);
             this.label14.TabIndex = 23;
@@ -276,7 +278,8 @@
             this.cmbNetwork.Items.AddRange(new object[] {
             "tcp",
             "kcp",
-            "ws"});
+            "ws",
+            "h2"});
             this.cmbNetwork.Location = new System.Drawing.Point(127, 171);
             this.cmbNetwork.Name = "cmbNetwork";
             this.cmbNetwork.Size = new System.Drawing.Size(143, 20);
@@ -469,6 +472,15 @@
             this.MenuItemImportClipboard.Text = "从剪贴板导入URL";
             this.MenuItemImportClipboard.Click += new System.EventHandler(this.MenuItemImportClipboard_Click);
             // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(471, 111);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(59, 12);
+            this.label18.TabIndex = 26;
+            this.label18.Text = "4)h2 path";
+            // 
             // AddServerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -537,5 +549,6 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label18;
     }
 }
