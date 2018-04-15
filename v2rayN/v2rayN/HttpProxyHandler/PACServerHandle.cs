@@ -19,7 +19,7 @@ namespace v2rayN.HttpProxyHandler
         {
             pacList = GetPacList();
 
-            string prefixes = string.Format("http://*:{0}/pac/", Global.pacPort);
+            string prefixes = string.Format("http://127.0.0.1:{0}/pac/", Global.pacPort);
             ws = new HttpWebServer(SendResponse, prefixes);
             ws.Run();
         }
