@@ -893,23 +893,26 @@ namespace v2rayN.Handler
                     return null;
                 }
 
-                //换行符换成空格
-                str = str.Replace("\r\n", " ");
-                //多个空格合并为一个
-                str = new System.Text.RegularExpressions.Regex("[\\s]+").Replace(str, " ");
-                //空格分割字符串
-                string[] vmessStrs = str.Trim().Split(' ');
-
-                if (str.StartsWith(Global.vmessProtocol))
+                if (!str.Contains(Global.vmessProtocol) && !str.Contains(Global.ssProtocol))
                 {
+                    msg = "非vmess或ss协议";
+                    return null;
+                }
 
-                    foreach(string s in vmessStrs)
+                //以vmess://和ss://为分割符,应对混合批量字符串
+                string[] strArray = str.Trim().Split(new string[] {Global.vmessProtocol, Global.ssProtocol}, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (string s in strArray)
+                {
+                    string temp = s.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "");
+                    temp = Utils.Base64Decode(temp);
+
+                    VmessItem vmessItem = new VmessItem();
+
+                    //vmess://字符串处理
+                    if (temp.Contains("aid") && temp.Contains("ps"))
                     {
-                        VmessItem vmessItem = new VmessItem();
-
                         vmessItem.configType = (int)EConfigType.Vmess;
-                        string temp = s.Substring(Global.vmessProtocol.Length);
-                        temp = Utils.Base64Decode(temp);
 
                         //转成Json
                         VmessQRCode vmessQRCode = Utils.FromJson<VmessQRCode>(temp);
@@ -934,24 +937,15 @@ namespace v2rayN.Handler
 
                         vmessItems.Add(vmessItem);
                     }
-
-                }
-                else if (str.StartsWith(Global.ssProtocol))
-                {
-                    msg = "配置格式不正确";
-
-                    foreach (string s in vmessStrs)
+                    //ss://字符串处理
+                    else
                     {
-                        VmessItem vmessItem = new VmessItem();
-
                         vmessItem.configType = (int)EConfigType.Shadowsocks;
-                        string temp = s.Substring(Global.ssProtocol.Length);
-                        int indexRemark = temp.IndexOf("#");
+                        int indexRemark = temp.IndexOf("#", StringComparison.Ordinal);
                         if (indexRemark > 0)
                         {
                             temp = temp.Substring(0, indexRemark);
                         }
-                        temp = Utils.Base64Decode(temp);
 
                         string[] arr1 = temp.Split('@');
                         if (arr1.Length != 2)
@@ -971,11 +965,7 @@ namespace v2rayN.Handler
 
                         vmessItems.Add(vmessItem);
                     }
-                }
-                else
-                {
-                    msg = "非vmess或ss协议";
-                    return null;
+                  
                 }
             }
             catch

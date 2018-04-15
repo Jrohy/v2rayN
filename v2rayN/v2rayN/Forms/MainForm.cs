@@ -775,7 +775,7 @@ namespace v2rayN.Forms
             }
             else
             {
-                UI.Show("操作失败，请检查重试");
+                UI.Show(Utils.IsNullOrEmpty(msg)? "操作失败，请检查重试" : msg);
             }
         }
 
