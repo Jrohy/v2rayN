@@ -129,7 +129,6 @@
             this.cmsMain.ShowCheckMargin = true;
             this.cmsMain.ShowImageMargin = false;
             this.cmsMain.Size = new System.Drawing.Size(204, 264);
-            this.cmsMain.Opening += new System.ComponentModel.CancelEventHandler(this.cmsMain_Opening);
             // 
             // menuSysAgentEnabled
             // 
@@ -282,6 +281,7 @@
             this.menuVmessExport2ClipBoard});
             this.cmsLv.Name = "cmsLv";
             this.cmsLv.Size = new System.Drawing.Size(233, 358);
+            this.cmsLv.OwnerItem = this.tsbServer;
             // 
             // menuAddVmessServer
             // 

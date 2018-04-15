@@ -6,7 +6,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
+using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -433,6 +435,29 @@ namespace v2rayN
             return roundtripTime;
         }
 
+        /// <summary>
+        /// 取得本机 IP Address
+        /// </summary>
+        /// <returns></returns>
+        public static List<string> GetHostIPAddress()
+        {
+            List<string> lstIPAddress = new List<string>();
+            try
+            {
+                IPHostEntry IpEntry = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (IPAddress ipa in IpEntry.AddressList)
+                {
+                    if (ipa.AddressFamily == AddressFamily.InterNetwork)
+                        lstIPAddress.Add(ipa.ToString());
+                }
+            }
+            catch
+            {
+            }
+            return lstIPAddress;
+        }
+
+
         #endregion
 
         #region 获取显示屏大小
@@ -512,7 +537,7 @@ namespace v2rayN
             string strData = string.Empty;
             try
             {
-                IDataObject data = Clipboard.GetDataObject();             
+                IDataObject data = Clipboard.GetDataObject();
                 if (data.GetDataPresent(DataFormats.Text))
                 {
                     strData = data.GetData(DataFormats.Text).ToString();
@@ -533,7 +558,7 @@ namespace v2rayN
         {
             try
             {
-                Clipboard.SetText(strData);            
+                Clipboard.SetText(strData);
             }
             catch
             {

@@ -1070,15 +1070,6 @@ namespace v2rayN.Forms
             menuSysAgentMode.Enabled = isChecked;
         }
 
-
-
-
         #endregion
-
-        private void cmsMain_Opening(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-
-        }
-
     }
 }

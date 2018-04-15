@@ -61,7 +61,7 @@ namespace v2rayN.HttpProxyHandler
                 List<string> lines = ParseResult(e.Result);
                 string abpContent = Utils.UnGzip(Resources.abp_js);
                 abpContent = abpContent.Replace("__RULES__", JsonConvert.SerializeObject(lines, Formatting.Indented));
-                File.WriteAllText(Utils.GetPath(PACServerHandle.PAC_FILE), abpContent, Encoding.UTF8);
+                File.WriteAllText(Utils.GetPath(Global.PAC_FILE), abpContent, Encoding.UTF8);
                 if (UpdateCompleted != null) UpdateCompleted(this, new ResultEventArgs(true));
             }
             catch (Exception ex)

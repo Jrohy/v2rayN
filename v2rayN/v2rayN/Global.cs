@@ -14,7 +14,6 @@ namespace v2rayN
         /// </summary>
         public const string AboutUrl = @"https://github.com/Jrohy/v2rayN";
 
-
         /// <summary>
         /// 本软件配置文件名
         /// </summary>
@@ -87,6 +86,11 @@ namespace v2rayN
         /// </summary>
         public const string ssProtocol = "ss://";
 
+        /// <summary>
+        /// pac
+        /// </summary>
+        public const string PAC_FILE = "pac.txt";
+
         #endregion
 
         #region 全局变量
@@ -115,7 +119,6 @@ namespace v2rayN
         /// PAC监听端口号
         /// </summary>
         public static int pacPort { get; set; }
-
 
         #endregion
 
