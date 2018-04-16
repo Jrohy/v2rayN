@@ -783,7 +783,7 @@ namespace v2rayN.Forms
         {
             string downloadUrl = "https://github.com/v2ray/v2ray-core/releases/download/{0}/";
 
-            string downloadFileName = "v2ray-windows-64.zip";
+            string downloadFileName = Environment.Is64BitOperatingSystem?"v2ray-windows-64.zip":"v2ray-windows-32.zip";
 
             if ((result.AsyncState as HttpWebRequest)?.EndGetResponse(result) is HttpWebResponse response)
             {
@@ -796,7 +796,7 @@ namespace v2rayN.Forms
                 {
 
                     string msg = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss ") +
-                                 "已提交下载任务，正在排队下载(为保证快速下载安装，期间请尽量不产生其他方面代理流量)";
+                                 $"已提交{downloadFileName}下载任务，正在排队下载(为保证快速下载安装，期间请尽量不产生其他方面代理流量)";
                     if (this.txtMsgBox.InvokeRequired)
                     {
                         // 当一个控件的InvokeRequired属性值为真时，说明有一个创建它以外的线程想访问它

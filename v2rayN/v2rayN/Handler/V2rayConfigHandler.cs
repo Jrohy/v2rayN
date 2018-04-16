@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using v2rayN.Mode;
 
 namespace v2rayN.Handler
@@ -872,11 +873,9 @@ namespace v2rayN.Handler
             return ImportFromStrConfig(out msg, result);
         }
 
-
         /// <summary>
         /// 传入字符串来生成vmess配置
         /// </summary>
-        /// <param name="fileName"></param>
         /// <param name="msg"></param>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -899,13 +898,25 @@ namespace v2rayN.Handler
                     return null;
                 }
 
+                //去除vmess://或者ss://前面开头的多余字符
+                int vIndex = str.IndexOf(Global.vmessProtocol, StringComparison.Ordinal);
+                int sIndex = str.IndexOf(Global.ssProtocol, StringComparison.Ordinal);
+                int index = vIndex > sIndex ? (sIndex == -1?vIndex:sIndex) : (vIndex == -1 ? sIndex : vIndex);
+                str = str.Substring(index);
+
                 //以vmess://和ss://为分割符,应对混合批量字符串
                 string[] strArray = str.Trim().Split(new string[] {Global.vmessProtocol, Global.ssProtocol}, StringSplitOptions.RemoveEmptyEntries);
 
                 foreach (string s in strArray)
                 {
                     string temp = s.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "");
-                    temp = Utils.Base64Decode(temp);
+                    Match tempMatch = Regex.Match(temp, "([A-Za-z0-9_=-]+)", RegexOptions.IgnoreCase);
+
+                    temp = Utils.Base64Decode(tempMatch.Groups[0].Value);
+
+                    //base64转为失败则忽略这条
+                    if (Utils.IsNullOrEmpty(temp))
+                        continue;
 
                     VmessItem vmessItem = new VmessItem();
 
@@ -940,7 +951,7 @@ namespace v2rayN.Handler
                     //ss://字符串处理
                     else
                     {
-                        vmessItem.configType = (int)EConfigType.Shadowsocks;
+                        vmessItem.configType = (int) EConfigType.Shadowsocks;
                         int indexRemark = temp.IndexOf("#", StringComparison.Ordinal);
                         if (indexRemark > 0)
                         {
@@ -950,14 +961,16 @@ namespace v2rayN.Handler
                         string[] arr1 = temp.Split('@');
                         if (arr1.Length != 2)
                         {
-                            return null;
+                            continue;
                         }
+
                         string[] arr21 = arr1[0].Split(':');
                         string[] arr22 = arr1[1].Split(':');
                         if (arr21.Length != 2 || arr21.Length != 2)
                         {
-                            return null;
+                            continue;
                         }
+
                         vmessItem.address = arr22[0];
                         vmessItem.port = Convert.ToInt32(arr22[1]);
                         vmessItem.security = arr21[0];
@@ -965,7 +978,6 @@ namespace v2rayN.Handler
 
                         vmessItems.Add(vmessItem);
                     }
-                  
                 }
             }
             catch
