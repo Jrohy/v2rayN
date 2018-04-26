@@ -40,11 +40,9 @@
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.menuKeep = new System.Windows.Forms.ToolStripMenuItem();
             this.menuServers = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuUpdatePACList = new System.Windows.Forms.ToolStripMenuItem();
             this.menuCopyPACUrl = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.menuDonate = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.menuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.menuExit = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,6 +79,11 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbReload = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbCheckUpdate = new System.Windows.Forms.ToolStripDropDownButton();
+            this.tsbCheckUpdateN = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsbCheckUpdateCore = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsbCheckUpdatePACList = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbClose = new System.Windows.Forms.ToolStripButton();
             this.cmsMain.SuspendLayout();
             this.cmsLv.SuspendLayout();
@@ -109,11 +112,9 @@
             this.menuSysAgentEnabled,
             this.menuSysAgentMode,
             this.menuServers,
-            this.menuUpdatePACList,
             this.menuCopyPACUrl,
             this.toolStripSeparator2,
             this.menuDonate,
-            this.menuUpdate,
             this.menuAbout,
             this.toolStripSeparator8,
             this.menuExit});
@@ -121,12 +122,12 @@
             this.cmsMain.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.cmsMain.ShowCheckMargin = true;
             this.cmsMain.ShowImageMargin = false;
-            this.cmsMain.Size = new System.Drawing.Size(197, 236);
+            this.cmsMain.Size = new System.Drawing.Size(161, 170);
             // 
             // menuSysAgentEnabled
             // 
             this.menuSysAgentEnabled.Name = "menuSysAgentEnabled";
-            this.menuSysAgentEnabled.Size = new System.Drawing.Size(196, 22);
+            this.menuSysAgentEnabled.Size = new System.Drawing.Size(160, 22);
             this.menuSysAgentEnabled.Text = "启用系统代理";
             this.menuSysAgentEnabled.Click += new System.EventHandler(this.menuSysAgentEnabled_Click);
             // 
@@ -138,7 +139,7 @@
             this.toolStripMenuItem2,
             this.menuKeep});
             this.menuSysAgentMode.Name = "menuSysAgentMode";
-            this.menuSysAgentMode.Size = new System.Drawing.Size(196, 22);
+            this.menuSysAgentMode.Size = new System.Drawing.Size(160, 22);
             this.menuSysAgentMode.Text = "系统代理模式";
             // 
             // menuGlobal
@@ -170,58 +171,44 @@
             // menuServers
             // 
             this.menuServers.Name = "menuServers";
-            this.menuServers.Size = new System.Drawing.Size(196, 22);
+            this.menuServers.Size = new System.Drawing.Size(160, 22);
             this.menuServers.Text = "服务器";
-            // 
-            // menuUpdatePACList
-            // 
-            this.menuUpdatePACList.Name = "menuUpdatePACList";
-            this.menuUpdatePACList.Size = new System.Drawing.Size(196, 22);
-            this.menuUpdatePACList.Text = "更新PAC(需要系统代理)";
-            this.menuUpdatePACList.Click += new System.EventHandler(this.menuUpdatePACList_Click);
             // 
             // menuCopyPACUrl
             // 
             this.menuCopyPACUrl.Name = "menuCopyPACUrl";
-            this.menuCopyPACUrl.Size = new System.Drawing.Size(196, 22);
+            this.menuCopyPACUrl.Size = new System.Drawing.Size(160, 22);
             this.menuCopyPACUrl.Text = "复制本地PAC网址";
             this.menuCopyPACUrl.Click += new System.EventHandler(this.menuCopyPACUrl_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(193, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(157, 6);
             // 
             // menuDonate
             // 
             this.menuDonate.Name = "menuDonate";
-            this.menuDonate.Size = new System.Drawing.Size(196, 22);
+            this.menuDonate.Size = new System.Drawing.Size(160, 22);
             this.menuDonate.Text = "捐赠";
             this.menuDonate.Click += new System.EventHandler(this.menuDonate_Click);
-            // 
-            // menuUpdate
-            // 
-            this.menuUpdate.Name = "menuUpdate";
-            this.menuUpdate.Size = new System.Drawing.Size(196, 22);
-            this.menuUpdate.Text = "检查更新";
-            this.menuUpdate.Click += new System.EventHandler(this.menuUpdate_Click);
             // 
             // menuAbout
             // 
             this.menuAbout.Name = "menuAbout";
-            this.menuAbout.Size = new System.Drawing.Size(196, 22);
+            this.menuAbout.Size = new System.Drawing.Size(160, 22);
             this.menuAbout.Text = "关于";
             this.menuAbout.Click += new System.EventHandler(this.menuAbout_Click);
             // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(193, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(157, 6);
             // 
             // menuExit
             // 
             this.menuExit.Name = "menuExit";
-            this.menuExit.Size = new System.Drawing.Size(196, 22);
+            this.menuExit.Size = new System.Drawing.Size(160, 22);
             this.menuExit.Text = "退出";
             this.menuExit.Click += new System.EventHandler(this.menuExit_Click);
             // 
@@ -253,8 +240,7 @@
             this.menuExport2ClientConfig,
             this.menuExport2ServerConfig});
             this.cmsLv.Name = "cmsLv";
-            this.cmsLv.OwnerItem = this.tsbServer;
-            this.cmsLv.Size = new System.Drawing.Size(227, 314);
+            this.cmsLv.Size = new System.Drawing.Size(227, 336);
             // 
             // menuAddVmessServer
             // 
@@ -286,7 +272,7 @@
             // 
             this.menuRemoveServer.Name = "menuRemoveServer";
             this.menuRemoveServer.Size = new System.Drawing.Size(226, 22);
-            this.menuRemoveServer.Text = "移除所选服务器";
+            this.menuRemoveServer.Text = "移除所选服务器   (Delete)";
             this.menuRemoveServer.Click += new System.EventHandler(this.menuRemoveServer_Click);
             // 
             // menuCopyServer
@@ -300,7 +286,7 @@
             // 
             this.menuSetDefaultServer.Name = "menuSetDefaultServer";
             this.menuSetDefaultServer.Size = new System.Drawing.Size(226, 22);
-            this.menuSetDefaultServer.Text = "设为活动服务器";
+            this.menuSetDefaultServer.Text = "设为活动服务器   (Enter)";
             this.menuSetDefaultServer.Click += new System.EventHandler(this.menuSetDefaultServer_Click);
             // 
             // toolStripSeparator3
@@ -319,14 +305,14 @@
             // 
             this.menuMoveUp.Name = "menuMoveUp";
             this.menuMoveUp.Size = new System.Drawing.Size(226, 22);
-            this.menuMoveUp.Text = "上移";
+            this.menuMoveUp.Text = "上移      (U)";
             this.menuMoveUp.Click += new System.EventHandler(this.menuMoveUp_Click);
             // 
             // menuMoveDown
             // 
             this.menuMoveDown.Name = "menuMoveDown";
             this.menuMoveDown.Size = new System.Drawing.Size(226, 22);
-            this.menuMoveDown.Text = "下移";
+            this.menuMoveDown.Text = "下移      (D)";
             this.menuMoveDown.Click += new System.EventHandler(this.menuMoveDown_Click);
             // 
             // menuMoveBottom
@@ -429,7 +415,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.qrCodeControl);
             this.splitContainer1.Size = new System.Drawing.Size(887, 394);
-            this.splitContainer1.SplitterDistance = 532;
+            this.splitContainer1.SplitterDistance = 600;
             this.splitContainer1.TabIndex = 2;
             // 
             // lvServers
@@ -444,19 +430,20 @@
             this.lvServers.Location = new System.Drawing.Point(0, 0);
             this.lvServers.Name = "lvServers";
             this.lvServers.ShowGroups = false;
-            this.lvServers.Size = new System.Drawing.Size(532, 394);
+            this.lvServers.Size = new System.Drawing.Size(600, 394);
             this.lvServers.TabIndex = 1;
             this.lvServers.UseCompatibleStateImageBehavior = false;
             this.lvServers.View = System.Windows.Forms.View.Details;
             this.lvServers.SelectedIndexChanged += new System.EventHandler(this.lvServers_SelectedIndexChanged);
             this.lvServers.DoubleClick += new System.EventHandler(this.lvServers_DoubleClick);
+            this.lvServers.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvServers_KeyDown);
             // 
             // qrCodeControl
             // 
             this.qrCodeControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.qrCodeControl.Location = new System.Drawing.Point(0, 0);
             this.qrCodeControl.Name = "qrCodeControl";
-            this.qrCodeControl.Size = new System.Drawing.Size(351, 394);
+            this.qrCodeControl.Size = new System.Drawing.Size(283, 394);
             this.qrCodeControl.TabIndex = 0;
             // 
             // panel1
@@ -477,6 +464,8 @@
             this.toolStripSeparator5,
             this.tsbReload,
             this.toolStripSeparator7,
+            this.tsbCheckUpdate,
+            this.toolStripSeparator10,
             this.tsbClose});
             this.tsMain.Location = new System.Drawing.Point(0, 0);
             this.tsMain.Name = "tsMain";
@@ -518,6 +507,45 @@
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
             this.toolStripSeparator7.Size = new System.Drawing.Size(6, 51);
+            // 
+            // tsbCheckUpdate
+            // 
+            this.tsbCheckUpdate.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsbCheckUpdateN,
+            this.tsbCheckUpdateCore,
+            this.tsbCheckUpdatePACList});
+            this.tsbCheckUpdate.Image = global::v2rayN.Properties.Resources.checkupdate;
+            this.tsbCheckUpdate.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbCheckUpdate.Name = "tsbCheckUpdate";
+            this.tsbCheckUpdate.Size = new System.Drawing.Size(90, 48);
+            this.tsbCheckUpdate.Text = "  检查更新  ";
+            this.tsbCheckUpdate.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            // 
+            // tsbCheckUpdateN
+            // 
+            this.tsbCheckUpdateN.Name = "tsbCheckUpdateN";
+            this.tsbCheckUpdateN.Size = new System.Drawing.Size(220, 22);
+            this.tsbCheckUpdateN.Text = "检查更新v2rayN";
+            this.tsbCheckUpdateN.Click += new System.EventHandler(this.tsbCheckUpdateN_Click);
+            // 
+            // tsbCheckUpdateCore
+            // 
+            this.tsbCheckUpdateCore.Name = "tsbCheckUpdateCore";
+            this.tsbCheckUpdateCore.Size = new System.Drawing.Size(220, 22);
+            this.tsbCheckUpdateCore.Text = "检查更新v2rayCore";
+            this.tsbCheckUpdateCore.Click += new System.EventHandler(this.tsbCheckUpdateCore_Click);
+            // 
+            // tsbCheckUpdatePACList
+            // 
+            this.tsbCheckUpdatePACList.Name = "tsbCheckUpdatePACList";
+            this.tsbCheckUpdatePACList.Size = new System.Drawing.Size(220, 22);
+            this.tsbCheckUpdatePACList.Text = "检查更新PAC(需要系统代理)";
+            this.tsbCheckUpdatePACList.Click += new System.EventHandler(this.tsbCheckUpdatePACList_Click);
+            // 
+            // toolStripSeparator10
+            // 
+            this.toolStripSeparator10.Name = "toolStripSeparator10";
+            this.toolStripSeparator10.Size = new System.Drawing.Size(6, 51);
             // 
             // tsbClose
             // 
@@ -572,7 +600,6 @@
         private System.Windows.Forms.NotifyIcon notifyMain;
         private System.Windows.Forms.ContextMenuStrip cmsMain;
         private System.Windows.Forms.ToolStripMenuItem menuExit;
-        private System.Windows.Forms.ToolStripMenuItem menuUpdate;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ToolStripMenuItem menuServers;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
@@ -607,7 +634,6 @@
         private System.Windows.Forms.ToolStripMenuItem menuPAC;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem menuKeep;
-        private System.Windows.Forms.ToolStripMenuItem menuUpdatePACList;
         private System.Windows.Forms.ToolStripMenuItem menuSysAgentEnabled;
         private System.Windows.Forms.ToolStripMenuItem menuCopyPACUrl;
         private System.Windows.Forms.ToolStripMenuItem menuAddCustomServer;
@@ -616,6 +642,11 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private QRCodeControl qrCodeControl;
         private System.Windows.Forms.ToolStripMenuItem menuDonate;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
+        private System.Windows.Forms.ToolStripDropDownButton tsbCheckUpdate;
+        private System.Windows.Forms.ToolStripMenuItem tsbCheckUpdateN;
+        private System.Windows.Forms.ToolStripMenuItem tsbCheckUpdateCore;
+        private System.Windows.Forms.ToolStripMenuItem tsbCheckUpdatePACList;
     }
 }
 

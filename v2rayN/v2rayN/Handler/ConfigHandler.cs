@@ -114,6 +114,13 @@ namespace v2rayN.Handler
             else
             {
                 Global.reloadV2ray = true;
+
+                //版本升级
+                for (int i = 0; i < config.vmess.Count; i++)
+                {
+                    VmessItem vmessItem = config.vmess[i];
+                    UpgradeServerVersion(ref vmessItem);
+                }
             }
 
             return 0;
@@ -128,6 +135,7 @@ namespace v2rayN.Handler
         /// <returns></returns>
         public static int AddServer(ref Config config, VmessItem vmessItem, int index)
         {
+            vmessItem.configVersion = 2;
             vmessItem.configType = (int)EConfigType.Vmess;
             if (index >= 0)
             {
@@ -209,6 +217,7 @@ namespace v2rayN.Handler
             }
 
             VmessItem vmessItem = new VmessItem();
+            vmessItem.configVersion = config.vmess[index].configVersion;
             vmessItem.configType = config.vmess[index].configType;
             vmessItem.address = config.vmess[index].address;
             vmessItem.port = config.vmess[index].port;
@@ -218,8 +227,10 @@ namespace v2rayN.Handler
             vmessItem.network = config.vmess[index].network;
             vmessItem.headerType = config.vmess[index].headerType;
             vmessItem.requestHost = config.vmess[index].requestHost;
+            vmessItem.path = config.vmess[index].path;
             vmessItem.streamSecurity = config.vmess[index].streamSecurity;
             vmessItem.remarks = string.Format("{0}-副本", config.vmess[index].remarks);
+
             config.vmess.Add(vmessItem);
 
             ToJsonFile(config);
@@ -292,6 +303,7 @@ namespace v2rayN.Handler
                 if (vmessItem.configType == (int)EConfigType.Vmess)
                 {
                     VmessQRCode vmessQRCode = new VmessQRCode();
+                    vmessQRCode.v = vmessItem.configVersion.ToString();
                     vmessQRCode.ps = vmessItem.remarks.Trim(); //备注也许很长 ;
                     vmessQRCode.add = vmessItem.address;
                     vmessQRCode.port = vmessItem.port.ToString();
@@ -300,6 +312,7 @@ namespace v2rayN.Handler
                     vmessQRCode.net = vmessItem.network;
                     vmessQRCode.type = vmessItem.headerType;
                     vmessQRCode.host = vmessItem.requestHost;
+                    vmessQRCode.path = vmessItem.path;
                     vmessQRCode.tls = vmessItem.streamSecurity;
 
                     url = Utils.ToJson(vmessQRCode);
@@ -506,6 +519,7 @@ namespace v2rayN.Handler
         /// <returns></returns>
         public static int AddShadowsocksServer(ref Config config, VmessItem vmessItem, int index)
         {
+            vmessItem.configVersion = 2;
             vmessItem.configType = (int)EConfigType.Shadowsocks;
             if (index >= 0)
             {
@@ -529,6 +543,71 @@ namespace v2rayN.Handler
 
             ToJsonFile(config);
 
+            return 0;
+        }
+
+        /// <summary>
+        /// 配置文件版本升级
+        /// </summary>
+        /// <param name="vmessItem"></param>
+        /// <returns></returns>
+        public static int UpgradeServerVersion(ref VmessItem vmessItem)
+        {
+            try
+            {
+                if (vmessItem == null
+                    || vmessItem.configVersion == 2)
+                {
+                    return 0;
+                }
+                if (vmessItem.configType == (int)EConfigType.Vmess)
+                {
+                    string path = "";
+                    string host = "";
+                    string[] arrParameter;
+                    switch (vmessItem.network)
+                    {
+                        case "kcp":
+                            break;
+                        case "ws":
+                            //*ws(path+host),它们中间分号(;)隔开
+                            arrParameter = vmessItem.requestHost.Replace(" ", "").Split(';');
+                            if (arrParameter.Length > 0)
+                            {
+                                path = arrParameter[0];
+                            }
+                            if (arrParameter.Length > 1)
+                            {
+                                path = arrParameter[0];
+                                host = arrParameter[1];
+                            }
+                            vmessItem.path = path;
+                            vmessItem.requestHost = host;
+                            break;
+                        case "h2":
+                            //*h2 path
+                            arrParameter = vmessItem.requestHost.Replace(" ", "").Split(';');
+                            if (arrParameter.Length > 0)
+                            {
+                                path = arrParameter[0];
+                            }
+                            if (arrParameter.Length > 1)
+                            {
+                                path = arrParameter[0];
+                                host = arrParameter[1];
+                            }
+                            vmessItem.path = path;
+                            vmessItem.requestHost = host;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                vmessItem.configVersion = 2;
+            }
+            catch
+            {
+            }
             return 0;
         }
     }

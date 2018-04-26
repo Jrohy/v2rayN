@@ -208,6 +208,23 @@ namespace v2rayN
             }
         }
 
+        /// <summary>
+        /// 转Int
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static int ToInt(object obj)
+        {
+            try
+            {
+                return Convert.ToInt32(obj);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
         #endregion
 
 
@@ -222,7 +239,7 @@ namespace v2rayN
         {
             try
             {
-                int var1 = Convert.ToInt32(oText);
+                int var1 = Utils.ToInt(oText);
                 return true;
             }
             catch
@@ -582,6 +599,45 @@ namespace v2rayN
                 }
                 return System.Text.Encoding.UTF8.GetString(sb.ToArray());
             }
+        }
+
+        #endregion
+
+        #region
+
+        public static void SaveLog(string strContent)
+        {
+            SaveLog("info", new Exception(strContent));
+        }
+        public static void SaveLog(string strTitle, Exception ex)
+        {
+            try
+            {
+                string path = Path.Combine(Application.StartupPath, "guiLogs");
+                string FilePath = Path.Combine(path, DateTime.Now.ToString("yyyyMMdd") + ".txt");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                if (!File.Exists(FilePath))
+                {
+                    FileStream FsCreate = new FileStream(FilePath, FileMode.Create);
+                    FsCreate.Close();
+                    FsCreate.Dispose();
+                }
+                FileStream FsWrite = new FileStream(FilePath, FileMode.Append, FileAccess.Write);
+                StreamWriter SwWrite = new StreamWriter(FsWrite);
+
+                string strContent = ex.ToString();
+
+                SwWrite.WriteLine(string.Format("{0}{1}[{2}]{3}", "--------------------------------", strTitle, DateTime.Now.ToString("HH:mm:ss"), "--------------------------------"));
+                SwWrite.Write(strContent);
+                SwWrite.WriteLine("\r\n");
+                SwWrite.WriteLine(" ");
+                SwWrite.Flush();
+                SwWrite.Close();
+            }
+            catch { }
         }
 
         #endregion

@@ -66,6 +66,8 @@ namespace v2rayN.HttpProxyHandler
             }
             catch (Exception ex)
             {
+                Utils.SaveLog(ex.Message, ex);
+
                 if (Error != null) Error(this, new ErrorEventArgs(ex));
             }
         }

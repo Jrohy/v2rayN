@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -9,29 +7,39 @@ namespace v2rayN.HttpProxyHandler
 {
     public class HttpWebServer
     {
-        private readonly HttpListener _listener = new HttpListener();
-        private readonly Func<HttpListenerRequest, string> _responderMethod;
+        private HttpListener _listener;
+        private Func<HttpListenerRequest, string> _responderMethod;
 
         public HttpWebServer(string[] prefixes, Func<HttpListenerRequest, string> method)
         {
-            if (!HttpListener.IsSupported)
-                throw new NotSupportedException(
-                    "Needs Windows XP SP2, Server 2003 or later.");
+            try
+            {
+                _listener = new HttpListener();
 
-            // URI prefixes are required, for example 
-            // "http://localhost:8080/index/".
-            if (prefixes == null || prefixes.Length == 0)
-                throw new ArgumentException("prefixes");
+                if (!HttpListener.IsSupported)
+                    throw new NotSupportedException(
+                        "Needs Windows XP SP2, Server 2003 or later.");
 
-            // A responder method is required
-            if (method == null)
-                throw new ArgumentException("method");
+                // URI prefixes are required, for example 
+                // "http://localhost:8080/index/".
+                if (prefixes == null || prefixes.Length == 0)
+                    throw new ArgumentException("prefixes");
 
-            foreach (string s in prefixes)
-                _listener.Prefixes.Add(s);
+                // A responder method is required
+                if (method == null)
+                    throw new ArgumentException("method");
 
-            _responderMethod = method;
-            _listener.Start();
+                foreach (string s in prefixes)
+                    _listener.Prefixes.Add(s);
+
+                _responderMethod = method;
+                _listener.Start();
+
+            }
+            catch (Exception ex)
+            {
+                Utils.SaveLog(ex.Message, ex);
+            }
         }
 
         public HttpWebServer(Func<HttpListenerRequest, string> method, params string[] prefixes)
@@ -41,7 +49,7 @@ namespace v2rayN.HttpProxyHandler
         {
             ThreadPool.QueueUserWorkItem((o) =>
             {
-                Console.WriteLine("Webserver running...");
+                Utils.SaveLog("Webserver running...");
                 try
                 {
                     while (_listener.IsListening)
@@ -56,7 +64,9 @@ namespace v2rayN.HttpProxyHandler
                                 ctx.Response.ContentLength64 = buf.Length;
                                 ctx.Response.OutputStream.Write(buf, 0, buf.Length);
                             }
-                            catch { } // suppress any exceptions
+                            catch
+                            {
+                            }  // suppress any exceptions
                             finally
                             {
                                 // always close the stream
@@ -65,14 +75,21 @@ namespace v2rayN.HttpProxyHandler
                         }, _listener.GetContext());
                     }
                 }
-                catch { } // suppress any exceptions
+                catch (Exception ex)
+                {
+                    Utils.SaveLog(ex.Message, ex);
+                } // suppress any exceptions
             });
         }
 
         public void Stop()
         {
-            _listener.Stop();
-            _listener.Close();
+            if (_listener != null)
+            {
+                _listener.Stop();
+                _listener.Close();
+                _listener = null;
+            }
         }
     }
 }

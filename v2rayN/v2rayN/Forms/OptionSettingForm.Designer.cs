@@ -32,6 +32,8 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.txtremoteDNS = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.chkmuxEnabled = new System.Windows.Forms.CheckBox();
             this.chkAllowIn2 = new System.Windows.Forms.CheckBox();
             this.chkudpEnabled2 = new System.Windows.Forms.CheckBox();
@@ -73,6 +75,7 @@
             this.txtKcpmtu = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.chkAllowLANConn = new System.Windows.Forms.CheckBox();
             this.txturlGFWList = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
@@ -132,6 +135,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.txtremoteDNS);
+            this.groupBox1.Controls.Add(this.label14);
             this.groupBox1.Controls.Add(this.chkmuxEnabled);
             this.groupBox1.Controls.Add(this.chkAllowIn2);
             this.groupBox1.Controls.Add(this.chkudpEnabled2);
@@ -152,6 +157,22 @@
             this.groupBox1.Size = new System.Drawing.Size(514, 464);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
+            // 
+            // txtremoteDNS
+            // 
+            this.txtremoteDNS.Location = new System.Drawing.Point(33, 192);
+            this.txtremoteDNS.Name = "txtremoteDNS";
+            this.txtremoteDNS.Size = new System.Drawing.Size(402, 21);
+            this.txtremoteDNS.TabIndex = 30;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(33, 168);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(215, 12);
+            this.label14.TabIndex = 29;
+            this.label14.Text = "自定义远程DNS(可多个,用逗号(,)隔开)";
             // 
             // chkmuxEnabled
             // 
@@ -559,6 +580,7 @@
             // 
             // tabPage7
             // 
+            this.tabPage7.Controls.Add(this.chkAllowLANConn);
             this.tabPage7.Controls.Add(this.txturlGFWList);
             this.tabPage7.Controls.Add(this.label13);
             this.tabPage7.Controls.Add(this.label12);
@@ -571,6 +593,16 @@
             this.tabPage7.TabIndex = 3;
             this.tabPage7.Text = "  v2rayN设置  ";
             this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // chkAllowLANConn
+            // 
+            this.chkAllowLANConn.AutoSize = true;
+            this.chkAllowLANConn.Location = new System.Drawing.Point(15, 42);
+            this.chkAllowLANConn.Name = "chkAllowLANConn";
+            this.chkAllowLANConn.Size = new System.Drawing.Size(144, 16);
+            this.chkAllowLANConn.TabIndex = 29;
+            this.chkAllowLANConn.Text = "允许来自局域网的连接";
+            this.chkAllowLANConn.UseVisualStyleBackColor = true;
             // 
             // txturlGFWList
             // 
@@ -600,7 +632,7 @@
             // chkAutoSyncTime
             // 
             this.chkAutoSyncTime.AutoSize = true;
-            this.chkAutoSyncTime.Location = new System.Drawing.Point(15, 43);
+            this.chkAutoSyncTime.Location = new System.Drawing.Point(15, 275);
             this.chkAutoSyncTime.Name = "chkAutoSyncTime";
             this.chkAutoSyncTime.Size = new System.Drawing.Size(276, 16);
             this.chkAutoSyncTime.TabIndex = 24;
@@ -738,5 +770,8 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox txturlGFWList;
+        private System.Windows.Forms.CheckBox chkAllowLANConn;
+        private System.Windows.Forms.TextBox txtremoteDNS;
+        private System.Windows.Forms.Label label14;
     }
 }

@@ -89,7 +89,7 @@ namespace v2rayN.Forms
 
             VmessItem vmessItem = new VmessItem();
             vmessItem.address = address;
-            vmessItem.port = Convert.ToInt32(port);
+            vmessItem.port = Utils.ToInt(port);
             vmessItem.id = id;
             vmessItem.security = security;
             vmessItem.remarks = remarks;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO.Compression;
 using System.Windows.Forms;
 using v2rayN.Handler;
 using v2rayN.HttpProxyHandler;
@@ -11,6 +12,7 @@ namespace v2rayN.Forms
         private V2rayHandler v2rayHandler;
 
         private PACListHandle pacListHandle;
+        private V2rayUpdateHandle v2rayUpdateHandle;
 
         #region Window 事件
 
@@ -32,23 +34,6 @@ namespace v2rayN.Forms
             ConfigHandler.LoadConfig(ref config);
             v2rayHandler = new V2rayHandler();
             v2rayHandler.ProcessEvent += v2rayHandler_ProcessEvent;
-
-            pacListHandle = new PACListHandle();
-            pacListHandle.UpdateCompleted += (sender2, args) =>
-            {
-                if (args.Success)
-                {
-                    v2rayHandler_ProcessEvent(false, "PAC更新成功！");
-                }
-                else
-                {
-                    v2rayHandler_ProcessEvent(false, "PAC更新失败！");
-                }
-            };
-            pacListHandle.Error += (sender2, args) =>
-            {
-                v2rayHandler_ProcessEvent(true, args.GetException().Message);
-            };
         }
 
         private void MainForm_Shown(object sender, EventArgs e)
@@ -119,7 +104,7 @@ namespace v2rayN.Forms
             //lvServers.Columns.Add("用户ID(id)", 110, HorizontalAlignment.Left);
             //lvServers.Columns.Add("额外ID(alterId)", 110, HorizontalAlignment.Left);
             lvServers.Columns.Add("加密方式", 100, HorizontalAlignment.Left);
-            //lvServers.Columns.Add("传输协议(network)", 120, HorizontalAlignment.Left);
+            lvServers.Columns.Add("传输协议", 60, HorizontalAlignment.Left);
             lvServers.Columns.Add("延迟", 50, HorizontalAlignment.Left);
 
         }
@@ -150,7 +135,7 @@ namespace v2rayN.Forms
                     //item.id,
                     //item.alterId.ToString(),
                     item.security,
-                    //item.network,
+                    item.network,
                     ""
                 });
                 lvServers.Items.Add(lvItem);
@@ -185,7 +170,7 @@ namespace v2rayN.Forms
             try
             {
                 ToolStripItem ts = (ToolStripItem)sender;
-                int index = Convert.ToInt32(ts.Tag);
+                int index = Utils.ToInt(ts.Tag);
                 SetDefaultServer(index);
             }
             catch
@@ -290,6 +275,25 @@ namespace v2rayN.Forms
                 }
             }
 
+        }
+
+        private void lvServers_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Enter:
+                    menuSetDefaultServer_Click(null, null);
+                    break;
+                case Keys.Delete:
+                    menuRemoveServer_Click(null, null);
+                    break;
+                case Keys.U:
+                    menuMoveUp_Click(null, null);
+                    break;
+                case Keys.D:
+                    menuMoveDown_Click(null, null);
+                    break;
+            }
         }
 
         private void menuAddVmessServer_Click(object sender, EventArgs e)
@@ -450,7 +454,6 @@ namespace v2rayN.Forms
 
         private void tsbClose_Click(object sender, EventArgs e)
         {
-
 
             this.WindowState = FormWindowState.Minimized;
         }
@@ -643,10 +646,6 @@ namespace v2rayN.Forms
         {
             System.Diagnostics.Process.Start(Global.DonateUrl);
         }
-        private void menuUpdate_Click(object sender, EventArgs e)
-        {
-            System.Diagnostics.Process.Start(Global.UpdateUrl);
-        }
 
         private void menuAbout_Click(object sender, EventArgs e)
         {
@@ -659,6 +658,7 @@ namespace v2rayN.Forms
             this.WindowState = FormWindowState.Normal;
             this.Activate();
             //this.notifyIcon1.Visible = false;
+            this.ShowInTaskbar = true;
         }
 
         private void HideForm()
@@ -666,6 +666,7 @@ namespace v2rayN.Forms
             this.WindowState = FormWindowState.Minimized;
             this.Hide();
             this.notifyMain.Visible = true;
+            this.ShowInTaskbar = false;
         }
 
         #endregion
@@ -747,13 +748,7 @@ namespace v2rayN.Forms
 
         #endregion
 
-        #region PAC相关
-
-
-        private void menuUpdatePACList_Click(object sender, EventArgs e)
-        {
-            pacListHandle.UpdatePACFromGFWList(config);
-        }
+        #region 系统代理相关
 
         private void menuCopyPACUrl_Click(object sender, EventArgs e)
         {
@@ -819,7 +814,7 @@ namespace v2rayN.Forms
         {
             if (isChecked)
             {
-                if (HttpProxyHandle.RestartHttpAgent(config, false))
+                if (HttpProxyHandle.RestartHttpAgent(config, true))
                 {
                     ChangePACButtonStatus(config.listenerType);
                 }
@@ -836,6 +831,92 @@ namespace v2rayN.Forms
         #endregion
 
 
+        #region CheckUpdate
+
+        private void tsbCheckUpdateN_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(Global.UpdateUrl);
+        }
+
+        private void tsbCheckUpdateCore_Click(object sender, EventArgs e)
+        {
+            if (v2rayUpdateHandle == null)
+            {
+                v2rayUpdateHandle = new V2rayUpdateHandle();
+                v2rayUpdateHandle.UpdateCompleted += (sender2, args) =>
+                {
+                    if (args.Success)
+                    {
+                        v2rayHandler_ProcessEvent(false, "下载V2rayCore成功！");
+                        v2rayHandler_ProcessEvent(false, "正在解压......");
+
+                        try
+                        {
+                            CloseV2ray();
+
+                            string fileName = args.Msg;
+                            fileName = Utils.GetPath(fileName);
+                            using (ZipArchive archive = ZipFile.OpenRead(fileName))
+                            {
+                                foreach (ZipArchiveEntry entry in archive.Entries)
+                                {
+                                    if (entry.Length == 0)
+                                        continue;
+                                    entry.ExtractToFile(Utils.GetPath(entry.Name), true);
+                                }
+                            }
+                            v2rayHandler_ProcessEvent(false, "更新V2rayCore成功！正在重启服务...");
+
+                            Global.reloadV2ray = true;
+                            LoadV2ray();
+
+                            v2rayHandler_ProcessEvent(false, "更新V2rayCore成功！");
+                        }
+                        catch (Exception ex)
+                        {
+                            v2rayHandler_ProcessEvent(false, ex.Message);
+                        }
+                    }
+                    else
+                    {
+                        v2rayHandler_ProcessEvent(false, args.Msg);
+                    }
+                };
+                v2rayUpdateHandle.Error += (sender2, args) =>
+                {
+                    v2rayHandler_ProcessEvent(true, args.GetException().Message);
+                };
+            }
+            v2rayHandler_ProcessEvent(false, "开始更新V2rayCore...");
+            v2rayUpdateHandle.UpdateV2rayCore(config);
+        }
+
+        private void tsbCheckUpdatePACList_Click(object sender, EventArgs e)
+        {
+            if (pacListHandle == null)
+            {
+                pacListHandle = new PACListHandle();
+                pacListHandle.UpdateCompleted += (sender2, args) =>
+                {
+                    if (args.Success)
+                    {
+                        v2rayHandler_ProcessEvent(false, "PAC更新成功！");
+                    }
+                    else
+                    {
+                        v2rayHandler_ProcessEvent(false, "PAC更新失败！");
+                    }
+                };
+                pacListHandle.Error += (sender2, args) =>
+                {
+                    v2rayHandler_ProcessEvent(true, args.GetException().Message);
+                };
+            }
+            v2rayHandler_ProcessEvent(false, "开始更新PAC...");
+            pacListHandle.UpdatePACFromGFWList(config);
+        }
+
+        #endregion
 
 
     }
