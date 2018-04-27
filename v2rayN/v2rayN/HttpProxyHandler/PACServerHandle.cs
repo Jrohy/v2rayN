@@ -14,35 +14,59 @@ namespace v2rayN.HttpProxyHandler
     class PACServerHandle
     {
         private static HttpWebServer ws;
+        private static HttpWebServer wsLAN;
         private static string pacList = string.Empty;
+        private static string pacListLAN = string.Empty;
         public static void Init(Config config)
         {
-            pacList = GetPacList();
-
-            string prefixes = string.Format("http://127.0.0.1:{0}/pac/", Global.pacPort);
+            string address = "127.0.0.1";
+            pacList = GetPacList(address);
+            string prefixes = string.Format("http://{0}:{1}/pac/", address, Global.pacPort);
+            Utils.SaveLog("Webserver prefixes " + prefixes);
             ws = new HttpWebServer(SendResponse, prefixes);
             ws.Run();
+
+            if (config.allowLANConn)
+            {
+                List<string> lstIPAddress = Utils.GetHostIPAddress();
+                if (lstIPAddress.Count <= 0)
+                {
+                    return;
+                }
+                pacListLAN = GetPacList(lstIPAddress[0]);
+                string prefixesLAN = string.Format("http://{0}:{1}/pac/", lstIPAddress[0], Global.pacPort);
+                Utils.SaveLog("Webserver prefixes " + prefixesLAN);
+                wsLAN = new HttpWebServer(SendResponseLAN, prefixesLAN);
+                wsLAN.Run();
+            }
         }
 
         public static string SendResponse(HttpListenerRequest request)
         {
-            if (string.IsNullOrEmpty(pacList))
-            {
-                pacList = GetPacList();
-            }
-
+            //Utils.SaveLog("Webserver SendResponse");
             return pacList;
+        }
+        public static string SendResponseLAN(HttpListenerRequest request)
+        {
+            //Utils.SaveLog("Webserver SendResponseLAN");
+            return pacListLAN;
         }
 
         public static void Stop()
         {
             if (ws != null)
             {
+                Utils.SaveLog("Webserver Stop ws");
                 ws.Stop();
             }
+            if (wsLAN != null)
+            {
+                Utils.SaveLog("Webserver Stop wsLAN");
+                wsLAN.Stop();
+            }
         }
-        
-        private static string GetPacList()
+
+        private static string GetPacList(string address)
         {
             var port = Global.sysAgentPort;
             if (port <= 0)
@@ -52,13 +76,7 @@ namespace v2rayN.HttpProxyHandler
             try
             {
                 List<string> lstProxy = new List<string>();
-                lstProxy.Add(string.Format("PROXY 127.0.0.1:{0};", port));
-
-                List<string> lstIPAddress = Utils.GetHostIPAddress();
-                foreach (string ip in lstIPAddress)
-                {
-                    lstProxy.Add(string.Format("PROXY {1}:{0};", port, ip));
-                }
+                lstProxy.Add(string.Format("PROXY {0}:{1};", address, port));
                 var proxy = string.Join("", lstProxy.ToArray());
 
                 string strPacfile = Utils.GetPath(Global.PAC_FILE);

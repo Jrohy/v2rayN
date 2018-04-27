@@ -44,6 +44,7 @@ namespace v2rayN.Forms
 
             cmbHeaderType.Text = vmessItem.headerType;
             txtRequestHost.Text = vmessItem.requestHost;
+            txtPath.Text = vmessItem.path;
             cmbStreamSecurity.Text = vmessItem.streamSecurity;
         }
 
@@ -64,6 +65,7 @@ namespace v2rayN.Forms
             cmbHeaderType.Text = Global.None;
             txtRequestHost.Text = "";
             cmbStreamSecurity.Text = "";
+            txtPath.Text = "";
         }
 
 
@@ -115,6 +117,7 @@ namespace v2rayN.Forms
 
             string headerType = cmbHeaderType.Text;
             string requestHost = txtRequestHost.Text;
+            string path = txtPath.Text;
             string streamSecurity = cmbStreamSecurity.Text;
 
             if (Utils.IsNullOrEmpty(address))
@@ -140,15 +143,16 @@ namespace v2rayN.Forms
 
             VmessItem vmessItem = new VmessItem();
             vmessItem.address = address;
-            vmessItem.port = Convert.ToInt32(port);
+            vmessItem.port = Utils.ToInt(port);
             vmessItem.id = id;
-            vmessItem.alterId = Convert.ToInt32(alterId);
+            vmessItem.alterId = Utils.ToInt(alterId);
             vmessItem.security = security;
             vmessItem.network = network;
             vmessItem.remarks = remarks;
 
             vmessItem.headerType = headerType;
             vmessItem.requestHost = requestHost.Replace(" ", "");
+            vmessItem.path = path.Replace(" ", "");
             vmessItem.streamSecurity = streamSecurity;
 
             if (ConfigHandler.AddServer(ref config, vmessItem, EditIndex) == 0)
@@ -234,6 +238,7 @@ namespace v2rayN.Forms
             cmbNetwork.Text = vmessItem.network;
             cmbHeaderType.Text = vmessItem.headerType;
             txtRequestHost.Text = vmessItem.requestHost;
+            txtPath.Text = vmessItem.path;
             cmbStreamSecurity.Text = vmessItem.streamSecurity;
         }
 
@@ -262,6 +267,7 @@ namespace v2rayN.Forms
             cmbNetwork.Text = vmessItems[0].network;
             cmbHeaderType.Text = vmessItems[0].headerType;
             txtRequestHost.Text = vmessItems[0].requestHost;
+            txtPath.Text = vmessItems[0].path;
             cmbStreamSecurity.Text = vmessItems[0].streamSecurity;
         }
         #endregion

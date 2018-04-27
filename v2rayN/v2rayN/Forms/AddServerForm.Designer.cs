@@ -33,6 +33,7 @@
             this.btnGUID = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label18 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -68,7 +69,9 @@
             this.MenuItemImportServer = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuItemImportClipboard = new System.Windows.Forms.ToolStripMenuItem();
-            this.label18 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.txtPath = new System.Windows.Forms.TextBox();
+            this.label20 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -110,7 +113,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 34);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(729, 387);
+            this.groupBox1.Size = new System.Drawing.Size(729, 445);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "服务器";
@@ -136,6 +139,9 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label20);
+            this.groupBox2.Controls.Add(this.txtPath);
+            this.groupBox2.Controls.Add(this.label19);
             this.groupBox2.Controls.Add(this.label18);
             this.groupBox2.Controls.Add(this.label17);
             this.groupBox2.Controls.Add(this.label16);
@@ -148,44 +154,53 @@
             this.groupBox2.Controls.Add(this.label10);
             this.groupBox2.Controls.Add(this.cmbHeaderType);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox2.Location = new System.Drawing.Point(3, 238);
+            this.groupBox2.Location = new System.Drawing.Point(3, 241);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(723, 146);
+            this.groupBox2.Size = new System.Drawing.Size(723, 201);
             this.groupBox2.TabIndex = 21;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "不清楚则保持默认值";
             // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(526, 132);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(59, 12);
+            this.label18.TabIndex = 26;
+            this.label18.Text = "2)h2 path";
+            // 
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(471, 92);
+            this.label17.Location = new System.Drawing.Point(469, 69);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(191, 12);
+            this.label17.Size = new System.Drawing.Size(59, 12);
             this.label17.TabIndex = 25;
-            this.label17.Text = "3)ws path+host(中间分号(;)隔开)";
+            this.label17.Text = "2)ws host";
             // 
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(471, 73);
+            this.label16.Location = new System.Drawing.Point(526, 115);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(59, 12);
             this.label16.TabIndex = 24;
-            this.label16.Text = "2)ws path";
+            this.label16.Text = "1)ws path";
             // 
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(471, 54);
+            this.label14.Location = new System.Drawing.Point(469, 53);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(155, 12);
+            this.label14.Size = new System.Drawing.Size(161, 12);
             this.label14.TabIndex = 23;
-            this.label14.Text = "1)非ws伪装中间逗号(,)隔开";
+            this.label14.Text = "1)http host中间逗号(,)隔开";
             // 
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(9, 121);
+            this.label15.Location = new System.Drawing.Point(9, 164);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(77, 12);
             this.label15.TabIndex = 22;
@@ -198,7 +213,7 @@
             this.cmbStreamSecurity.Items.AddRange(new object[] {
             "",
             "tls"});
-            this.cmbStreamSecurity.Location = new System.Drawing.Point(124, 117);
+            this.cmbStreamSecurity.Location = new System.Drawing.Point(124, 160);
             this.cmbStreamSecurity.Name = "cmbStreamSecurity";
             this.cmbStreamSecurity.Size = new System.Drawing.Size(143, 20);
             this.cmbStreamSecurity.TabIndex = 21;
@@ -217,7 +232,7 @@
             this.txtRequestHost.Location = new System.Drawing.Point(124, 58);
             this.txtRequestHost.Multiline = true;
             this.txtRequestHost.Name = "txtRequestHost";
-            this.txtRequestHost.Size = new System.Drawing.Size(334, 49);
+            this.txtRequestHost.Size = new System.Drawing.Size(334, 38);
             this.txtRequestHost.TabIndex = 16;
             // 
             // label11
@@ -234,9 +249,9 @@
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(9, 62);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(95, 12);
+            this.label10.Size = new System.Drawing.Size(89, 12);
             this.label10.TabIndex = 17;
-            this.label10.Text = "伪装域名/其他项";
+            this.label10.Text = "伪装域名(host)";
             // 
             // cmbHeaderType
             // 
@@ -403,7 +418,7 @@
             this.panel2.Controls.Add(this.btnClose);
             this.panel2.Controls.Add(this.btnOK);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 421);
+            this.panel2.Location = new System.Drawing.Point(0, 479);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(729, 60);
             this.panel2.TabIndex = 7;
@@ -472,21 +487,38 @@
             this.MenuItemImportClipboard.Text = "从剪贴板导入URL";
             this.MenuItemImportClipboard.Click += new System.EventHandler(this.MenuItemImportClipboard_Click);
             // 
-            // label18
+            // label19
             // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(471, 111);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(59, 12);
-            this.label18.TabIndex = 26;
-            this.label18.Text = "4)h2 path";
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(9, 108);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(65, 12);
+            this.label19.TabIndex = 27;
+            this.label19.Text = "路径(path)";
+            // 
+            // txtPath
+            // 
+            this.txtPath.Location = new System.Drawing.Point(124, 108);
+            this.txtPath.Multiline = true;
+            this.txtPath.Name = "txtPath";
+            this.txtPath.Size = new System.Drawing.Size(396, 38);
+            this.txtPath.TabIndex = 28;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(469, 84);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(149, 12);
+            this.label20.TabIndex = 29;
+            this.label20.Text = "3)h2 host中间逗号(,)隔开";
             // 
             // AddServerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnClose;
-            this.ClientSize = new System.Drawing.Size(729, 481);
+            this.ClientSize = new System.Drawing.Size(729, 539);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -550,5 +582,8 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.TextBox txtPath;
+        private System.Windows.Forms.Label label20;
     }
 }

@@ -76,8 +76,9 @@ namespace v2rayN.Handler
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Utils.SaveLog(ex.Message, ex);
             }
         }
 
@@ -126,8 +127,9 @@ namespace v2rayN.Handler
                 p.Start();
                 p.BeginOutputReadLine();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Utils.SaveLog(ex.Message, ex);
                 string msg = "未找到v2ray文件...";
                 ShowMsg(true, msg);
             }

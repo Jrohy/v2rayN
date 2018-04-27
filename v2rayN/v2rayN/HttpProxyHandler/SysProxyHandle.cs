@@ -40,8 +40,9 @@ namespace v2rayN.HttpProxyHandler
                 FileManager.UncompressFile(Utils.GetTempPath("sysproxy.exe"),
                     Environment.Is64BitOperatingSystem ? Resources.sysproxy64_exe : Resources.sysproxy_exe);
             }
-            catch (IOException e)
+            catch (IOException ex)
             {
+                Utils.SaveLog(ex.Message, ex);
 
             }
         }
@@ -137,9 +138,9 @@ namespace v2rayN.HttpProxyHandler
                     sw.Flush();
                 }
             }
-            catch (IOException e)
+            catch (IOException ex)
             {
-                //Logging.LogUsefulException(e);
+                Utils.SaveLog(ex.Message, ex);
             }
         }
 
@@ -150,8 +151,9 @@ namespace v2rayN.HttpProxyHandler
                 string configContent = File.ReadAllText(Utils.GetPath(_userWininetConfigFile));
                 _userSettings = JsonConvert.DeserializeObject<SysproxyConfig>(configContent);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Utils.SaveLog(ex.Message, ex);
                 // Suppress all exceptions. finally block will initialize new user config settings.
             }
             finally

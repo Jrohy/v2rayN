@@ -89,6 +89,16 @@ namespace v2rayN.Mode
         /// </summary>
         public string urlGFWList { get; set; }
 
+        /// <summary>
+        /// 允许来自局域网的连接
+        /// </summary>
+        public bool allowLANConn { get; set; }
+
+        /// <summary>
+        /// 自定义远程DNS
+        /// </summary>
+        public string remoteDNS { get; set; }
+
         #region 函数
 
         public string address()
@@ -168,6 +178,14 @@ namespace v2rayN.Mode
             }
             return vmess[index].requestHost;
         }
+        public string path()
+        {
+            if (index < 0 || Utils.IsNullOrEmpty(vmess[index].path))
+            {
+                return string.Empty;
+            }
+            return vmess[index].path;
+        }
         public string streamSecurity()
         {
             if (index < 0 || Utils.IsNullOrEmpty(vmess[index].streamSecurity))
@@ -218,6 +236,7 @@ namespace v2rayN.Mode
     {
         public VmessItem()
         {
+            configVersion = 1;
             address = string.Empty;
             port = 0;
             id = string.Empty;
@@ -227,6 +246,7 @@ namespace v2rayN.Mode
             remarks = string.Empty;
             headerType = string.Empty;
             requestHost = string.Empty;
+            path = string.Empty;
             streamSecurity = string.Empty;
             configType = (int)EConfigType.Vmess;
         }
@@ -249,6 +269,11 @@ namespace v2rayN.Mode
             }
             return summary;
         }
+
+        /// <summary>
+        /// 版本(现在=2)
+        /// </summary>
+        public int configVersion { get; set; }
 
         /// <summary>
         /// 远程服务器地址
@@ -288,6 +313,11 @@ namespace v2rayN.Mode
         /// 伪装的域名
         /// </summary>
         public string requestHost { get; set; }
+
+        /// <summary>
+        /// ws h2 path
+        /// </summary>
+        public string path { get; set; }
 
         /// <summary>
         /// 底层传输安全

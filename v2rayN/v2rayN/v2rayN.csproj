@@ -127,6 +127,7 @@
     <Compile Include="Forms\QRCodeSplashForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Handler\V2rayUpdateHandle.cs" />
     <Compile Include="HttpProxyHandler\HttpWebServer.cs" />
     <Compile Include="HttpProxyHandler\PACFileWatcherHandle.cs" />
     <Compile Include="HttpProxyHandler\PrivoxyHandler.cs" />
@@ -214,8 +215,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="app.config" />
     <None Include="Jrohy.pfx" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -283,6 +286,7 @@
     <None Include="Resources\minimize.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\checkupdate.png" />
     <Content Include="Resources\privoxy_conf.txt" />
     <EmbeddedResource Include="zxing.presentation.dll" />
     <EmbeddedResource Include="zxing.dll" />

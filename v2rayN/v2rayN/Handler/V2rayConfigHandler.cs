@@ -77,6 +77,9 @@ namespace v2rayN.Handler
                 //outbound
                 outbound(config, ref v2rayConfig);
 
+                //dns
+                dns(config, ref v2rayConfig);
+
                 Utils.ToJsonFile(v2rayConfig, fileName);
 
                 msg = string.Format("配置成功 \r\n{0}", config.getSummary());
@@ -103,8 +106,6 @@ namespace v2rayN.Handler
                 if (config.logEnabled)
                 {
                     v2rayConfig.log.loglevel = config.loglevel;
-                    v2rayConfig.log.access = Utils.GetPath("Vaccess.log");
-                    v2rayConfig.log.error = Utils.GetPath("Verror.log");
                 }
                 else
                 {
@@ -132,7 +133,14 @@ namespace v2rayN.Handler
                 //端口
                 v2rayConfig.inbound.port = config.inbound[0].localPort;
                 v2rayConfig.inbound.protocol = config.inbound[0].protocol;
-
+                if (config.allowLANConn)
+                {
+                    v2rayConfig.inbound.listen = "0.0.0.0";
+                }
+                else
+                {
+                    v2rayConfig.inbound.listen = "127.0.0.1";
+                }
                 //开启udp
                 v2rayConfig.inbound.settings.udp = config.inbound[0].udpEnabled;
             }
@@ -234,8 +242,18 @@ namespace v2rayN.Handler
                         rulesItem.ip.Add("geoip:cn");
                         v2rayConfig.routing.settings.rules.Add(rulesItem);
                     }
-                }
 
+                    //移动默认第一个规则到最后
+                    try
+                    {
+                        var ruleLan = v2rayConfig.routing.settings.rules[0];
+                        v2rayConfig.routing.settings.rules.RemoveAt(0);
+                        v2rayConfig.routing.settings.rules.Add(ruleLan);
+                    }
+                    catch
+                    {
+                    }
+                }
             }
             catch
             {
@@ -292,6 +310,7 @@ namespace v2rayN.Handler
             }
             return 0;
         }
+
 
         /// <summary>
         /// vmess协议服务器配置
@@ -428,31 +447,39 @@ namespace v2rayN.Handler
                         WsSettings wsSettings = new WsSettings();
                         wsSettings.connectionReuse = true;
 
-                        string path = "";
-                        string host2 = "";
-                        //*ws(path+host),它们中间分号(;)隔开
-                        string[] arrParameter = config.requestHost().Replace(" ", "").Split(';');
-                        if (arrParameter.Length > 0)
+                        string host2 = config.requestHost().Replace(" ", "");
+                        string path = config.path().Replace(" ", "");
+                        if (!string.IsNullOrWhiteSpace(host2))
                         {
-                            path = arrParameter[0];
-                            wsSettings.path = path;
-                        }
-                        if (arrParameter.Length > 1)
-                        {
-                            host2 = arrParameter[1];
                             wsSettings.headers = new Headers();
                             wsSettings.headers.Host = host2;
                         }
-
+                        if (!string.IsNullOrWhiteSpace(path))
+                        {
+                            wsSettings.path = path;
+                        }
                         streamSettings.wsSettings = wsSettings;
+
+                        TlsSettings tlsSettings = new TlsSettings();
+                        tlsSettings.allowInsecure = true;
+                        streamSettings.tlsSettings = tlsSettings;
                         break;
                     //h2
                     case "h2":
                         HttpSettings httpSettings = new HttpSettings();
 
-                        httpSettings.path = config.requestHost().Replace(" ", "");
+                        string host3 = config.requestHost().Replace(" ", "");
+                        if (!string.IsNullOrWhiteSpace(host3))
+                        {
+                            httpSettings.host = Utils.String2List(host3);
+                        }
+                        httpSettings.path = config.path().Replace(" ", "");
 
                         streamSettings.httpSettings = httpSettings;
+
+                        TlsSettings tlsSettings2 = new TlsSettings();
+                        tlsSettings2.allowInsecure = true;
+                        streamSettings.tlsSettings = tlsSettings2;
                         break;
                     default:
                         //tcp带http伪装
@@ -485,6 +512,38 @@ namespace v2rayN.Handler
             return 0;
         }
 
+        /// <summary>
+        /// remoteDNS
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="v2rayConfig"></param>
+        /// <returns></returns>
+        private static int dns(Config config, ref V2rayConfig v2rayConfig)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(config.remoteDNS))
+                {
+                    return 0;
+                }
+                List<string> servers = new List<string>();
+
+                string[] arrDNS = config.remoteDNS.Split(',');
+                foreach (string str in arrDNS)
+                {
+                    if (Utils.IsIP(str))
+                    {
+                        servers.Add(str);
+                    }
+                }
+                servers.Add("localhost");
+                v2rayConfig.dns.servers = servers;
+            }
+            catch
+            {
+            }
+            return 0;
+        }
 
         /// <summary>
         /// 生成v2ray的客户端配置文件(自定义配置)
@@ -751,6 +810,36 @@ namespace v2rayN.Handler
                     vmessItem.headerType = v2rayConfig.outbound.streamSettings.kcpSettings.header.type;
                 }
 
+                //ws
+                if (v2rayConfig.outbound.streamSettings != null
+                    && v2rayConfig.outbound.streamSettings.wsSettings != null)
+                {
+                    if (!Utils.IsNullOrEmpty(v2rayConfig.outbound.streamSettings.wsSettings.path))
+                    {
+                        vmessItem.path = v2rayConfig.outbound.streamSettings.wsSettings.path;
+                    }
+                    if (v2rayConfig.outbound.streamSettings.wsSettings.headers != null
+                      && !Utils.IsNullOrEmpty(v2rayConfig.outbound.streamSettings.wsSettings.headers.Host))
+                    {
+                        vmessItem.requestHost = v2rayConfig.outbound.streamSettings.wsSettings.headers.Host;
+                    }
+                }
+
+                //h2
+                if (v2rayConfig.outbound.streamSettings != null
+                    && v2rayConfig.outbound.streamSettings.httpSettings != null)
+                {
+                    if (!Utils.IsNullOrEmpty(v2rayConfig.outbound.streamSettings.httpSettings.path))
+                    {
+                        vmessItem.path = v2rayConfig.outbound.streamSettings.httpSettings.path;
+                    }
+                    if (v2rayConfig.outbound.streamSettings.httpSettings.host != null
+                        && v2rayConfig.outbound.streamSettings.httpSettings.host.Count > 0)
+                    {
+                        vmessItem.requestHost = Utils.List2String(v2rayConfig.outbound.streamSettings.httpSettings.host);
+                    }
+                }
+
             }
             catch
             {
@@ -842,7 +931,7 @@ namespace v2rayN.Handler
                         }
                     }
                 }
-                ////kcp伪装
+                //kcp伪装
                 //if (v2rayConfig.outbound.streamSettings != null
                 //    && v2rayConfig.outbound.streamSettings.kcpSettings != null
                 //    && v2rayConfig.outbound.streamSettings.kcpSettings.header != null
@@ -850,6 +939,36 @@ namespace v2rayN.Handler
                 //{
                 //    cmbHeaderType.Text = v2rayConfig.outbound.streamSettings.kcpSettings.header.type;
                 //}
+
+                //ws
+                if (v2rayConfig.inbound.streamSettings != null
+                    && v2rayConfig.inbound.streamSettings.wsSettings != null)
+                {
+                    if (!Utils.IsNullOrEmpty(v2rayConfig.inbound.streamSettings.wsSettings.path))
+                    {
+                        vmessItem.path = v2rayConfig.inbound.streamSettings.wsSettings.path;
+                    }
+                    if (v2rayConfig.inbound.streamSettings.wsSettings.headers != null
+                      && !Utils.IsNullOrEmpty(v2rayConfig.inbound.streamSettings.wsSettings.headers.Host))
+                    {
+                        vmessItem.requestHost = v2rayConfig.inbound.streamSettings.wsSettings.headers.Host;
+                    }
+                }
+
+                //h2
+                if (v2rayConfig.inbound.streamSettings != null
+                    && v2rayConfig.inbound.streamSettings.httpSettings != null)
+                {
+                    if (!Utils.IsNullOrEmpty(v2rayConfig.inbound.streamSettings.httpSettings.path))
+                    {
+                        vmessItem.path = v2rayConfig.inbound.streamSettings.httpSettings.path;
+                    }
+                    if (v2rayConfig.inbound.streamSettings.httpSettings.host != null
+                        && v2rayConfig.inbound.streamSettings.httpSettings.host.Count > 0)
+                    {
+                        vmessItem.requestHost = Utils.List2String(v2rayConfig.inbound.streamSettings.httpSettings.host);
+                    }
+                }
             }
             catch
             {

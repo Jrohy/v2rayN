@@ -14,11 +14,17 @@ namespace v2rayN
         [STAThread]
         static void Main()
         {
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
             Process instance = RunningInstance();
             if (instance == null)
             {
+                Utils.SaveLog("v2rayN start up");
+
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new MainForm());
@@ -69,6 +75,16 @@ namespace v2rayN
                 }
             }
             return null;
+        }
+
+        static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
+        {
+            Utils.SaveLog("Application_ThreadException", e.Exception);
+        }
+
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Utils.SaveLog("CurrentDomain_UnhandledException", (Exception)e.ExceptionObject);
         }
     }
 }
