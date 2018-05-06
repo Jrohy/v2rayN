@@ -1055,6 +1055,7 @@ namespace v2rayN.Handler
                         vmessItem.network = Global.DefaultNetwork;
                         vmessItem.headerType = Global.None;
 
+                        vmessItem.configVersion = Utils.ToInt(vmessQRCode.v);
                         vmessItem.remarks = vmessQRCode.ps;
                         vmessItem.address = vmessQRCode.add;
                         vmessItem.port = Convert.ToInt32(vmessQRCode.port);
@@ -1063,7 +1064,10 @@ namespace v2rayN.Handler
                         vmessItem.network = vmessQRCode.net;
                         vmessItem.headerType = vmessQRCode.type;
                         vmessItem.requestHost = vmessQRCode.host;
+                        vmessItem.path = vmessQRCode.path;
                         vmessItem.streamSecurity = vmessQRCode.tls;
+
+                        ConfigHandler.UpgradeServerVersion(ref vmessItem);
 
                         vmessItems.Add(vmessItem);
                     }
