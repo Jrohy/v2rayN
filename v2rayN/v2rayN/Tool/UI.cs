@@ -12,6 +12,6 @@ namespace v2rayN
         public static DialogResult ShowYesNo(string msg)
         {
             return MessageBox.Show(msg, "YesNo", MessageBoxButtons.YesNo);
-        }
+        }        
     }
 }

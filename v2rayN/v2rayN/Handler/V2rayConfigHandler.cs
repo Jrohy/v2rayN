@@ -983,7 +983,7 @@ namespace v2rayN.Handler
         /// <param name="fileName"></param>
         /// <param name="msg"></param>
         /// <returns></returns>
-        public static VmessItem ImportFromClipboardConfig(out string msg)
+        public static VmessItem ImportFromClipboardConfig(string clipboardData, out string msg)
         {
             msg = string.Empty;
             VmessItem vmessItem = new VmessItem();
@@ -991,7 +991,7 @@ namespace v2rayN.Handler
             try
             {
                 //载入配置文件 
-                string result = Utils.GetClipboardData();
+                string result = clipboardData;// Utils.GetClipboardData();
                 if (Utils.IsNullOrEmpty(result))
                 {
                     msg = "读取配置文件失败";

@@ -14,6 +14,8 @@ namespace v2rayN.Handler
     /// </summary>
     class V2rayUpdateHandle
     {
+        public event EventHandler<ResultEventArgs> AbsoluteCompleted;
+
         public event EventHandler<ResultEventArgs> UpdateCompleted;
 
         public event ErrorEventHandler Error;
@@ -35,7 +37,7 @@ namespace v2rayN.Handler
         private int progressPercentage = -1;
         private string fileName = "v2ray-windows.zip";
 
-        public void UpdateV2rayCore(Config config)
+        public void AbsoluteV2rayCore(Config config)
         {
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; //TLS 1.2
 
@@ -62,6 +64,26 @@ namespace v2rayN.Handler
                     osBit = "32";
                 }
                 string url = string.Format(coreURL, version, osBit);
+                if (AbsoluteCompleted != null)
+                {
+                    AbsoluteCompleted(this, new ResultEventArgs(true, url));
+                }
+            }
+            catch (Exception ex)
+            {
+                Utils.SaveLog(ex.Message, ex);
+
+                if (Error != null)
+                    Error(this, new ErrorEventArgs(ex));
+            }
+        }
+
+
+        public void UpdateV2rayCore(Config config, string url)
+        {
+            try
+            {
+                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; //TLS 1.2
                 if (UpdateCompleted != null)
                 {
                     UpdateCompleted(this, new ResultEventArgs(false, url));

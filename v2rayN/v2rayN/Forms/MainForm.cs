@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO.Compression;
+using System.Text;
 using System.Windows.Forms;
 using v2rayN.Handler;
 using v2rayN.HttpProxyHandler;
@@ -435,6 +436,27 @@ namespace v2rayN.Forms
             }
         }
 
+        private void menuExport2ShareUrl_Click(object sender, EventArgs e)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int k = 0; k < config.vmess.Count; k++)
+            {
+                string url = ConfigHandler.GetVmessQRCode(config, k);
+                if (Utils.IsNullOrEmpty(url))
+                {
+                    continue;
+                }
+                sb.Append(url);
+                sb.AppendLine();
+            }
+            if (sb.Length > 0)
+            {
+                Utils.SetClipboardData(sb.ToString());
+                UI.Show(string.Format("批量导出分享URL至剪贴板成功"));
+            }
+        }
+
+
         private void tsbOptionSetting_Click(object sender, EventArgs e)
         {
             OptionSettingForm fm = new OptionSettingForm();
@@ -547,6 +569,45 @@ namespace v2rayN.Forms
                 LoadV2ray();
             }
             ShowForm();
+        }
+
+        private void menuAddServers_Click(object sender, EventArgs e)
+        {
+            string clipboardData = Utils.GetClipboardData();
+            if (Utils.IsNullOrEmpty(clipboardData))
+            {
+                return;
+            }
+            int countServers = 0;
+            string[] arrData = clipboardData.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+            foreach (string str in arrData)
+            {
+                string msg;
+                VmessItem vmessItem = V2rayConfigHandler.ImportFromClipboardConfig(str, out msg);
+                if (vmessItem == null)
+                {
+                    continue;
+                }
+                if (vmessItem.configType == (int)EConfigType.Vmess)
+                {
+                    if (ConfigHandler.AddServer(ref config, vmessItem, -1) == 0)
+                    {
+                        countServers++;
+                    }
+                }
+                else if (vmessItem.configType == (int)EConfigType.Shadowsocks)
+                {
+                    if (ConfigHandler.AddShadowsocksServer(ref config, vmessItem, -1) == 0)
+                    {
+                        countServers++;
+                    }
+                }
+            }
+            if (countServers > 0)
+            {
+                RefreshServers();
+                UI.Show(string.Format("从剪贴板导入批量URL成功"));
+            }
         }
 
         #endregion
@@ -843,6 +904,30 @@ namespace v2rayN.Forms
             if (v2rayUpdateHandle == null)
             {
                 v2rayUpdateHandle = new V2rayUpdateHandle();
+                v2rayUpdateHandle.AbsoluteCompleted += (sender2, args) =>
+                {
+                    if (args.Success)
+                    {
+                        v2rayHandler_ProcessEvent(false, "解析V2rayCore成功！");
+
+                        string url = args.Msg;
+                        this.Invoke((MethodInvoker)(delegate
+                        {
+                            if (MessageBox.Show(this, "是否下载?\r\n" + url, "YesNo", MessageBoxButtons.YesNo) == DialogResult.No)
+                            {
+                                return;
+                            }
+                            else
+                            {
+                                v2rayUpdateHandle.UpdateV2rayCore(config, url);
+                            }
+                        }));
+                    }
+                    else
+                    {
+                        v2rayHandler_ProcessEvent(false, args.Msg);
+                    }
+                };
                 v2rayUpdateHandle.UpdateCompleted += (sender2, args) =>
                 {
                     if (args.Success)
@@ -887,8 +972,9 @@ namespace v2rayN.Forms
                     v2rayHandler_ProcessEvent(true, args.GetException().Message);
                 };
             }
+
             v2rayHandler_ProcessEvent(false, "开始更新V2rayCore...");
-            v2rayUpdateHandle.UpdateV2rayCore(config);
+            v2rayUpdateHandle.AbsoluteV2rayCore(config);
         }
 
         private void tsbCheckUpdatePACList_Click(object sender, EventArgs e)
@@ -917,7 +1003,6 @@ namespace v2rayN.Forms
         }
 
         #endregion
-
 
     }
 }

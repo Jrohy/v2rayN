@@ -51,6 +51,7 @@
             this.menuAddVmessServer = new System.Windows.Forms.ToolStripMenuItem();
             this.menuAddShadowsocksServer = new System.Windows.Forms.ToolStripMenuItem();
             this.menuAddCustomServer = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuAddServers = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuRemoveServer = new System.Windows.Forms.ToolStripMenuItem();
             this.menuCopyServer = new System.Windows.Forms.ToolStripMenuItem();
@@ -65,6 +66,7 @@
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.menuExport2ClientConfig = new System.Windows.Forms.ToolStripMenuItem();
             this.menuExport2ServerConfig = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuExport2ShareUrl = new System.Windows.Forms.ToolStripMenuItem();
             this.tsbServer = new System.Windows.Forms.ToolStripDropDownButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.txtMsgBox = new System.Windows.Forms.TextBox();
@@ -225,6 +227,7 @@
             this.menuAddVmessServer,
             this.menuAddShadowsocksServer,
             this.menuAddCustomServer,
+            this.menuAddServers,
             this.toolStripSeparator1,
             this.menuRemoveServer,
             this.menuCopyServer,
@@ -238,9 +241,11 @@
             this.menuPingServer,
             this.toolStripSeparator6,
             this.menuExport2ClientConfig,
-            this.menuExport2ServerConfig});
+            this.menuExport2ServerConfig,
+            this.menuExport2ShareUrl});
             this.cmsLv.Name = "cmsLv";
-            this.cmsLv.Size = new System.Drawing.Size(227, 336);
+            this.cmsLv.OwnerItem = this.tsbServer;
+            this.cmsLv.Size = new System.Drawing.Size(227, 380);
             // 
             // menuAddVmessServer
             // 
@@ -262,6 +267,13 @@
             this.menuAddCustomServer.Size = new System.Drawing.Size(226, 22);
             this.menuAddCustomServer.Text = "添加自定义配置服务器";
             this.menuAddCustomServer.Click += new System.EventHandler(this.menuAddCustomServer_Click);
+            // 
+            // menuAddServers
+            // 
+            this.menuAddServers.Name = "menuAddServers";
+            this.menuAddServers.Size = new System.Drawing.Size(226, 22);
+            this.menuAddServers.Text = "从剪贴板导入批量URL";
+            this.menuAddServers.Click += new System.EventHandler(this.menuAddServers_Click);
             // 
             // toolStripSeparator1
             // 
@@ -352,6 +364,13 @@
             this.menuExport2ServerConfig.Size = new System.Drawing.Size(226, 22);
             this.menuExport2ServerConfig.Text = "导出所选服务器为服务端配置";
             this.menuExport2ServerConfig.Click += new System.EventHandler(this.menuExport2ServerConfig_Click);
+            // 
+            // menuExport2ShareUrl
+            // 
+            this.menuExport2ShareUrl.Name = "menuExport2ShareUrl";
+            this.menuExport2ShareUrl.Size = new System.Drawing.Size(226, 22);
+            this.menuExport2ShareUrl.Text = "批量导出分享URL至剪贴板";
+            this.menuExport2ShareUrl.Click += new System.EventHandler(this.menuExport2ShareUrl_Click);
             // 
             // tsbServer
             // 
@@ -647,6 +666,8 @@
         private System.Windows.Forms.ToolStripMenuItem tsbCheckUpdateN;
         private System.Windows.Forms.ToolStripMenuItem tsbCheckUpdateCore;
         private System.Windows.Forms.ToolStripMenuItem tsbCheckUpdatePACList;
+        private System.Windows.Forms.ToolStripMenuItem menuAddServers;
+        private System.Windows.Forms.ToolStripMenuItem menuExport2ShareUrl;
     }
 }
 

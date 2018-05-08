@@ -117,10 +117,10 @@ namespace v2rayN.Handler
                 p.StartInfo.CreateNoWindow = true;
                 p.OutputDataReceived += new DataReceivedEventHandler((sender, e) =>
                 {
-                    if (!String.IsNullOrEmpty(e.Data))
+                    if (!String.IsNullOrEmpty(e.Data)
+                        && e.Data.ToLower().Contains("v2ray"))
                     {
                         string msg = e.Data + Environment.NewLine;
-                        //this.AppendText(e.Data + Environment.NewLine);
                         ShowMsg(false, msg);
                     }
                 });
