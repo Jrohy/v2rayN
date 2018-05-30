@@ -136,7 +136,6 @@ namespace v2rayN.Handler
         public static int AddServer(ref Config config, VmessItem vmessItem, int index)
         {
             vmessItem.configVersion = 2;
-            vmessItem.configType = (int)EConfigType.Vmess;
             if (index >= 0)
             {
                 //修改

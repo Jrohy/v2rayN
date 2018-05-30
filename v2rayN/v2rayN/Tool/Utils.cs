@@ -219,6 +219,11 @@ namespace v2rayN
         {
             try
             {
+                if (plainText.Length % 4 > 0)
+                {
+                    plainText = plainText.PadRight(plainText.Length + 4 - plainText.Length % 4, '=');
+                }
+
                 byte[] data = Convert.FromBase64String(plainText);
                 return Encoding.UTF8.GetString(data);
             }
