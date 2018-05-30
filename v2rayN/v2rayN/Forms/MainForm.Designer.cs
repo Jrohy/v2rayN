@@ -54,6 +54,7 @@
             this.menuAddVmessServer = new System.Windows.Forms.ToolStripMenuItem();
             this.menuAddShadowsocksServer = new System.Windows.Forms.ToolStripMenuItem();
             this.menuAddCustomServer = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuImportUrl = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuRemoveServer = new System.Windows.Forms.ToolStripMenuItem();
             this.menuCopyServer = new System.Windows.Forms.ToolStripMenuItem();
@@ -249,6 +250,7 @@
             this.menuAddVmessServer,
             this.menuAddShadowsocksServer,
             this.menuAddCustomServer,
+            this.menuImportUrl,
             this.toolStripSeparator1,
             this.menuRemoveServer,
             this.menuCopyServer,
@@ -265,7 +267,7 @@
             this.menuExport2ServerConfig,
             this.menuVmessExport2ClipBoard});
             this.cmsLv.Name = "cmsLv";
-            this.cmsLv.Size = new System.Drawing.Size(233, 358);
+            this.cmsLv.Size = new System.Drawing.Size(233, 380);
             // 
             // menuAddVmessServer
             // 
@@ -287,6 +289,13 @@
             this.menuAddCustomServer.Size = new System.Drawing.Size(232, 22);
             this.menuAddCustomServer.Text = "添加自定义配置服务器";
             this.menuAddCustomServer.Click += new System.EventHandler(this.menuAddCustomServer_Click);
+            // 
+            // menuImportUrl
+            // 
+            this.menuImportUrl.Name = "menuImportUrl";
+            this.menuImportUrl.Size = new System.Drawing.Size(232, 22);
+            this.menuImportUrl.Text = "从剪切板批量导入URL";
+            this.menuImportUrl.Click += new System.EventHandler(this.menuClipboardImportVmess_Click);
             // 
             // toolStripSeparator1
             // 
@@ -678,6 +687,7 @@
         private System.Windows.Forms.ToolStripMenuItem tsbCheckUpdateN;
         private System.Windows.Forms.ToolStripMenuItem tsbCheckUpdateCore;
         private System.Windows.Forms.ToolStripMenuItem tsbCheckUpdatePACList;
+        private System.Windows.Forms.ToolStripMenuItem menuImportUrl;
     }
 }
 
