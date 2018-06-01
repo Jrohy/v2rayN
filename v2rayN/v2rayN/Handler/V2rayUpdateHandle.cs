@@ -20,6 +20,11 @@ namespace v2rayN.Handler
 
         public event ErrorEventHandler Error;
 
+        public string DownloadFileName
+        {
+            get { return "v2ray-windows.zip"; }
+        }
+
         public class ResultEventArgs : EventArgs
         {
             public bool Success;
@@ -35,7 +40,9 @@ namespace v2rayN.Handler
         private string latestUrl = "https://github.com/v2ray/v2ray-core/releases/latest";
         private const string coreURL = "https://github.com/v2ray/v2ray-core/releases/download/{0}/v2ray-windows-{1}.zip";
         private int progressPercentage = -1;
-        private string fileName = "v2ray-windows.zip";
+        private bool blFirst = true;
+        private long totalBytesToReceive = 0;
+        private DateTime totalDatetime = new DateTime();
 
         public void AbsoluteV2rayCore(Config config)
         {
@@ -94,7 +101,8 @@ namespace v2rayN.Handler
                 WebClient ws = new WebClient();
                 ws.DownloadFileCompleted += ws_DownloadFileCompleted;
                 ws.DownloadProgressChanged += ws_DownloadProgressChanged;
-                ws.DownloadFileAsync(new Uri(url), fileName);
+                ws.DownloadFileAsync(new Uri(url), DownloadFileName);
+                blFirst = true;
             }
             catch (Exception ex)
             {
@@ -107,9 +115,15 @@ namespace v2rayN.Handler
 
         void ws_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
+            if (blFirst)
+            {
+                totalBytesToReceive = e.TotalBytesToReceive - e.BytesReceived;
+                totalDatetime = DateTime.Now;
+                blFirst = false;
+            }
             if (UpdateCompleted != null)
             {
-                if (progressPercentage != e.ProgressPercentage && e.ProgressPercentage % 5 == 0)
+                if (progressPercentage != e.ProgressPercentage && e.ProgressPercentage % 10 == 0)
                 {
                     progressPercentage = e.ProgressPercentage;
                     string msg = string.Format("......{0}%", e.ProgressPercentage);
@@ -122,9 +136,19 @@ namespace v2rayN.Handler
         {
             try
             {
-                if (UpdateCompleted != null)
+                if (e.Error == null
+                    || Utils.IsNullOrEmpty(e.Error.ToString()))
                 {
-                    UpdateCompleted(this, new ResultEventArgs(true, fileName));
+                    if (UpdateCompleted != null)
+                    {
+                        TimeSpan ts = (DateTime.Now - totalDatetime);
+                        string speed = string.Format("{0} M/s", (totalBytesToReceive / ts.TotalMilliseconds / 1000).ToString("#0.##"));
+                        UpdateCompleted(this, new ResultEventArgs(true, speed));
+                    }
+                }
+                else
+                {
+                    throw e.Error;
                 }
             }
             catch (Exception ex)

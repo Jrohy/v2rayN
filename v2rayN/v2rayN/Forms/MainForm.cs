@@ -5,15 +5,17 @@ using System.Windows.Forms;
 using v2rayN.Handler;
 using v2rayN.HttpProxyHandler;
 using v2rayN.Mode;
+using System.Collections.Generic;
 
 namespace v2rayN.Forms
 {
     public partial class MainForm : BaseForm
     {
         private V2rayHandler v2rayHandler;
-
         private PACListHandle pacListHandle;
         private V2rayUpdateHandle v2rayUpdateHandle;
+        private V2rayUpdateHandle v2rayUpdateHandle2;
+        private List<int> lvSelecteds = new List<int>();
 
         #region Window 事件
 
@@ -94,19 +96,19 @@ namespace v2rayN.Forms
             lvServers.FullRowSelect = true;
             lvServers.View = View.Details;
             lvServers.Scrollable = true;
-            lvServers.MultiSelect = false;
+            lvServers.MultiSelect = true;
             lvServers.HeaderStyle = ColumnHeaderStyle.Nonclickable;
 
             lvServers.Columns.Add("", 30, HorizontalAlignment.Center);
             lvServers.Columns.Add("服务类型", 80, HorizontalAlignment.Left);
             lvServers.Columns.Add("别名", 100, HorizontalAlignment.Left);
-            lvServers.Columns.Add("地址", 100, HorizontalAlignment.Left);
-            lvServers.Columns.Add("端口", 60, HorizontalAlignment.Left);
+            lvServers.Columns.Add("地址", 90, HorizontalAlignment.Left);
+            lvServers.Columns.Add("端口", 50, HorizontalAlignment.Left);
             //lvServers.Columns.Add("用户ID(id)", 110, HorizontalAlignment.Left);
             //lvServers.Columns.Add("额外ID(alterId)", 110, HorizontalAlignment.Left);
             lvServers.Columns.Add("加密方式", 100, HorizontalAlignment.Left);
             lvServers.Columns.Add("传输协议", 60, HorizontalAlignment.Left);
-            lvServers.Columns.Add("延迟", 50, HorizontalAlignment.Left);
+            lvServers.Columns.Add("测试结果", 150, HorizontalAlignment.Left);
 
         }
 
@@ -137,10 +139,20 @@ namespace v2rayN.Forms
                     //item.alterId.ToString(),
                     item.security,
                     item.network,
-                    ""
+                    item.testResult
                 });
                 lvServers.Items.Add(lvItem);
             }
+
+            //if (lvServers.Items.Count > 0)
+            //{
+            //    if (lvServers.Items.Count <= testConfigIndex)
+            //    {
+            //        testConfigIndex = lvServers.Items.Count - 1;
+            //    }
+            //    lvServers.Items[testConfigIndex].Selected = true;
+            //    lvServers.Select();
+            //}
         }
 
         /// <summary>
@@ -311,6 +323,7 @@ namespace v2rayN.Forms
 
         private void menuRemoveServer_Click(object sender, EventArgs e)
         {
+
             int index = GetLvSelectedIndex();
             if (index < 0)
             {
@@ -320,12 +333,14 @@ namespace v2rayN.Forms
             {
                 return;
             }
-            if (ConfigHandler.RemoveServer(ref config, index) == 0)
+            for (int k = lvSelecteds.Count - 1; k >= 0; k--)
             {
-                //刷新
-                RefreshServers();
-                LoadV2ray();
+                ConfigHandler.RemoveServer(ref config, lvSelecteds[k]);
             }
+            //刷新
+            RefreshServers();
+            LoadV2ray();
+
         }
 
         private void menuCopyServer_Click(object sender, EventArgs e)
@@ -352,11 +367,30 @@ namespace v2rayN.Forms
             SetDefaultServer(index);
         }
 
+
         private void menuPingServer_Click(object sender, EventArgs e)
         {
+            GetLvSelectedIndex();
+            ClearTestResult();
             bgwPing.RunWorkerAsync();
         }
 
+        private void menuSpeedServer_Click(object sender, EventArgs e)
+        {
+            if (!config.sysAgentEnabled || config.listenerType != 1)
+            {
+                UI.Show("此功能依赖系统全局代理,请先设置正确。");
+                return;
+            }
+
+            UI.Show("注意：" +
+                  "\r\n此功能依赖系统全局代理!" +
+                  "\r\n测试过程中,请不要操作任何功能!" +
+                  "\r\n测试完成后,请手工调整系统全局代理和活动节点。");
+
+            GetLvSelectedIndex();
+            ServerSpeedTest();
+        }
 
         private void menuExport2ClientConfig_Click(object sender, EventArgs e)
         {
@@ -438,10 +472,12 @@ namespace v2rayN.Forms
 
         private void menuExport2ShareUrl_Click(object sender, EventArgs e)
         {
+            GetLvSelectedIndex();
+
             StringBuilder sb = new StringBuilder();
-            for (int k = 0; k < config.vmess.Count; k++)
+            for (int k = 0; k < lvSelecteds.Count; k++)
             {
-                string url = ConfigHandler.GetVmessQRCode(config, k);
+                string url = ConfigHandler.GetVmessQRCode(config, lvSelecteds[k]);
                 if (Utils.IsNullOrEmpty(url))
                 {
                     continue;
@@ -508,6 +544,7 @@ namespace v2rayN.Forms
         private int GetLvSelectedIndex()
         {
             int index = -1;
+            lvSelecteds.Clear();
             try
             {
                 if (lvServers.SelectedIndices.Count <= 0)
@@ -517,6 +554,10 @@ namespace v2rayN.Forms
                 }
 
                 index = lvServers.SelectedIndices[0];
+                foreach (int i in lvServers.SelectedIndices)
+                {
+                    lvSelecteds.Add(i);
+                }
                 return index;
             }
             catch
@@ -578,6 +619,10 @@ namespace v2rayN.Forms
             {
                 return;
             }
+            if (clipboardData.IndexOf("vmess") == clipboardData.LastIndexOf("vmess"))
+            {
+                clipboardData = clipboardData.Replace("\r\n", "").Replace("\n", "");
+            }
             int countServers = 0;
             string[] arrData = clipboardData.Split(new string[] { "\r\n" }, StringSplitOptions.None);
             foreach (string str in arrData)
@@ -608,6 +653,12 @@ namespace v2rayN.Forms
                 RefreshServers();
                 UI.Show(string.Format("从剪贴板导入批量URL成功"));
             }
+        }
+
+        private void menuScanScreen_Click(object sender, EventArgs e)
+        {
+            HideForm();
+            bgwScan.RunWorkerAsync();
         }
 
         #endregion
@@ -656,6 +707,10 @@ namespace v2rayN.Forms
         /// <param name="msg"></param>
         private void ShowMsg(string msg)
         {
+            if (txtMsgBox.Lines.Length > 500)
+            {
+                ClearMsg();
+            }
             this.txtMsgBox.AppendText(msg);
             if (!msg.EndsWith("\r\n"))
             {
@@ -703,15 +758,7 @@ namespace v2rayN.Forms
             //System.Environment.Exit(System.Environment.ExitCode);
             Application.Exit();
         }
-        private void menuDonate_Click(object sender, EventArgs e)
-        {
-            System.Diagnostics.Process.Start(Global.DonateUrl);
-        }
 
-        private void menuAbout_Click(object sender, EventArgs e)
-        {
-            System.Diagnostics.Process.Start(Global.AboutUrl);
-        }
 
         private void ShowForm()
         {
@@ -738,14 +785,15 @@ namespace v2rayN.Forms
         {
             try
             {
-                for (int k = 0; k < config.vmess.Count; k++)
+                for (int k = 0; k < lvSelecteds.Count; k++)
                 {
-                    if (config.vmess[k].configType == (int)EConfigType.Custom)
+                    int index = lvSelecteds[k];
+                    if (config.vmess[index].configType == (int)EConfigType.Custom)
                     {
                         continue;
                     }
-                    long time = Utils.Ping(config.vmess[k].address);
-                    bgwPing.ReportProgress(k, string.Format("{0}ms", time));
+                    long time = Utils.Ping(config.vmess[index].address);
+                    bgwPing.ReportProgress(index, string.Format("{0}ms", time));
                 }
             }
             catch
@@ -758,15 +806,96 @@ namespace v2rayN.Forms
             try
             {
                 int k = e.ProgressPercentage;
-                string time = Convert.ToString(e.UserState);
-                lvServers.Items[k].SubItems[lvServers.Items[k].SubItems.Count - 1].Text = time;
-
+                string time = string.Format("{0}", Convert.ToString(e.UserState));
+                SetTestResult(k, time);
             }
             catch
             {
             }
         }
+        private void SetTestResult(int k, string txt)
+        {
+            config.vmess[k].testResult = txt;
+            lvServers.Items[k].SubItems[lvServers.Items[k].SubItems.Count - 1].Text = txt;
+        }
+        private void ClearTestResult()
+        {
+            for (int k = 0; k < config.vmess.Count; k++)
+            {
+                SetTestResult(k, "");
+            }
+        }
 
+        private int testCounter = 0;
+        private int ServerSpeedTestSub(int index, string url)
+        {
+            if (index >= lvSelecteds.Count)
+            {
+                return -1;
+            }
+
+            if (ConfigHandler.SetDefaultServer(ref config, lvSelecteds[index]) == 0)
+            {
+                SetTestResult(lvSelecteds[index], "testing...");
+
+                v2rayHandler.LoadV2ray(config);
+                v2rayUpdateHandle2.UpdateV2rayCore(config, url);
+                testCounter++;
+                return 0;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+        private void ServerSpeedTest()
+        {
+            if (config.vmess.Count <= 0)
+            {
+                return;
+            }
+            ClearTestResult();
+
+            string url = Global.SpeedTestUrl;
+            testCounter = 0;
+            if (v2rayUpdateHandle2 == null)
+            {
+                v2rayUpdateHandle2 = new V2rayUpdateHandle();
+                v2rayUpdateHandle2.UpdateCompleted += (sender2, args) =>
+                {
+                    if (args.Success)
+                    {
+                        v2rayHandler_ProcessEvent(false, args.Msg);
+                        SetTestResult(lvSelecteds[testCounter - 1], args.Msg);
+
+                        if (ServerSpeedTestSub(testCounter, url) != 0)
+                        {
+                            RefreshServers();
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        v2rayHandler_ProcessEvent(false, args.Msg);
+                    }
+                };
+                v2rayUpdateHandle2.Error += (sender2, args) =>
+                {
+                    SetTestResult(lvSelecteds[testCounter - 1], args.GetException().Message);
+                    v2rayHandler_ProcessEvent(true, args.GetException().Message);
+
+                    if (ServerSpeedTestSub(testCounter, url) != 0)
+                    {
+                        RefreshServers();
+                        return;
+                    }
+                };
+            }
+            if (ServerSpeedTestSub(testCounter, url) != 0)
+            {
+                return;
+            }
+        }
         #endregion
 
         #region 移动服务器
@@ -939,7 +1068,7 @@ namespace v2rayN.Forms
                         {
                             CloseV2ray();
 
-                            string fileName = args.Msg;
+                            string fileName = v2rayUpdateHandle.DownloadFileName;
                             fileName = Utils.GetPath(fileName);
                             using (ZipArchive archive = ZipFile.OpenRead(fileName))
                             {
@@ -1002,6 +1131,58 @@ namespace v2rayN.Forms
             pacListHandle.UpdatePACFromGFWList(config);
         }
 
+
+        #endregion
+
+        #region Help
+
+        private void tsbGithubIssues_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(Global.GithubIssuesUrl);
+        }
+
+        private void tsbTelegramGroup_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(Global.TelegramGroupUrl);
+        }
+
+        private void tsbDonate_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(Global.DonateUrl);
+        }
+
+        private void tsbAbout_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(Global.AboutUrl);
+        }
+
+        #endregion
+
+        #region ScanScreen
+
+
+        private void bgwScan_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            string ret = Utils.ScanScreen();
+            bgwScan.ReportProgress(0, ret);
+        }
+
+        private void bgwScan_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {
+            ShowForm();
+
+            string result = Convert.ToString(e.UserState);
+            if (string.IsNullOrEmpty(result))
+            {
+                UI.Show("扫描完成,未发现有效二维码");
+            }
+            else
+            {
+                Utils.SetClipboardData(result);
+                menuAddServers_Click(null, null);
+            }
+        }
+        
         #endregion
 
     }

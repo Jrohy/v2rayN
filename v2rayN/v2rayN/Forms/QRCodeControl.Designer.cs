@@ -57,8 +57,6 @@
             // chkShow
             // 
             this.chkShow.AutoSize = true;
-            this.chkShow.Checked = true;
-            this.chkShow.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkShow.Dock = System.Windows.Forms.DockStyle.Top;
             this.chkShow.Location = new System.Drawing.Point(0, 0);
             this.chkShow.Name = "chkShow";

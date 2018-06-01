@@ -285,11 +285,14 @@ namespace v2rayN.Handler
                         {
                             continue;
                         }
-                        if (Utils.IsIP(url))
+                        if (Utils.IsIP(url) || url.StartsWith("geoip:"))
                         {
                             rulesIP.ip.Add(url);
                         }
-                        else if (Utils.IsDomain(url))
+                        else if (Utils.IsDomain(url)
+                            || url.StartsWith("geosite:")
+                            || url.StartsWith("regexp:")
+                            || url.StartsWith("domain:"))
                         {
                             rulesDomain.domain.Add(url);
                         }
@@ -350,6 +353,7 @@ namespace v2rayN.Handler
                     //远程服务器用户ID
                     usersItem.id = config.id();
                     usersItem.alterId = config.alterId();
+                    usersItem.email = Global.userEMail;
                     usersItem.security = config.security();
 
                     //Mux
@@ -678,6 +682,7 @@ namespace v2rayN.Handler
                 //远程服务器用户ID
                 usersItem.id = config.id();
                 usersItem.alterId = config.alterId();
+                usersItem.email = Global.userEMail;
 
                 //远程服务器底层传输配置
                 StreamSettings streamSettings = v2rayConfig.inbound.streamSettings;
@@ -1000,32 +1005,40 @@ namespace v2rayN.Handler
 
                 if (result.StartsWith(Global.vmessProtocol))
                 {
-                    vmessItem.configType = (int)EConfigType.Vmess;
-                    result = result.Substring(Global.vmessProtocol.Length);
-                    result = Utils.Base64Decode(result);
-
-                    //转成Json
-                    VmessQRCode vmessQRCode = Utils.FromJson<VmessQRCode>(result);
-                    if (vmessQRCode == null)
+                    int indexSplit = result.IndexOf("?");
+                    if (indexSplit > 0)
                     {
-                        msg = "转换配置文件失败";
-                        return null;
+                        vmessItem = ResolveVmess4Kitsunebi(result);
                     }
-                    vmessItem.security = Global.DefaultSecurity;
-                    vmessItem.network = Global.DefaultNetwork;
-                    vmessItem.headerType = Global.None;
+                    else
+                    {
+                        vmessItem.configType = (int)EConfigType.Vmess;
+                        result = result.Substring(Global.vmessProtocol.Length);
+                        result = Utils.Base64Decode(result);
 
-                    vmessItem.configVersion = Utils.ToInt(vmessQRCode.v);
-                    vmessItem.remarks = vmessQRCode.ps;
-                    vmessItem.address = vmessQRCode.add;
-                    vmessItem.port = Utils.ToInt(vmessQRCode.port);
-                    vmessItem.id = vmessQRCode.id;
-                    vmessItem.alterId = Utils.ToInt(vmessQRCode.aid);
-                    vmessItem.network = vmessQRCode.net;
-                    vmessItem.headerType = vmessQRCode.type;
-                    vmessItem.requestHost = vmessQRCode.host;
-                    vmessItem.path = vmessQRCode.path;
-                    vmessItem.streamSecurity = vmessQRCode.tls;
+                        //转成Json
+                        VmessQRCode vmessQRCode = Utils.FromJson<VmessQRCode>(result);
+                        if (vmessQRCode == null)
+                        {
+                            msg = "转换配置文件失败";
+                            return null;
+                        }
+                        vmessItem.security = Global.DefaultSecurity;
+                        vmessItem.network = Global.DefaultNetwork;
+                        vmessItem.headerType = Global.None;
+
+                        vmessItem.configVersion = Utils.ToInt(vmessQRCode.v);
+                        vmessItem.remarks = vmessQRCode.ps;
+                        vmessItem.address = vmessQRCode.add;
+                        vmessItem.port = Utils.ToInt(vmessQRCode.port);
+                        vmessItem.id = vmessQRCode.id;
+                        vmessItem.alterId = Utils.ToInt(vmessQRCode.aid);
+                        vmessItem.network = vmessQRCode.net;
+                        vmessItem.headerType = vmessQRCode.type;
+                        vmessItem.requestHost = vmessQRCode.host;
+                        vmessItem.path = vmessQRCode.path;
+                        vmessItem.streamSecurity = vmessQRCode.tls;
+                    }
 
                     ConfigHandler.UpgradeServerVersion(ref vmessItem);
                 }
@@ -1098,6 +1111,44 @@ namespace v2rayN.Handler
         {
             msg = string.Empty;
             return GenerateServerConfig(config, fileName, out msg);
+        }
+
+        private static VmessItem ResolveVmess4Kitsunebi(string result)
+        {
+            VmessItem vmessItem = new VmessItem();
+
+            vmessItem.configType = (int)EConfigType.Vmess;
+            result = result.Substring(Global.vmessProtocol.Length);
+            int indexSplit = result.IndexOf("?");
+            if (indexSplit > 0)
+            {
+                result = result.Substring(0, indexSplit);
+            }
+            result = Utils.Base64Decode(result);
+
+            string[] arr1 = result.Split('@');
+            if (arr1.Length != 2)
+            {
+                return null;
+            }
+            string[] arr21 = arr1[0].Split(':');
+            string[] arr22 = arr1[1].Split(':');
+            if (arr21.Length != 2 || arr21.Length != 2)
+            {
+                return null;
+            }
+
+            vmessItem.address = arr22[0];
+            vmessItem.port = Utils.ToInt(arr22[1]);
+            vmessItem.security = arr21[0];
+            vmessItem.id = arr21[1];
+                        
+            vmessItem.network = Global.DefaultNetwork;
+            vmessItem.headerType = Global.None;
+            vmessItem.remarks = "Alien";
+            vmessItem.alterId = 0;
+
+            return vmessItem;
         }
 
         #endregion

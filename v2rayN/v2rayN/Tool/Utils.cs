@@ -13,6 +13,10 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Drawing;
+using ZXing;
+using ZXing.Common;
+using ZXing.QrCode;
 
 namespace v2rayN
 {
@@ -603,7 +607,7 @@ namespace v2rayN
 
         #endregion
 
-        #region
+        #region Log
 
         public static void SaveLog(string strContent)
         {
@@ -641,5 +645,62 @@ namespace v2rayN
         }
 
         #endregion
+
+
+        #region scan screen
+
+        public static string ScanScreen()
+        {
+            string ret = string.Empty;
+            try
+            {
+                foreach (Screen screen in Screen.AllScreens)
+                {
+                    using (Bitmap fullImage = new Bitmap(screen.Bounds.Width,
+                                                    screen.Bounds.Height))
+                    {
+                        using (Graphics g = Graphics.FromImage(fullImage))
+                        {
+                            g.CopyFromScreen(screen.Bounds.X,
+                                             screen.Bounds.Y,
+                                             0, 0,
+                                             fullImage.Size,
+                                             CopyPixelOperation.SourceCopy);
+                        }
+                        int maxTry = 10;
+                        for (int i = 0; i < maxTry; i++)
+                        {
+                            int marginLeft = (int)((double)fullImage.Width * i / 2.5 / maxTry);
+                            int marginTop = (int)((double)fullImage.Height * i / 2.5 / maxTry);
+                            Rectangle cropRect = new Rectangle(marginLeft, marginTop, fullImage.Width - marginLeft * 2, fullImage.Height - marginTop * 2);
+                            Bitmap target = new Bitmap(screen.Bounds.Width, screen.Bounds.Height);
+
+                            double imageScale = (double)screen.Bounds.Width / (double)cropRect.Width;
+                            using (Graphics g = Graphics.FromImage(target))
+                            {
+                                g.DrawImage(fullImage, new Rectangle(0, 0, target.Width, target.Height),
+                                                cropRect,
+                                                GraphicsUnit.Pixel);
+                            }
+
+                            var source = new BitmapLuminanceSource(target);
+                            var bitmap = new BinaryBitmap(new HybridBinarizer(source));
+                            QRCodeReader reader = new QRCodeReader();
+                            var result = reader.decode(bitmap);
+                            if (result != null)
+                            {
+                                ret = result.Text;
+                                return ret;
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }
+            return string.Empty;
+        }
+
+        #endregion
+
     }
 }

@@ -97,6 +97,7 @@ namespace v2rayN.Forms
                 cmbHeaderType.Items.Add("srtp");
                 cmbHeaderType.Items.Add("utp");
                 cmbHeaderType.Items.Add("wechat-video");
+                cmbHeaderType.Items.Add("dtls");
             }
             else
             {
