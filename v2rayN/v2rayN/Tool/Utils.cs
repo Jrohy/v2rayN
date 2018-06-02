@@ -23,7 +23,7 @@ namespace v2rayN
     class Utils
     {
         private static string autoRunName = "v2rayNAutoRun";
-        private static string autoRunRegPath = @"Software\Microsoft\Windows\CurrentVersion\Run";
+        private static string autoRunRegPath = (IntPtr.Size == 4 ? @"Software\Microsoft\Windows\CurrentVersion\Run" : @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Run");
 
         #region 资源Json操作
 
