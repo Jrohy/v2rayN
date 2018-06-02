@@ -335,9 +335,10 @@ namespace v2rayN
         /// <returns></returns>
         public static int SetAutoRun(bool run)
         {
+            RegistryKey regKey = null;
             try
             {
-                RegistryKey regKey = Registry.LocalMachine.CreateSubKey(autoRunRegPath);
+                regKey = Registry.LocalMachine.CreateSubKey(autoRunRegPath);
                 if (run)
                 {
                     string exePath = Application.ExecutablePath;
@@ -347,12 +348,50 @@ namespace v2rayN
                 {
                     regKey.DeleteValue(autoRunName, false);
                 }
-                regKey.Close();
             }
             catch
             {
+                RunAsAdmin("--setautorun");
+            }
+            finally
+            {
+                regKey?.Close();
             }
             return 0;
+        }
+
+        /// <summary>
+        /// 切换自启动
+        /// </summary>
+        /// <returns></returns>
+        public static bool SwitchAutoRun()
+        {
+            bool run = !IsAutoRun();
+            RegistryKey regKey = null;
+            try
+            {
+                regKey = Registry.LocalMachine.CreateSubKey(autoRunRegPath);
+                if (run)
+                {
+                    string exePath = Application.ExecutablePath;
+                    regKey.SetValue(autoRunName, exePath);
+                }
+                else
+                {
+                    regKey.DeleteValue(autoRunName, false);
+                }
+
+                return true;
+            }
+            catch(Exception e)
+            {
+                SaveLog("设置自启动失败", e);
+            }
+            finally
+            {
+                regKey?.Close();
+            }
+            return false;
         }
 
         /// <summary>
@@ -361,18 +400,23 @@ namespace v2rayN
         /// <returns></returns>
         public static bool IsAutoRun()
         {
+            RegistryKey regKey = null;
             try
             {
-                RegistryKey regKey = Registry.LocalMachine.CreateSubKey(autoRunRegPath);
-                string value = regKey.GetValue(autoRunName).ToString();
+                regKey = Registry.LocalMachine.OpenSubKey(autoRunRegPath, false);
+                var value = regKey.GetValue(autoRunName) as string;
                 string exePath = GetExePath();
-                if (value.Equals(exePath))
+                if (value?.Equals(exePath) == true)
                 {
                     return true;
                 }
             }
             catch
             {
+            }
+            finally
+            {
+                regKey?.Close();
             }
             return false;
         }
@@ -555,6 +599,37 @@ namespace v2rayN
             {
             }
             return string.Empty;
+        }
+
+        /// <summary>
+        /// 管理员方式运行
+        /// </summary>
+        /// <param name="Arguments"></param>
+        /// <returns></returns>
+        public static int RunAsAdmin(string Arguments)
+        {
+            Process process = null;
+            ProcessStartInfo processInfo = new ProcessStartInfo();
+            processInfo.Verb = "runas";
+            processInfo.FileName = Application.ExecutablePath;
+            processInfo.Arguments = Arguments;
+            try
+            {
+                process = Process.Start(processInfo);
+            }
+            catch (System.ComponentModel.Win32Exception)
+            {
+                return -1;
+            }
+            if (process != null)
+            {
+                process.WaitForExit();
+                int ret = process.ExitCode;
+                process.Close();
+                return ret;
+            }
+
+            return -1;
         }
 
         #endregion
