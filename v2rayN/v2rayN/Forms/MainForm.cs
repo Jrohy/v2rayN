@@ -1,27 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.IO.Compression;
-using System.Net;
-using System.Threading;
-
+using System.Text;
 using System.Windows.Forms;
 using v2rayN.Handler;
 using v2rayN.HttpProxyHandler;
 using v2rayN.Mode;
-using v2rayN.Tool;
-using static System.Windows.Forms.ListView;
-using static v2rayN.Forms.PerPixelAlphaForm;
+using System.Collections.Generic;
 
 namespace v2rayN.Forms
 {
     public partial class MainForm : BaseForm
     {
         private V2rayHandler v2rayHandler;
-
         private PACListHandle pacListHandle;
         private V2rayUpdateHandle v2rayUpdateHandle;
+        private V2rayUpdateHandle v2rayUpdateHandle2;
+        private List<int> lvSelecteds = new List<int>();
 
         #region Window 事件
 
@@ -102,19 +96,19 @@ namespace v2rayN.Forms
             lvServers.FullRowSelect = true;
             lvServers.View = View.Details;
             lvServers.Scrollable = true;
-            lvServers.MultiSelect = false;
+            lvServers.MultiSelect = true;
             lvServers.HeaderStyle = ColumnHeaderStyle.Nonclickable;
 
             lvServers.Columns.Add("", 30, HorizontalAlignment.Center);
             lvServers.Columns.Add("服务类型", 80, HorizontalAlignment.Left);
             lvServers.Columns.Add("别名", 100, HorizontalAlignment.Left);
-            lvServers.Columns.Add("地址", 100, HorizontalAlignment.Left);
-            lvServers.Columns.Add("端口", 60, HorizontalAlignment.Left);
+            lvServers.Columns.Add("地址", 90, HorizontalAlignment.Left);
+            lvServers.Columns.Add("端口", 50, HorizontalAlignment.Left);
             //lvServers.Columns.Add("用户ID(id)", 110, HorizontalAlignment.Left);
             //lvServers.Columns.Add("额外ID(alterId)", 110, HorizontalAlignment.Left);
             lvServers.Columns.Add("加密方式", 100, HorizontalAlignment.Left);
             lvServers.Columns.Add("传输协议", 60, HorizontalAlignment.Left);
-            lvServers.Columns.Add("延迟", 50, HorizontalAlignment.Left);
+            lvServers.Columns.Add("测试结果", 150, HorizontalAlignment.Left);
 
         }
 
@@ -124,7 +118,6 @@ namespace v2rayN.Forms
         private void RefreshServersView()
         {
             lvServers.Items.Clear();
-            lvServers.MultiSelect = true;
 
             for (int k = 0; k < config.vmess.Count; k++)
             {
@@ -146,10 +139,20 @@ namespace v2rayN.Forms
                     //item.alterId.ToString(),
                     item.security,
                     item.network,
-                    ""
+                    item.testResult
                 });
                 lvServers.Items.Add(lvItem);
             }
+
+            //if (lvServers.Items.Count > 0)
+            //{
+            //    if (lvServers.Items.Count <= testConfigIndex)
+            //    {
+            //        testConfigIndex = lvServers.Items.Count - 1;
+            //    }
+            //    lvServers.Items[testConfigIndex].Selected = true;
+            //    lvServers.Select();
+            //}
         }
 
         /// <summary>
@@ -320,44 +323,38 @@ namespace v2rayN.Forms
 
         private void menuRemoveServer_Click(object sender, EventArgs e)
         {
-            SelectedIndexCollection selectCollection = lvServers.SelectedIndices;
-            if (selectCollection.Count < 0)
-            {
-                return;
-            }
-            if (UI.ShowYesNo("是否确定移除所选服务器?") == DialogResult.No)
-            {
-                return;
-            }
 
-            for(int i = 0; i < selectCollection.Count; i++)
+            int index = GetLvSelectedIndex();
+            if (index < 0)
             {
-                if (ConfigHandler.RemoveServer(ref config, selectCollection[i] - i) < 0)
-                {
-                    break;
-                }
+                return;
+            }
+            if (UI.ShowYesNo("是否确定移除服务器?") == DialogResult.No)
+            {
+                return;
+            }
+            for (int k = lvSelecteds.Count - 1; k >= 0; k--)
+            {
+                ConfigHandler.RemoveServer(ref config, lvSelecteds[k]);
             }
             //刷新
             RefreshServers();
             LoadV2ray();
+
         }
 
         private void menuCopyServer_Click(object sender, EventArgs e)
         {
-            SelectedIndexCollection selectCollection = lvServers.SelectedIndices;
-            if (selectCollection.Count < 0)
+            int index = GetLvSelectedIndex();
+            if (index < 0)
             {
                 return;
             }
-            for (int i = 0; i < selectCollection.Count; i++)
+            if (ConfigHandler.CopyServer(ref config, index) == 0)
             {
-                if (ConfigHandler.CopyServer(ref config, selectCollection[i]) < 0)
-                {
-                    break;
-                }
+                //刷新
+                RefreshServers();
             }
-            //刷新
-            RefreshServers();
         }
 
         private void menuSetDefaultServer_Click(object sender, EventArgs e)
@@ -370,11 +367,30 @@ namespace v2rayN.Forms
             SetDefaultServer(index);
         }
 
+
         private void menuPingServer_Click(object sender, EventArgs e)
         {
+            GetLvSelectedIndex();
+            ClearTestResult();
             bgwPing.RunWorkerAsync();
         }
 
+        private void menuSpeedServer_Click(object sender, EventArgs e)
+        {
+            if (!config.sysAgentEnabled || config.listenerType != 1)
+            {
+                UI.Show("此功能依赖系统全局代理,请先设置正确。");
+                return;
+            }
+
+            UI.Show("注意：" +
+                  "\r\n此功能依赖系统全局代理!" +
+                  "\r\n测试过程中,请不要操作任何功能!" +
+                  "\r\n测试完成后,请手工调整系统全局代理和活动节点。");
+
+            GetLvSelectedIndex();
+            ServerSpeedTest();
+        }
 
         private void menuExport2ClientConfig_Click(object sender, EventArgs e)
         {
@@ -454,27 +470,28 @@ namespace v2rayN.Forms
             }
         }
 
-        private void menuVmessExport2ClipBoard_Click(object sender, EventArgs e)
+        private void menuExport2ShareUrl_Click(object sender, EventArgs e)
         {
-            SelectedIndexCollection selectCollection = lvServers.SelectedIndices;
-            if (selectCollection.Count < 0)
-            {
-                return;
-            }
-            List<string> urls = new List<string>();
-            for (int i = 0; i < selectCollection.Count; i++)
-            {
-                string url = ConfigHandler.GetVmessQRCode(config, selectCollection[i]);
-                urls.Add(url);
-            }
+            GetLvSelectedIndex();
 
-            if (urls.Count > 0)
+            StringBuilder sb = new StringBuilder();
+            for (int k = 0; k < lvSelecteds.Count; k++)
             {
-                string result = String.Join(" ", urls.ToArray());
-                Utils.SetClipboardData(result);
-                UI.Show("链接已复制到剪切板");
+                string url = ConfigHandler.GetVmessQRCode(config, lvSelecteds[k]);
+                if (Utils.IsNullOrEmpty(url))
+                {
+                    continue;
+                }
+                sb.Append(url);
+                sb.AppendLine();
+            }
+            if (sb.Length > 0)
+            {
+                Utils.SetClipboardData(sb.ToString());
+                UI.Show(string.Format("批量导出分享URL至剪贴板成功"));
             }
         }
+
 
         private void tsbOptionSetting_Click(object sender, EventArgs e)
         {
@@ -527,6 +544,7 @@ namespace v2rayN.Forms
         private int GetLvSelectedIndex()
         {
             int index = -1;
+            lvSelecteds.Clear();
             try
             {
                 if (lvServers.SelectedIndices.Count <= 0)
@@ -536,6 +554,10 @@ namespace v2rayN.Forms
                 }
 
                 index = lvServers.SelectedIndices[0];
+                foreach (int i in lvServers.SelectedIndices)
+                {
+                    lvSelecteds.Add(i);
+                }
                 return index;
             }
             catch
@@ -590,6 +612,55 @@ namespace v2rayN.Forms
             ShowForm();
         }
 
+        private void menuAddServers_Click(object sender, EventArgs e)
+        {
+            string clipboardData = Utils.GetClipboardData();
+            if (Utils.IsNullOrEmpty(clipboardData))
+            {
+                return;
+            }
+            if (clipboardData.IndexOf("vmess") == clipboardData.LastIndexOf("vmess"))
+            {
+                clipboardData = clipboardData.Replace("\r\n", "").Replace("\n", "");
+            }
+            int countServers = 0;
+            string[] arrData = clipboardData.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+            foreach (string str in arrData)
+            {
+                string msg;
+                VmessItem vmessItem = V2rayConfigHandler.ImportFromClipboardConfig(str, out msg);
+                if (vmessItem == null)
+                {
+                    continue;
+                }
+                if (vmessItem.configType == (int)EConfigType.Vmess)
+                {
+                    if (ConfigHandler.AddServer(ref config, vmessItem, -1) == 0)
+                    {
+                        countServers++;
+                    }
+                }
+                else if (vmessItem.configType == (int)EConfigType.Shadowsocks)
+                {
+                    if (ConfigHandler.AddShadowsocksServer(ref config, vmessItem, -1) == 0)
+                    {
+                        countServers++;
+                    }
+                }
+            }
+            if (countServers > 0)
+            {
+                RefreshServers();
+                UI.Show(string.Format("从剪贴板导入批量URL成功"));
+            }
+        }
+
+        private void menuScanScreen_Click(object sender, EventArgs e)
+        {
+            HideForm();
+            bgwScan.RunWorkerAsync();
+        }
+
         #endregion
 
 
@@ -636,6 +707,10 @@ namespace v2rayN.Forms
         /// <param name="msg"></param>
         private void ShowMsg(string msg)
         {
+            if (txtMsgBox.Lines.Length > 500)
+            {
+                ClearMsg();
+            }
             this.txtMsgBox.AppendText(msg);
             if (!msg.EndsWith("\r\n"))
             {
@@ -684,200 +759,6 @@ namespace v2rayN.Forms
             Application.Exit();
         }
 
-        void splash_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            ShowForm();
-        }
-
-        private void menuScreenQRCodeScan_Click(object sender, EventArgs e)
-        {
-            Thread.Sleep(100);
-            foreach (Screen screen in Screen.AllScreens)
-            {
-                Point screen_size = Utils.GetScreenPhysicalSize();
-                using (Bitmap fullImage = new Bitmap(screen_size.X,
-                                                screen_size.Y))
-                {
-                    using (Graphics g = Graphics.FromImage(fullImage))
-                    {
-                        g.CopyFromScreen(screen.Bounds.X,
-                                         screen.Bounds.Y,
-                                         0, 0,
-                                         fullImage.Size,
-                                         CopyPixelOperation.SourceCopy);
-                    }
-                    for (int i = 0; i < 100; i++)
-                    {
-                        double stretch;
-                        Rectangle cropRect = Scan.GetScanRect(fullImage.Width, fullImage.Height, i, out stretch);
-                        if (cropRect.Width == 0)
-                            break;
-
-                        string url;
-                        Rectangle rect;
-                        if (stretch == 1 ? Scan.ScanQRCode(screen, fullImage, cropRect, out url, out rect) : Scan.ScanQRCodeStretch(screen, fullImage, cropRect, stretch, out url, out rect))
-                        {
-                            QRCodeSplashForm splash = new QRCodeSplashForm();
-
-                            splash.FormClosed += splash_FormClosed;
-
-
-                            splash.Location = new Point(screen.Bounds.X, screen.Bounds.Y);
-                            double dpi = Screen.PrimaryScreen.Bounds.Width / (double)screen_size.X;
-                            splash.TargetRect = new Rectangle(
-                                (int)(rect.Left * dpi + screen.Bounds.X),
-                                (int)(rect.Top * dpi + screen.Bounds.Y),
-                                (int)(rect.Width * dpi),
-                                (int)(rect.Height * dpi));
-                            splash.Size = new Size(fullImage.Width, fullImage.Height);
-
-                            List<VmessItem> vmessItems = V2rayConfigHandler.ImportFromStrConfig(out string msg, url);
-                            if (vmessItems != null && vmessItems.Count > 0)
-                            {
-                                foreach (VmessItem vmessItem in vmessItems)
-                                {
-                                    if (ConfigHandler.AddServer(ref config, vmessItem, -1) != 0)
-                                        break;
-
-                                }
-                                splash.Show();
-                                //刷新
-                                RefreshServers();
-                                LoadV2ray();
-                            }
-                            else
-                            {
-                                splash.Show();
-                                UI.Show(msg);
-                            }
-
-                            //扫到一个二维码即退出
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-
-        private void menuClipboardImportVmess_Click(object sender, EventArgs e)
-        {
-            List<VmessItem> vmessItems = V2rayConfigHandler.ImportFromClipboardConfig(out string msg);
-            if (vmessItems != null && vmessItems.Count > 0)
-            {
-                foreach(VmessItem vmessItem in vmessItems)
-                {
-                    if (ConfigHandler.AddServer(ref config, vmessItem, -1) != 0)
-                        break;
-                }
-                //刷新
-                RefreshServers();
-                LoadV2ray();
-                ShowForm();
-
-            }
-            else
-            {
-                UI.Show(Utils.IsNullOrEmpty(msg)? "操作失败，请检查重试" : msg);
-            }
-        }
-
-        private void DownloadV2Ray(IAsyncResult result)
-        {
-            string downloadUrl = "https://github.com/v2ray/v2ray-core/releases/download/{0}/";
-
-            string downloadFileName = Environment.Is64BitOperatingSystem?"v2ray-windows-64.zip":"v2ray-windows-32.zip";
-
-            if ((result.AsyncState as HttpWebRequest)?.EndGetResponse(result) is HttpWebResponse response)
-            {
-                //获取响应完成得到的最新版下载链接
-                string redirectUrl = response.ResponseUri.AbsoluteUri;
-                //截取出最新版v2ray的版本号
-                string version = redirectUrl.Substring(redirectUrl.LastIndexOf("/", StringComparison.Ordinal) + 1);
-
-                if (UI.ShowYesNo($"检测到最新的v2ray版本为:{version},是否下载安装?") == DialogResult.Yes)
-                {
-
-                    string msg = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss ") +
-                                 $"已提交{downloadFileName}下载任务，正在排队下载(为保证快速下载安装，期间请尽量不产生其他方面代理流量)";
-
-                    v2rayHandler_ProcessEvent(false, msg);
-
-                    string latestDownloadUrl = string.Format(downloadUrl, version);
-
-                    WebClient client = new WebClient();
-
-                    client.DownloadProgressChanged += (sender1, args) =>
-                    {
-                        ShowMsg(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss ") +
-                                $"当前接收到{Utils.HumanReadableFilesize(args.BytesReceived)}，文件大小总共{Utils.HumanReadableFilesize(args.TotalBytesToReceive)}，进度为{args.ProgressPercentage}%");
-                    };
-
-                    client.DownloadFileCompleted += (sender2, args) =>
-                    {
-                        try
-                        {
-                            CloseV2ray();
-
-                            //解压
-                            using (ZipArchive archive = ZipFile.OpenRead(downloadFileName))
-                            {
-                                foreach (ZipArchiveEntry entry in archive.Entries)
-                                {
-                                    //如果是文件夹则跳过
-                                    if (entry.Length == 0)
-                                        continue;
-                                    entry.ExtractToFile(Path.Combine(".", entry.Name), true);
-                                }
-                            }
-
-                            Global.reloadV2ray = true;
-                            LoadV2ray();
-
-                            UI.Show("下载安装完成!");
-
-                        }
-                        catch (Exception)
-                        {
-                            if (UI.ShowYesNo("下载失败!!是否用默认浏览器下载，然后自行解压安装?") == DialogResult.Yes)
-                            {
-                                Global.reloadV2ray = true;
-                                LoadV2ray();
-                                System.Diagnostics.Process.Start(latestDownloadUrl + downloadFileName);
-                            }
-                        }
-                        finally
-                        {
-                            //删除文件
-                            File.Delete(downloadFileName);
-                        }
-                    };
-
-                    //异步下载
-                    client.DownloadFileAsync(new Uri(latestDownloadUrl + downloadFileName), downloadFileName);
-                }
-            }
-        }
-
-        private void menuUpdateV2Ray_Click(object sender, EventArgs e)
-        {
-            string latestUrl = "https://github.com/v2ray/v2ray-core/releases/latest";
-
-            //https的链接需设置
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            //通过latestUrl的重定向来获取v2ray的最新版本号
-            WebRequest req = WebRequest.Create(latestUrl);
-
-            //异步加载链接使得UI线程不会卡死
-            req.BeginGetResponse(new AsyncCallback(DownloadV2Ray), req);
-
-        }
-
-        private void menuAbout_Click(object sender, EventArgs e)
-        {
-            System.Diagnostics.Process.Start(Global.AboutUrl);
-        }
 
         private void ShowForm()
         {
@@ -904,14 +785,15 @@ namespace v2rayN.Forms
         {
             try
             {
-                for (int k = 0; k < config.vmess.Count; k++)
+                for (int k = 0; k < lvSelecteds.Count; k++)
                 {
-                    if (config.vmess[k].configType == (int)EConfigType.Custom)
+                    int index = lvSelecteds[k];
+                    if (config.vmess[index].configType == (int)EConfigType.Custom)
                     {
                         continue;
                     }
-                    long time = Utils.Ping(config.vmess[k].address);
-                    bgwPing.ReportProgress(k, string.Format("{0}ms", time));
+                    long time = Utils.Ping(config.vmess[index].address);
+                    bgwPing.ReportProgress(index, string.Format("{0}ms", time));
                 }
             }
             catch
@@ -924,15 +806,96 @@ namespace v2rayN.Forms
             try
             {
                 int k = e.ProgressPercentage;
-                string time = Convert.ToString(e.UserState);
-                lvServers.Items[k].SubItems[lvServers.Items[k].SubItems.Count - 1].Text = time;
-
+                string time = string.Format("{0}", Convert.ToString(e.UserState));
+                SetTestResult(k, time);
             }
             catch
             {
             }
         }
+        private void SetTestResult(int k, string txt)
+        {
+            config.vmess[k].testResult = txt;
+            lvServers.Items[k].SubItems[lvServers.Items[k].SubItems.Count - 1].Text = txt;
+        }
+        private void ClearTestResult()
+        {
+            for (int k = 0; k < config.vmess.Count; k++)
+            {
+                SetTestResult(k, "");
+            }
+        }
 
+        private int testCounter = 0;
+        private int ServerSpeedTestSub(int index, string url)
+        {
+            if (index >= lvSelecteds.Count)
+            {
+                return -1;
+            }
+
+            if (ConfigHandler.SetDefaultServer(ref config, lvSelecteds[index]) == 0)
+            {
+                SetTestResult(lvSelecteds[index], "testing...");
+
+                v2rayHandler.LoadV2ray(config);
+                v2rayUpdateHandle2.UpdateV2rayCore(config, url);
+                testCounter++;
+                return 0;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+        private void ServerSpeedTest()
+        {
+            if (config.vmess.Count <= 0)
+            {
+                return;
+            }
+            ClearTestResult();
+
+            string url = Global.SpeedTestUrl;
+            testCounter = 0;
+            if (v2rayUpdateHandle2 == null)
+            {
+                v2rayUpdateHandle2 = new V2rayUpdateHandle();
+                v2rayUpdateHandle2.UpdateCompleted += (sender2, args) =>
+                {
+                    if (args.Success)
+                    {
+                        v2rayHandler_ProcessEvent(false, args.Msg);
+                        SetTestResult(lvSelecteds[testCounter - 1], args.Msg);
+
+                        if (ServerSpeedTestSub(testCounter, url) != 0)
+                        {
+                            RefreshServers();
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        v2rayHandler_ProcessEvent(false, args.Msg);
+                    }
+                };
+                v2rayUpdateHandle2.Error += (sender2, args) =>
+                {
+                    SetTestResult(lvSelecteds[testCounter - 1], args.GetException().Message);
+                    v2rayHandler_ProcessEvent(true, args.GetException().Message);
+
+                    if (ServerSpeedTestSub(testCounter, url) != 0)
+                    {
+                        RefreshServers();
+                        return;
+                    }
+                };
+            }
+            if (ServerSpeedTestSub(testCounter, url) != 0)
+            {
+                return;
+            }
+        }
         #endregion
 
         #region 移动服务器
@@ -1070,6 +1033,30 @@ namespace v2rayN.Forms
             if (v2rayUpdateHandle == null)
             {
                 v2rayUpdateHandle = new V2rayUpdateHandle();
+                v2rayUpdateHandle.AbsoluteCompleted += (sender2, args) =>
+                {
+                    if (args.Success)
+                    {
+                        v2rayHandler_ProcessEvent(false, "解析V2rayCore成功！");
+
+                        string url = args.Msg;
+                        this.Invoke((MethodInvoker)(delegate
+                        {
+                            if (MessageBox.Show(this, "是否下载?\r\n" + url, "YesNo", MessageBoxButtons.YesNo) == DialogResult.No)
+                            {
+                                return;
+                            }
+                            else
+                            {
+                                v2rayUpdateHandle.UpdateV2rayCore(config, url);
+                            }
+                        }));
+                    }
+                    else
+                    {
+                        v2rayHandler_ProcessEvent(false, args.Msg);
+                    }
+                };
                 v2rayUpdateHandle.UpdateCompleted += (sender2, args) =>
                 {
                     if (args.Success)
@@ -1081,7 +1068,7 @@ namespace v2rayN.Forms
                         {
                             CloseV2ray();
 
-                            string fileName = args.Msg;
+                            string fileName = v2rayUpdateHandle.DownloadFileName;
                             fileName = Utils.GetPath(fileName);
                             using (ZipArchive archive = ZipFile.OpenRead(fileName))
                             {
@@ -1114,8 +1101,9 @@ namespace v2rayN.Forms
                     v2rayHandler_ProcessEvent(true, args.GetException().Message);
                 };
             }
+
             v2rayHandler_ProcessEvent(false, "开始更新V2rayCore...");
-            v2rayUpdateHandle.UpdateV2rayCore(config);
+            v2rayUpdateHandle.AbsoluteV2rayCore(config);
         }
 
         private void tsbCheckUpdatePACList_Click(object sender, EventArgs e)
@@ -1143,6 +1131,59 @@ namespace v2rayN.Forms
             pacListHandle.UpdatePACFromGFWList(config);
         }
 
+
         #endregion
+
+        #region Help
+
+        private void tsbGithubIssues_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(Global.GithubIssuesUrl);
+        }
+
+        private void tsbTelegramGroup_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(Global.TelegramGroupUrl);
+        }
+
+        private void tsbDonate_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(Global.DonateUrl);
+        }
+
+        private void tsbAbout_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(Global.AboutUrl);
+        }
+
+        #endregion
+
+        #region ScanScreen
+
+
+        private void bgwScan_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            string ret = Utils.ScanScreen();
+            bgwScan.ReportProgress(0, ret);
+        }
+
+        private void bgwScan_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {
+            ShowForm();
+
+            string result = Convert.ToString(e.UserState);
+            if (string.IsNullOrEmpty(result))
+            {
+                UI.Show("扫描完成,未发现有效二维码");
+            }
+            else
+            {
+                Utils.SetClipboardData(result);
+                menuAddServers_Click(null, null);
+            }
+        }
+        
+        #endregion
+
     }
 }

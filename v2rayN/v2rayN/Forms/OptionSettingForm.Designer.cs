@@ -119,7 +119,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 10);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(528, 496);
+            this.tabControl1.Size = new System.Drawing.Size(528, 605);
             this.tabControl1.TabIndex = 10;
             // 
             // tabPage1
@@ -128,7 +128,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(520, 470);
+            this.tabPage1.Size = new System.Drawing.Size(520, 549);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "  Core:基础设置  ";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -154,7 +154,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(514, 464);
+            this.groupBox1.Size = new System.Drawing.Size(514, 543);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             // 
@@ -326,7 +326,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(520, 470);
+            this.tabPage2.Size = new System.Drawing.Size(520, 579);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "  Core:路由设置  ";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -340,7 +340,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(3, 3);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(514, 464);
+            this.groupBox2.Size = new System.Drawing.Size(514, 573);
             this.groupBox2.TabIndex = 12;
             this.groupBox2.TabStop = false;
             // 
@@ -350,9 +350,9 @@
             this.label4.ForeColor = System.Drawing.Color.Brown;
             this.label4.Location = new System.Drawing.Point(13, 68);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(269, 12);
+            this.label4.Size = new System.Drawing.Size(383, 12);
             this.label4.TabIndex = 13;
-            this.label4.Text = "*设置的网址或IP，用逗号(,)隔开，可以一行多个";
+            this.label4.Text = "*设置的规则，用逗号(,)隔开;支持Domain(纯字符串/正则/子域名)和IP";
             // 
             // tabControl2
             // 
@@ -360,10 +360,10 @@
             this.tabControl2.Controls.Add(this.tabPage4);
             this.tabControl2.Controls.Add(this.tabPage5);
             this.tabControl2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tabControl2.Location = new System.Drawing.Point(3, 83);
+            this.tabControl2.Location = new System.Drawing.Point(3, 95);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(508, 378);
+            this.tabControl2.Size = new System.Drawing.Size(508, 475);
             this.tabControl2.TabIndex = 12;
             // 
             // tabPage3
@@ -372,9 +372,9 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(500, 352);
+            this.tabPage3.Size = new System.Drawing.Size(500, 449);
             this.tabPage3.TabIndex = 0;
-            this.tabPage3.Text = "  代理的网址或IP  ";
+            this.tabPage3.Text = "  代理的Domain或IP  ";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // txtUseragent
@@ -384,7 +384,7 @@
             this.txtUseragent.Multiline = true;
             this.txtUseragent.Name = "txtUseragent";
             this.txtUseragent.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtUseragent.Size = new System.Drawing.Size(494, 346);
+            this.txtUseragent.Size = new System.Drawing.Size(494, 443);
             this.txtUseragent.TabIndex = 0;
             // 
             // tabPage4
@@ -393,9 +393,9 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(500, 352);
+            this.tabPage4.Size = new System.Drawing.Size(500, 449);
             this.tabPage4.TabIndex = 1;
-            this.tabPage4.Text = "  直连的网址或IP  ";
+            this.tabPage4.Text = "  直连的Domain或IP  ";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
             // txtUserdirect
@@ -405,7 +405,7 @@
             this.txtUserdirect.Multiline = true;
             this.txtUserdirect.Name = "txtUserdirect";
             this.txtUserdirect.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtUserdirect.Size = new System.Drawing.Size(494, 346);
+            this.txtUserdirect.Size = new System.Drawing.Size(494, 443);
             this.txtUserdirect.TabIndex = 1;
             // 
             // tabPage5
@@ -414,9 +414,9 @@
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(500, 352);
+            this.tabPage5.Size = new System.Drawing.Size(500, 449);
             this.tabPage5.TabIndex = 2;
-            this.tabPage5.Text = "  阻止的网址或IP  ";
+            this.tabPage5.Text = "  阻止的Domain或IP  ";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
             // txtUserblock
@@ -426,7 +426,7 @@
             this.txtUserblock.Multiline = true;
             this.txtUserblock.Name = "txtUserblock";
             this.txtUserblock.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtUserblock.Size = new System.Drawing.Size(494, 346);
+            this.txtUserblock.Size = new System.Drawing.Size(494, 443);
             this.txtUserblock.TabIndex = 1;
             // 
             // chkBypassChinasites
@@ -467,7 +467,7 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(520, 470);
+            this.tabPage6.Size = new System.Drawing.Size(520, 549);
             this.tabPage6.TabIndex = 2;
             this.tabPage6.Text = "  Core:KCP设置  ";
             this.tabPage6.UseVisualStyleBackColor = true;
@@ -589,7 +589,7 @@
             this.tabPage7.Location = new System.Drawing.Point(4, 22);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(520, 470);
+            this.tabPage7.Size = new System.Drawing.Size(520, 549);
             this.tabPage7.TabIndex = 3;
             this.tabPage7.Text = "  v2rayN设置  ";
             this.tabPage7.UseVisualStyleBackColor = true;
@@ -655,7 +655,7 @@
             this.panel2.Controls.Add(this.btnClose);
             this.panel2.Controls.Add(this.btnOK);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 506);
+            this.panel2.Location = new System.Drawing.Point(0, 615);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(528, 60);
             this.panel2.TabIndex = 11;
@@ -683,7 +683,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnClose;
-            this.ClientSize = new System.Drawing.Size(528, 566);
+            this.ClientSize = new System.Drawing.Size(528, 675);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);

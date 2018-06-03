@@ -13,7 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>发布</PublishUrl>
+    <PublishUrl>发布\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -23,11 +23,13 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -54,10 +56,10 @@
     <ApplicationIcon>v2ray.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>098C530B77D817F19067D70C9FE9058F9EC51163</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>BD431FE78E8A6683106E7110882AE5C41CBF5C60</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>Jrohy.pfx</ManifestKeyFile>
+    <ManifestKeyFile>v2rayN_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -66,20 +68,6 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup />
-  <PropertyGroup>
-    <NoWin32Manifest>true</NoWin32Manifest>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>
-    </StartupObject>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
       <HintPath>.\Newtonsoft.Json.dll</HintPath>
@@ -96,7 +84,6 @@
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
     <Reference Include="zxing">
       <HintPath>.\zxing.dll</HintPath>
       <Private>False</Private>
@@ -124,9 +111,6 @@
     </Compile>
     <Compile Include="Forms\QRCodeControl.Designer.cs">
       <DependentUpon>QRCodeControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\QRCodeSplashForm.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Handler\V2rayUpdateHandle.cs" />
     <Compile Include="HttpProxyHandler\HttpWebServer.cs" />
@@ -180,7 +164,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tool\FileManager.cs" />
     <Compile Include="Tool\Job.cs" />
-    <Compile Include="Tool\Scan.cs" />
     <Compile Include="Tool\UI.cs" />
     <Compile Include="Tool\Utils.cs" />
     <Compile Include="Handler\V2rayConfigHandler.cs" />
@@ -205,6 +188,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AddServer3Form.resx">
       <DependentUpon>AddServer3Form.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -287,11 +271,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\checkupdate.png" />
+    <None Include="Resources\about.png" />
+    <Content Include="Resources\help.png" />
     <Content Include="Resources\privoxy_conf.txt" />
     <EmbeddedResource Include="zxing.presentation.dll" />
     <EmbeddedResource Include="zxing.dll" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="protos\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

@@ -3,18 +3,20 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Drawing;
+using ZXing;
+using ZXing.Common;
+using ZXing.QrCode;
 
 namespace v2rayN
 {
@@ -141,24 +143,6 @@ namespace v2rayN
 
         #region 转换函数
 
-        /// <summary>  
-        /// 转换方法  
-        /// </summary>  
-        /// <param name="size">字节值</param>  
-        /// <returns></returns>  
-        public static String HumanReadableFilesize(double size)
-        {
-            String[] units = new String[] { "B", "KB", "MB", "GB", "TB", "PB" };
-            double mod = 1024.0;
-            int i = 0;
-            while (size >= mod)
-            {
-                size /= mod;
-                i++;
-            }
-            return Math.Round(size, 2) + units[i];
-        }
-
         /// <summary>
         /// List<string>转逗号分隔的字符串
         /// </summary>
@@ -219,11 +203,6 @@ namespace v2rayN
         {
             try
             {
-                if (plainText.Length % 4 > 0)
-                {
-                    plainText = plainText.PadRight(plainText.Length + 4 - plainText.Length % 4, '=');
-                }
-
                 byte[] data = Convert.FromBase64String(plainText);
                 return Encoding.UTF8.GetString(data);
             }
@@ -482,31 +461,6 @@ namespace v2rayN
 
         #endregion
 
-        #region 获取显示屏大小
-
-        public enum DeviceCap
-        {
-            DESKTOPVERTRES = 117,
-            DESKTOPHORZRES = 118,
-        }
-
-        public static Point GetScreenPhysicalSize()
-        {
-            using (Graphics g = Graphics.FromHwnd(IntPtr.Zero))
-            {
-                IntPtr desktop = g.GetHdc();
-                int PhysicalScreenWidth = GetDeviceCaps(desktop, (int)DeviceCap.DESKTOPHORZRES);
-                int PhysicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.DESKTOPVERTRES);
-
-                return new Point(PhysicalScreenWidth, PhysicalScreenHeight);
-            }
-        }
-
-        [DllImport("gdi32.dll")]
-        static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
-
-        #endregion
-
         #region 杂项
 
         /// <summary>
@@ -653,7 +607,7 @@ namespace v2rayN
 
         #endregion
 
-        #region
+        #region Log
 
         public static void SaveLog(string strContent)
         {
@@ -691,5 +645,62 @@ namespace v2rayN
         }
 
         #endregion
+
+
+        #region scan screen
+
+        public static string ScanScreen()
+        {
+            string ret = string.Empty;
+            try
+            {
+                foreach (Screen screen in Screen.AllScreens)
+                {
+                    using (Bitmap fullImage = new Bitmap(screen.Bounds.Width,
+                                                    screen.Bounds.Height))
+                    {
+                        using (Graphics g = Graphics.FromImage(fullImage))
+                        {
+                            g.CopyFromScreen(screen.Bounds.X,
+                                             screen.Bounds.Y,
+                                             0, 0,
+                                             fullImage.Size,
+                                             CopyPixelOperation.SourceCopy);
+                        }
+                        int maxTry = 10;
+                        for (int i = 0; i < maxTry; i++)
+                        {
+                            int marginLeft = (int)((double)fullImage.Width * i / 2.5 / maxTry);
+                            int marginTop = (int)((double)fullImage.Height * i / 2.5 / maxTry);
+                            Rectangle cropRect = new Rectangle(marginLeft, marginTop, fullImage.Width - marginLeft * 2, fullImage.Height - marginTop * 2);
+                            Bitmap target = new Bitmap(screen.Bounds.Width, screen.Bounds.Height);
+
+                            double imageScale = (double)screen.Bounds.Width / (double)cropRect.Width;
+                            using (Graphics g = Graphics.FromImage(target))
+                            {
+                                g.DrawImage(fullImage, new Rectangle(0, 0, target.Width, target.Height),
+                                                cropRect,
+                                                GraphicsUnit.Pixel);
+                            }
+
+                            var source = new BitmapLuminanceSource(target);
+                            var bitmap = new BinaryBitmap(new HybridBinarizer(source));
+                            QRCodeReader reader = new QRCodeReader();
+                            var result = reader.decode(bitmap);
+                            if (result != null)
+                            {
+                                ret = result.Text;
+                                return ret;
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }
+            return string.Empty;
+        }
+
+        #endregion
+
     }
 }

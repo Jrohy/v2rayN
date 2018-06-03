@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 using v2rayN.Mode;
 
 namespace v2rayN.Handler
@@ -286,11 +285,14 @@ namespace v2rayN.Handler
                         {
                             continue;
                         }
-                        if (Utils.IsIP(url))
+                        if (Utils.IsIP(url) || url.StartsWith("geoip:"))
                         {
                             rulesIP.ip.Add(url);
                         }
-                        else if (Utils.IsDomain(url))
+                        else if (Utils.IsDomain(url)
+                            || url.StartsWith("geosite:")
+                            || url.StartsWith("regexp:")
+                            || url.StartsWith("domain:"))
                         {
                             rulesDomain.domain.Add(url);
                         }
@@ -351,6 +353,7 @@ namespace v2rayN.Handler
                     //远程服务器用户ID
                     usersItem.id = config.id();
                     usersItem.alterId = config.alterId();
+                    usersItem.email = Global.userEMail;
                     usersItem.security = config.security();
 
                     //Mux
@@ -679,6 +682,7 @@ namespace v2rayN.Handler
                 //远程服务器用户ID
                 usersItem.id = config.id();
                 usersItem.alterId = config.alterId();
+                usersItem.email = Global.userEMail;
 
                 //远程服务器底层传输配置
                 StreamSettings streamSettings = v2rayConfig.inbound.streamSettings;
@@ -983,69 +987,37 @@ namespace v2rayN.Handler
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="msg"></param>
-        /// <param name="str"></param>
         /// <returns></returns>
-        public static List<VmessItem> ImportFromClipboardConfig(out string msg)
-        {
-            //载入配置文件 
-            string result = Utils.GetClipboardData();
-            return ImportFromStrConfig(out msg, result);
-        }
-
-        /// <summary>
-        /// 传入字符串来生成vmess配置
-        /// </summary>
-        /// <param name="msg"></param>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public static List<VmessItem> ImportFromStrConfig(out string msg, string str)
+        public static VmessItem ImportFromClipboardConfig(string clipboardData, out string msg)
         {
             msg = string.Empty;
-            List<VmessItem> vmessItems = new List<VmessItem>();
+            VmessItem vmessItem = new VmessItem();
+
             try
             {
-
-                if (Utils.IsNullOrEmpty(str))
+                //载入配置文件 
+                string result = clipboardData;// Utils.GetClipboardData();
+                if (Utils.IsNullOrEmpty(result))
                 {
                     msg = "读取配置文件失败";
                     return null;
                 }
 
-                if (!str.Contains(Global.vmessProtocol) && !str.Contains(Global.ssProtocol))
+                if (result.StartsWith(Global.vmessProtocol))
                 {
-                    msg = "非vmess或ss协议";
-                    return null;
-                }
-
-                //去除vmess://或者ss://前面开头的多余字符
-                int vIndex = str.IndexOf(Global.vmessProtocol, StringComparison.Ordinal);
-                int sIndex = str.IndexOf(Global.ssProtocol, StringComparison.Ordinal);
-                int index = vIndex > sIndex ? (sIndex == -1?vIndex:sIndex) : (vIndex == -1 ? sIndex : vIndex);
-                str = str.Substring(index);
-
-                //以vmess://和ss://为分割符,应对混合批量字符串
-                string[] strArray = str.Trim().Split(new string[] {Global.vmessProtocol, Global.ssProtocol}, StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (string s in strArray)
-                {
-                    string temp = s.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "");
-                    Match tempMatch = Regex.Match(temp, "([A-Za-z0-9_=-]+)", RegexOptions.IgnoreCase);
-
-                    temp = Utils.Base64Decode(tempMatch.Groups[0].Value);
-
-                    //base64转为失败则忽略这条
-                    if (Utils.IsNullOrEmpty(temp))
-                        continue;
-
-                    VmessItem vmessItem = new VmessItem();
-
-                    //vmess://字符串处理
-                    if (temp.Contains("aid") && temp.Contains("ps"))
+                    int indexSplit = result.IndexOf("?");
+                    if (indexSplit > 0)
+                    {
+                        vmessItem = ResolveVmess4Kitsunebi(result);
+                    }
+                    else
                     {
                         vmessItem.configType = (int)EConfigType.Vmess;
+                        result = result.Substring(Global.vmessProtocol.Length);
+                        result = Utils.Base64Decode(result);
 
                         //转成Json
-                        VmessQRCode vmessQRCode = Utils.FromJson<VmessQRCode>(temp);
+                        VmessQRCode vmessQRCode = Utils.FromJson<VmessQRCode>(result);
                         if (vmessQRCode == null)
                         {
                             msg = "转换配置文件失败";
@@ -1058,49 +1030,51 @@ namespace v2rayN.Handler
                         vmessItem.configVersion = Utils.ToInt(vmessQRCode.v);
                         vmessItem.remarks = vmessQRCode.ps;
                         vmessItem.address = vmessQRCode.add;
-                        vmessItem.port = Convert.ToInt32(vmessQRCode.port);
+                        vmessItem.port = Utils.ToInt(vmessQRCode.port);
                         vmessItem.id = vmessQRCode.id;
-                        vmessItem.alterId = Convert.ToInt32(vmessQRCode.aid);
+                        vmessItem.alterId = Utils.ToInt(vmessQRCode.aid);
                         vmessItem.network = vmessQRCode.net;
                         vmessItem.headerType = vmessQRCode.type;
                         vmessItem.requestHost = vmessQRCode.host;
                         vmessItem.path = vmessQRCode.path;
                         vmessItem.streamSecurity = vmessQRCode.tls;
-
-                        ConfigHandler.UpgradeServerVersion(ref vmessItem);
-
-                        vmessItems.Add(vmessItem);
                     }
-                    //ss://字符串处理
-                    else
+
+                    ConfigHandler.UpgradeServerVersion(ref vmessItem);
+                }
+                else if (result.StartsWith(Global.ssProtocol))
+                {
+                    msg = "配置格式不正确";
+
+                    vmessItem.configType = (int)EConfigType.Shadowsocks;
+                    result = result.Substring(Global.ssProtocol.Length);
+                    int indexRemark = result.IndexOf("#");
+                    if (indexRemark > 0)
                     {
-                        vmessItem.configType = (int) EConfigType.Shadowsocks;
-                        int indexRemark = temp.IndexOf("#", StringComparison.Ordinal);
-                        if (indexRemark > 0)
-                        {
-                            temp = temp.Substring(0, indexRemark);
-                        }
-
-                        string[] arr1 = temp.Split('@');
-                        if (arr1.Length != 2)
-                        {
-                            continue;
-                        }
-
-                        string[] arr21 = arr1[0].Split(':');
-                        string[] arr22 = arr1[1].Split(':');
-                        if (arr21.Length != 2 || arr21.Length != 2)
-                        {
-                            continue;
-                        }
-
-                        vmessItem.address = arr22[0];
-                        vmessItem.port = Convert.ToInt32(arr22[1]);
-                        vmessItem.security = arr21[0];
-                        vmessItem.id = arr21[1];
-
-                        vmessItems.Add(vmessItem);
+                        result = result.Substring(0, indexRemark);
                     }
+                    result = Utils.Base64Decode(result);
+
+                    string[] arr1 = result.Split('@');
+                    if (arr1.Length != 2)
+                    {
+                        return null;
+                    }
+                    string[] arr21 = arr1[0].Split(':');
+                    string[] arr22 = arr1[1].Split(':');
+                    if (arr21.Length != 2 || arr21.Length != 2)
+                    {
+                        return null;
+                    }
+                    vmessItem.address = arr22[0];
+                    vmessItem.port = Utils.ToInt(arr22[1]);
+                    vmessItem.security = arr21[0];
+                    vmessItem.id = arr21[1];
+                }
+                else
+                {
+                    msg = "非vmess或ss协议";
+                    return null;
                 }
             }
             catch
@@ -1109,7 +1083,7 @@ namespace v2rayN.Handler
                 return null;
             }
 
-            return vmessItems;
+            return vmessItem;
         }
 
 
@@ -1137,6 +1111,44 @@ namespace v2rayN.Handler
         {
             msg = string.Empty;
             return GenerateServerConfig(config, fileName, out msg);
+        }
+
+        private static VmessItem ResolveVmess4Kitsunebi(string result)
+        {
+            VmessItem vmessItem = new VmessItem();
+
+            vmessItem.configType = (int)EConfigType.Vmess;
+            result = result.Substring(Global.vmessProtocol.Length);
+            int indexSplit = result.IndexOf("?");
+            if (indexSplit > 0)
+            {
+                result = result.Substring(0, indexSplit);
+            }
+            result = Utils.Base64Decode(result);
+
+            string[] arr1 = result.Split('@');
+            if (arr1.Length != 2)
+            {
+                return null;
+            }
+            string[] arr21 = arr1[0].Split(':');
+            string[] arr22 = arr1[1].Split(':');
+            if (arr21.Length != 2 || arr21.Length != 2)
+            {
+                return null;
+            }
+
+            vmessItem.address = arr22[0];
+            vmessItem.port = Utils.ToInt(arr22[1]);
+            vmessItem.security = arr21[0];
+            vmessItem.id = arr21[1];
+                        
+            vmessItem.network = Global.DefaultNetwork;
+            vmessItem.headerType = Global.None;
+            vmessItem.remarks = "Alien";
+            vmessItem.alterId = 0;
+
+            return vmessItem;
         }
 
         #endregion

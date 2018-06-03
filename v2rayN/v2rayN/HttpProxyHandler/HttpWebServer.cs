@@ -61,6 +61,8 @@ namespace v2rayN.HttpProxyHandler
                             {
                                 string rstr = _responderMethod(ctx.Request);
                                 byte[] buf = Encoding.UTF8.GetBytes(rstr);
+                                ctx.Response.StatusCode = 200;
+                                ctx.Response.ContentType = "application/x-ns-proxy-autoconfig";
                                 ctx.Response.ContentLength64 = buf.Length;
                                 ctx.Response.OutputStream.Write(buf, 0, buf.Length);
                             }
@@ -91,5 +93,6 @@ namespace v2rayN.HttpProxyHandler
                 _listener = null;
             }
         }
+
     }
 }

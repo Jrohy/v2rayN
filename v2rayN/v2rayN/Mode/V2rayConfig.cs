@@ -113,6 +113,10 @@ namespace v2rayN.Mode
         /// <summary>
         /// 
         /// </summary>
+        public string email { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public string security { get; set; }
     }
 

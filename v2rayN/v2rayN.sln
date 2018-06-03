@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2002
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "v2rayN", "v2rayN\v2rayN.csproj", "{0A9785E6-D256-4B73-9757-4EF59955FD1E}"
 EndProject
 Global
@@ -23,8 +21,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {527A7274-936A-44B7-82C4-DDC26994BF59}
 	EndGlobalSection
 EndGlobal

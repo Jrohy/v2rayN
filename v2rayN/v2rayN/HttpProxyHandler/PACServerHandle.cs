@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -79,7 +80,7 @@ namespace v2rayN.HttpProxyHandler
                 lstProxy.Add(string.Format("PROXY {0}:{1};", address, port));
                 var proxy = string.Join("", lstProxy.ToArray());
 
-                string strPacfile = Utils.GetPath(Global.PAC_FILE);
+                string strPacfile = Utils.GetPath(Global.pacFILE);
                 if (!File.Exists(strPacfile))
                 {
                     FileManager.UncompressFile(strPacfile, Resources.pac_txt);

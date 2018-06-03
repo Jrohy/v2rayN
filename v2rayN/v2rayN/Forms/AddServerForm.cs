@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using v2rayN.Handler;
 using v2rayN.Mode;
@@ -253,23 +252,23 @@ namespace v2rayN.Forms
             ClearServer();
 
             string msg;
-            List<VmessItem> vmessItems = V2rayConfigHandler.ImportFromClipboardConfig(out msg);
-            if (vmessItems == null && vmessItems.Count == 0)
+            VmessItem vmessItem = V2rayConfigHandler.ImportFromClipboardConfig(Utils.GetClipboardData(), out msg);
+            if (vmessItem == null)
             {
                 UI.Show(msg);
                 return;
             }
 
-            txtAddress.Text = vmessItems[0].address;
-            txtPort.Text = vmessItems[0].port.ToString();
-            txtId.Text = vmessItems[0].id;
-            txtAlterId.Text = vmessItems[0].alterId.ToString();
-            txtRemarks.Text = vmessItems[0].remarks;
-            cmbNetwork.Text = vmessItems[0].network;
-            cmbHeaderType.Text = vmessItems[0].headerType;
-            txtRequestHost.Text = vmessItems[0].requestHost;
-            txtPath.Text = vmessItems[0].path;
-            cmbStreamSecurity.Text = vmessItems[0].streamSecurity;
+            txtAddress.Text = vmessItem.address;
+            txtPort.Text = vmessItem.port.ToString();
+            txtId.Text = vmessItem.id;
+            txtAlterId.Text = vmessItem.alterId.ToString();
+            txtRemarks.Text = vmessItem.remarks;
+            cmbNetwork.Text = vmessItem.network;
+            cmbHeaderType.Text = vmessItem.headerType;
+            txtRequestHost.Text = vmessItem.requestHost;
+            txtPath.Text = vmessItem.path;
+            cmbStreamSecurity.Text = vmessItem.streamSecurity;
         }
         #endregion
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace v2rayN.Mode
 {
@@ -249,19 +250,34 @@ namespace v2rayN.Mode
             path = string.Empty;
             streamSecurity = string.Empty;
             configType = (int)EConfigType.Vmess;
+            testResult = string.Empty;
         }
 
         public string getSummary()
         {
             string summary = string.Empty;
             summary = string.Format("{0}-", ((EConfigType)configType).ToString());
+            string[] arrAddr = address.Split('.');
+            string addr = string.Empty;
+            if (arrAddr.Length > 2)
+            {
+                addr = $"{arrAddr[0]}***{arrAddr[arrAddr.Length - 1]}";
+            }
+            else if (arrAddr.Length > 1)
+            {
+                addr = $"***{arrAddr[arrAddr.Length - 1]}";
+            }
+            else
+            {
+                addr = address;
+            }
             if (configType == (int)EConfigType.Vmess)
             {
-                summary += string.Format("{0}({1}:{2})", remarks, address, port);
+                summary += string.Format("{0}({1}:{2})", remarks, addr, port);
             }
             else if (configType == (int)EConfigType.Shadowsocks)
             {
-                summary += string.Format("{0}({1}:{2})", remarks, address, port);
+                summary += string.Format("{0}({1}:{2})", remarks, addr, port);
             }
             else
             {
@@ -328,6 +344,11 @@ namespace v2rayN.Mode
         /// config type(1=normal,2=custom)
         /// </summary>
         public int configType { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string testResult { get; set; }
 
     }
 

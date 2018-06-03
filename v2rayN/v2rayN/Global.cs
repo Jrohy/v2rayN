@@ -4,15 +4,35 @@ namespace v2rayN
     class Global
     {
         #region 常量
+
         /// <summary>
         /// 更新链接
         /// </summary>
-        public const string UpdateUrl = @"https://github.com/Jrohy/v2rayN/releases";
-
+        public const string UpdateUrl = @"https://github.com/2dust/v2rayN/releases";
         /// <summary>
         /// 关于链接
         /// </summary>
-        public const string AboutUrl = @"https://github.com/Jrohy/v2rayN";
+        public const string AboutUrl = @"https://github.com/2dust/v2rayN";
+        /// <summary>
+        /// Donate
+        /// </summary>
+        public const string DonateUrl = @"https://www.paypal.me/CaptainIronNG/18";
+        /// <summary>
+        ///  
+        /// </summary>
+        public const string GithubIssuesUrl = @"https://github.com/2dust/v2rayN/issues";
+        /// <summary>
+        ///  
+        /// </summary>
+        public const string TelegramGroupUrl = @"https://t.me/v2rayN";
+
+        /// <summary>
+        /// SpeedTestUrl
+        /// </summary>
+        //public const string SpeedTestUrl = @"https://github.com/2dust/v2rayN/releases/download/2.1/test.zip";
+        //public const string SpeedTestUrl = @"http://speedtest.tokyo2.linode.com/100MB-tokyo2.bin";
+        public const string SpeedTestUrl = @"http://speedtest-sfo2.digitalocean.com/10mb.test";
+
 
         /// <summary>
         /// 本软件配置文件名
@@ -89,7 +109,13 @@ namespace v2rayN
         /// <summary>
         /// pac
         /// </summary>
-        public const string PAC_FILE = "pac.txt";
+        public const string pacFILE = "pac.txt";
+
+        /// <summary>
+        /// email
+        /// </summary>
+        public const string userEMail = "t@t.tt";
+
 
         #endregion
 

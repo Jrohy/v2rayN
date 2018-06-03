@@ -120,7 +120,6 @@ namespace v2rayN.Handler
                     if (!String.IsNullOrEmpty(e.Data))
                     {
                         string msg = e.Data + Environment.NewLine;
-                        //this.AppendText(e.Data + Environment.NewLine);
                         ShowMsg(false, msg);
                     }
                 });
