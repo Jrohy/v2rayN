@@ -39,7 +39,7 @@ namespace v2rayN.Handler
             {
                 string msg = string.Empty;
                 string fileName = Utils.GetPath(v2rayConfigRes);
-                if (V2rayConfigHandler.GenerateClientConfig(config, fileName, out msg) != 0)
+                if (V2rayConfigHandler.GenerateClientConfig(config, fileName, false, out msg) != 0)
                 {
                     ShowMsg(false, msg);
                 }

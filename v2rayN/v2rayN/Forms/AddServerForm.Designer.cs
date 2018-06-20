@@ -33,6 +33,9 @@
             this.btnGUID = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.txtPath = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
@@ -69,9 +72,6 @@
             this.MenuItemImportServer = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuItemImportClipboard = new System.Windows.Forms.ToolStripMenuItem();
-            this.label19 = new System.Windows.Forms.Label();
-            this.txtPath = new System.Windows.Forms.TextBox();
-            this.label20 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -160,6 +160,32 @@
             this.groupBox2.TabIndex = 21;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "不清楚则保持默认值";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(469, 84);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(149, 12);
+            this.label20.TabIndex = 29;
+            this.label20.Text = "3)h2 host中间逗号(,)隔开";
+            // 
+            // txtPath
+            // 
+            this.txtPath.Location = new System.Drawing.Point(124, 108);
+            this.txtPath.Multiline = true;
+            this.txtPath.Name = "txtPath";
+            this.txtPath.Size = new System.Drawing.Size(396, 38);
+            this.txtPath.TabIndex = 28;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(9, 108);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(65, 12);
+            this.label19.TabIndex = 27;
+            this.label19.Text = "路径(path)";
             // 
             // label18
             // 
@@ -316,6 +342,7 @@
             this.cmbSecurity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSecurity.FormattingEnabled = true;
             this.cmbSecurity.Items.AddRange(new object[] {
+            "auto",
             "aes-128-cfb",
             "aes-128-gcm",
             "chacha20-poly1305",
@@ -487,32 +514,6 @@
             this.MenuItemImportClipboard.Size = new System.Drawing.Size(160, 22);
             this.MenuItemImportClipboard.Text = "从剪贴板导入URL";
             this.MenuItemImportClipboard.Click += new System.EventHandler(this.MenuItemImportClipboard_Click);
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(9, 108);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(65, 12);
-            this.label19.TabIndex = 27;
-            this.label19.Text = "路径(path)";
-            // 
-            // txtPath
-            // 
-            this.txtPath.Location = new System.Drawing.Point(124, 108);
-            this.txtPath.Multiline = true;
-            this.txtPath.Name = "txtPath";
-            this.txtPath.Size = new System.Drawing.Size(396, 38);
-            this.txtPath.TabIndex = 28;
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(469, 84);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(149, 12);
-            this.label20.TabIndex = 29;
-            this.label20.Text = "3)h2 host中间逗号(,)隔开";
             // 
             // AddServerForm
             // 

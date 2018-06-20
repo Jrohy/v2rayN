@@ -14,20 +14,8 @@ namespace v2rayN
         /// 应用程序的主入口点。
         /// </summary>
         [STAThread]
-        static void Main(string[] args)
+        static void Main()
         {
-            foreach (string arg in args)
-            {
-                if (arg == "--setautorun")
-                {
-                    if (!Utils.SwitchAutoRun())
-                    {
-                        Environment.ExitCode = 1;
-                    }
-                    return;
-                }
-            }
-
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);

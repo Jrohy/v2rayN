@@ -8,6 +8,7 @@ namespace v2rayN.Forms
     public partial class AddServer3Form : BaseForm
     {
         public int EditIndex { get; set; }
+        VmessItem vmessItem = null;
 
         public AddServer3Form()
         {
@@ -19,10 +20,12 @@ namespace v2rayN.Forms
         {
             if (EditIndex >= 0)
             {
+                vmessItem = config.vmess[EditIndex];
                 BindingServer();
             }
             else
             {
+                vmessItem = new VmessItem();
                 ClearServer();
             }
         }
@@ -32,7 +35,6 @@ namespace v2rayN.Forms
         /// </summary>
         private void BindingServer()
         {
-            VmessItem vmessItem = config.vmess[EditIndex];
 
             txtAddress.Text = vmessItem.address;
             txtPort.Text = vmessItem.port.ToString();
@@ -83,7 +85,6 @@ namespace v2rayN.Forms
                 return;
             }
 
-            VmessItem vmessItem = new VmessItem();
             vmessItem.address = address;
             vmessItem.port = Utils.ToInt(port);
             vmessItem.id = id;
@@ -229,6 +230,6 @@ namespace v2rayN.Forms
             }
 
         }
-         
+
     }
 }

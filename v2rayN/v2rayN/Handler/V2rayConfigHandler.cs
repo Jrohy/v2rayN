@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using v2rayN.Mode;
+using System.Net;
+using System.Text;
 
 namespace v2rayN.Handler
 {
@@ -22,7 +24,7 @@ namespace v2rayN.Handler
         /// <param name="fileName"></param>
         /// <param name="msg"></param>
         /// <returns></returns>
-        public static int GenerateClientConfig(Config config, string fileName, out string msg)
+        public static int GenerateClientConfig(Config config, string fileName, bool blExport, out string msg)
         {
             msg = string.Empty;
 
@@ -62,7 +64,7 @@ namespace v2rayN.Handler
                 }
 
                 //开始修改配置
-                log(config, ref v2rayConfig);
+                log(config, ref v2rayConfig, blExport);
 
                 //本地端口
                 inbound(config, ref v2rayConfig);
@@ -97,20 +99,37 @@ namespace v2rayN.Handler
         /// <param name="config"></param>
         /// <param name="v2rayConfig"></param>
         /// <returns></returns>
-        private static int log(Config config, ref V2rayConfig v2rayConfig)
+        private static int log(Config config, ref V2rayConfig v2rayConfig, bool blExport)
         {
             try
             {
-                //日志
-                if (config.logEnabled)
+                if (blExport)
                 {
-                    v2rayConfig.log.loglevel = config.loglevel;
+                    if (config.logEnabled)
+                    {
+                        v2rayConfig.log.loglevel = config.loglevel;
+                    }
+                    else
+                    {
+                        v2rayConfig.log.loglevel = "";
+                        v2rayConfig.log.access = "";
+                        v2rayConfig.log.error = "";
+                    }
                 }
                 else
                 {
-                    v2rayConfig.log.loglevel = "";
-                    v2rayConfig.log.access = "";
-                    v2rayConfig.log.error = "";
+                    if (config.logEnabled)
+                    {
+                        v2rayConfig.log.loglevel = config.loglevel;
+                        v2rayConfig.log.access = Utils.GetPath(v2rayConfig.log.access);
+                        v2rayConfig.log.error = Utils.GetPath(v2rayConfig.log.error);
+                    }
+                    else
+                    {
+                        v2rayConfig.log.loglevel = "";
+                        v2rayConfig.log.access = "";
+                        v2rayConfig.log.error = "";
+                    }
                 }
             }
             catch
@@ -636,7 +655,7 @@ namespace v2rayN.Handler
                 }
 
                 ////开始修改配置
-                log(config, ref v2rayConfig);
+                log(config, ref v2rayConfig, true);
 
                 //vmess协议服务器配置
                 ServerInbound(config, ref v2rayConfig);
@@ -996,7 +1015,7 @@ namespace v2rayN.Handler
             try
             {
                 //载入配置文件 
-                string result = clipboardData;// Utils.GetClipboardData();
+                string result = clipboardData.Trim();// Utils.GetClipboardData();
                 if (Utils.IsNullOrEmpty(result))
                 {
                     msg = "读取配置文件失败";
@@ -1048,12 +1067,27 @@ namespace v2rayN.Handler
 
                     vmessItem.configType = (int)EConfigType.Shadowsocks;
                     result = result.Substring(Global.ssProtocol.Length);
+                    //remark
                     int indexRemark = result.IndexOf("#");
                     if (indexRemark > 0)
                     {
+                        try
+                        {
+                            vmessItem.remarks = WebUtility.UrlDecode(result.Substring(indexRemark + 1, result.Length - indexRemark - 1));
+                        }
+                        catch { }
                         result = result.Substring(0, indexRemark);
                     }
-                    result = Utils.Base64Decode(result);
+                    //part decode
+                    int indexS = result.IndexOf("@");
+                    if (indexS > 0)
+                    {
+                        result = Utils.Base64Decode(result.Substring(0, indexS)) + result.Substring(indexS, result.Length - indexS);
+                    }
+                    else
+                    {
+                        result = Utils.Base64Decode(result);
+                    }
 
                     string[] arr1 = result.Split('@');
                     if (arr1.Length != 2)
@@ -1097,7 +1131,7 @@ namespace v2rayN.Handler
         public static int Export2ClientConfig(Config config, string fileName, out string msg)
         {
             msg = string.Empty;
-            return GenerateClientConfig(config, fileName, out msg);
+            return GenerateClientConfig(config, fileName, true, out msg);
         }
 
         /// <summary>
@@ -1142,7 +1176,7 @@ namespace v2rayN.Handler
             vmessItem.port = Utils.ToInt(arr22[1]);
             vmessItem.security = arr21[0];
             vmessItem.id = arr21[1];
-                        
+
             vmessItem.network = Global.DefaultNetwork;
             vmessItem.headerType = Global.None;
             vmessItem.remarks = "Alien";

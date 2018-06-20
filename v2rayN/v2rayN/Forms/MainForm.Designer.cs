@@ -69,15 +69,20 @@
             this.menuExport2ServerConfig = new System.Windows.Forms.ToolStripMenuItem();
             this.menuExport2ShareUrl = new System.Windows.Forms.ToolStripMenuItem();
             this.tsbServer = new System.Windows.Forms.ToolStripDropDownButton();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.txtMsgBox = new System.Windows.Forms.TextBox();
+            this.bgwScan = new System.ComponentModel.BackgroundWorker();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lvServers = new System.Windows.Forms.ListView();
             this.qrCodeControl = new v2rayN.Forms.QRCodeControl();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.txtMsgBox = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tsMain = new System.Windows.Forms.ToolStrip();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbSub = new System.Windows.Forms.ToolStripDropDownButton();
+            this.tsbSubSetting = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsbSubUpdate = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbOptionSetting = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbReload = new System.Windows.Forms.ToolStripButton();
@@ -94,15 +99,14 @@
             this.tsbAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbClose = new System.Windows.Forms.ToolStripButton();
-            this.bgwScan = new System.ComponentModel.BackgroundWorker();
             this.cmsMain.SuspendLayout();
             this.cmsLv.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.tsMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -131,7 +135,7 @@
             this.cmsMain.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.cmsMain.ShowCheckMargin = true;
             this.cmsMain.ShowImageMargin = false;
-            this.cmsMain.Size = new System.Drawing.Size(185, 186);
+            this.cmsMain.Size = new System.Drawing.Size(185, 164);
             // 
             // menuSysAgentEnabled
             // 
@@ -248,6 +252,7 @@
             this.menuExport2ServerConfig,
             this.menuExport2ShareUrl});
             this.cmsLv.Name = "cmsLv";
+            this.cmsLv.OwnerItem = this.tsbServer;
             this.cmsLv.Size = new System.Drawing.Size(257, 402);
             // 
             // menuAddVmessServer
@@ -399,32 +404,11 @@
             this.tsbServer.Text = "  服务器  ";
             this.tsbServer.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
-            // groupBox2
+            // bgwScan
             // 
-            this.groupBox2.Controls.Add(this.txtMsgBox);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox2.Location = new System.Drawing.Point(0, 475);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(893, 176);
-            this.groupBox2.TabIndex = 4;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "信息";
-            // 
-            // txtMsgBox
-            // 
-            this.txtMsgBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(49)))), ((int)(((byte)(52)))));
-            this.txtMsgBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtMsgBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtMsgBox.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMsgBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(226)))), ((int)(((byte)(228)))));
-            this.txtMsgBox.Location = new System.Drawing.Point(3, 17);
-            this.txtMsgBox.MaxLength = 0;
-            this.txtMsgBox.Multiline = true;
-            this.txtMsgBox.Name = "txtMsgBox";
-            this.txtMsgBox.ReadOnly = true;
-            this.txtMsgBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtMsgBox.Size = new System.Drawing.Size(887, 156);
-            this.txtMsgBox.TabIndex = 2;
+            this.bgwScan.WorkerReportsProgress = true;
+            this.bgwScan.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwScan_DoWork);
+            this.bgwScan.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgwScan_ProgressChanged);
             // 
             // groupBox1
             // 
@@ -432,7 +416,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 61);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(893, 414);
+            this.groupBox1.Size = new System.Drawing.Size(942, 414);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "服务器列表";
@@ -450,8 +434,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.qrCodeControl);
-            this.splitContainer1.Size = new System.Drawing.Size(887, 394);
-            this.splitContainer1.SplitterDistance = 600;
+            this.splitContainer1.Size = new System.Drawing.Size(936, 394);
+            this.splitContainer1.SplitterDistance = 633;
             this.splitContainer1.TabIndex = 2;
             // 
             // lvServers
@@ -467,7 +451,7 @@
             this.lvServers.MultiSelect = false;
             this.lvServers.Name = "lvServers";
             this.lvServers.ShowGroups = false;
-            this.lvServers.Size = new System.Drawing.Size(600, 394);
+            this.lvServers.Size = new System.Drawing.Size(633, 394);
             this.lvServers.TabIndex = 1;
             this.lvServers.UseCompatibleStateImageBehavior = false;
             this.lvServers.View = System.Windows.Forms.View.Details;
@@ -480,15 +464,42 @@
             this.qrCodeControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.qrCodeControl.Location = new System.Drawing.Point(0, 0);
             this.qrCodeControl.Name = "qrCodeControl";
-            this.qrCodeControl.Size = new System.Drawing.Size(283, 394);
+            this.qrCodeControl.Size = new System.Drawing.Size(299, 394);
             this.qrCodeControl.TabIndex = 0;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.txtMsgBox);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.groupBox2.Location = new System.Drawing.Point(0, 475);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(942, 176);
+            this.groupBox2.TabIndex = 4;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "信息";
+            // 
+            // txtMsgBox
+            // 
+            this.txtMsgBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(49)))), ((int)(((byte)(52)))));
+            this.txtMsgBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtMsgBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtMsgBox.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMsgBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(226)))), ((int)(((byte)(228)))));
+            this.txtMsgBox.Location = new System.Drawing.Point(3, 17);
+            this.txtMsgBox.MaxLength = 0;
+            this.txtMsgBox.Multiline = true;
+            this.txtMsgBox.Name = "txtMsgBox";
+            this.txtMsgBox.ReadOnly = true;
+            this.txtMsgBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtMsgBox.Size = new System.Drawing.Size(936, 156);
+            this.txtMsgBox.TabIndex = 2;
             // 
             // panel1
             // 
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 51);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(893, 10);
+            this.panel1.Size = new System.Drawing.Size(942, 10);
             this.panel1.TabIndex = 5;
             // 
             // tsMain
@@ -497,6 +508,8 @@
             this.tsMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbServer,
             this.toolStripSeparator4,
+            this.tsbSub,
+            this.toolStripSeparator8,
             this.tsbOptionSetting,
             this.toolStripSeparator5,
             this.tsbReload,
@@ -508,13 +521,44 @@
             this.tsbClose});
             this.tsMain.Location = new System.Drawing.Point(0, 0);
             this.tsMain.Name = "tsMain";
-            this.tsMain.Size = new System.Drawing.Size(893, 51);
+            this.tsMain.Size = new System.Drawing.Size(942, 51);
             this.tsMain.TabIndex = 6;
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(6, 51);
+            // 
+            // tsbSub
+            // 
+            this.tsbSub.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsbSubSetting,
+            this.tsbSubUpdate});
+            this.tsbSub.Image = global::v2rayN.Properties.Resources.sub;
+            this.tsbSub.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbSub.Name = "tsbSub";
+            this.tsbSub.Size = new System.Drawing.Size(66, 48);
+            this.tsbSub.Text = "  订阅  ";
+            this.tsbSub.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            // 
+            // tsbSubSetting
+            // 
+            this.tsbSubSetting.Name = "tsbSubSetting";
+            this.tsbSubSetting.Size = new System.Drawing.Size(118, 22);
+            this.tsbSubSetting.Text = "订阅设置";
+            this.tsbSubSetting.Click += new System.EventHandler(this.tsbSubSetting_Click);
+            // 
+            // tsbSubUpdate
+            // 
+            this.tsbSubUpdate.Name = "tsbSubUpdate";
+            this.tsbSubUpdate.Size = new System.Drawing.Size(118, 22);
+            this.tsbSubUpdate.Text = "更新订阅";
+            this.tsbSubUpdate.Click += new System.EventHandler(this.tsbSubUpdate_Click);
+            // 
+            // toolStripSeparator8
+            // 
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(6, 51);
             // 
             // tsbOptionSetting
             // 
@@ -643,17 +687,11 @@
             this.tsbClose.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.tsbClose.Click += new System.EventHandler(this.tsbClose_Click);
             // 
-            // bgwScan
-            // 
-            this.bgwScan.WorkerReportsProgress = true;
-            this.bgwScan.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwScan_DoWork);
-            this.bgwScan.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgwScan_ProgressChanged);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(893, 651);
+            this.ClientSize = new System.Drawing.Size(942, 651);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.panel1);
@@ -669,13 +707,13 @@
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.cmsMain.ResumeLayout(false);
             this.cmsLv.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.tsMain.ResumeLayout(false);
             this.tsMain.PerformLayout();
             this.ResumeLayout(false);
@@ -749,6 +787,10 @@
         private System.ComponentModel.BackgroundWorker bgwScan;
         private System.Windows.Forms.ToolStripMenuItem menuScanScreen;
         private System.Windows.Forms.ToolStripMenuItem menuScanScreen2;
+        private System.Windows.Forms.ToolStripDropDownButton tsbSub;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.ToolStripMenuItem tsbSubSetting;
+        private System.Windows.Forms.ToolStripMenuItem tsbSubUpdate;
     }
 }
 
