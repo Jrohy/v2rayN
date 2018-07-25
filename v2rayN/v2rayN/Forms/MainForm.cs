@@ -6,6 +6,7 @@ using v2rayN.Handler;
 using v2rayN.HttpProxyHandler;
 using v2rayN.Mode;
 using System.Collections.Generic;
+using System.IO;
 
 namespace v2rayN.Forms
 {
@@ -46,11 +47,6 @@ namespace v2rayN.Forms
 
             LoadV2ray();
 
-            //自动从网络同步本地时间
-            if (config.autoSyncTime)
-            {
-                //CDateTime.SetLocalTime();
-            }
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -381,14 +377,14 @@ namespace v2rayN.Forms
         {
             if (!config.sysAgentEnabled || config.listenerType != 1)
             {
-                UI.Show("此功能依赖系统全局代理,请先设置正确。");
+                UI.Show("此功能依赖Http全局代理,请先设置正确。");
                 return;
             }
 
             UI.Show("注意：" +
-                  "\r\n此功能依赖系统全局代理!" +
+                  "\r\n此功能依赖Http全局代理!" +
                   "\r\n测试过程中,请不要操作任何功能!" +
-                  "\r\n测试完成后,请手工调整系统全局代理和活动节点。");
+                  "\r\n测试完成后,请手工调整Http全局代理和活动节点。");
 
             GetLvSelectedIndex();
             ServerSpeedTest();
@@ -933,19 +929,25 @@ namespace v2rayN.Forms
         private void menuGlobal_Click(object sender, EventArgs e)
         {
             config.listenerType = 1;
-            ChangePACButtonStatus(1);
+            ChangePACButtonStatus(config.listenerType);
         }
 
-        private void menuPAC_Click(object sender, EventArgs e)
+        private void menuGlobalPAC_Click(object sender, EventArgs e)
         {
             config.listenerType = 2;
-            ChangePACButtonStatus(2);
+            ChangePACButtonStatus(config.listenerType);
         }
 
         private void menuKeep_Click(object sender, EventArgs e)
         {
-            config.listenerType = 0;
-            ChangePACButtonStatus(0);
+            config.listenerType = 3;
+            ChangePACButtonStatus(config.listenerType);
+        }
+
+        private void menuKeepPAC_Click(object sender, EventArgs e)
+        {
+            config.listenerType = 4;
+            ChangePACButtonStatus(config.listenerType);
         }
 
         private void ChangePACButtonStatus(int type)
@@ -954,20 +956,29 @@ namespace v2rayN.Forms
             {
                 switch (type)
                 {
-                    case 0:
-                        menuGlobal.Checked = false;
-                        menuKeep.Checked = true;
-                        menuPAC.Checked = false;
-                        break;
                     case 1:
                         menuGlobal.Checked = true;
+                        menuGlobalPAC.Checked = false;
                         menuKeep.Checked = false;
-                        menuPAC.Checked = false;
+                        menuKeepPAC.Checked = false;
                         break;
                     case 2:
                         menuGlobal.Checked = false;
+                        menuGlobalPAC.Checked = true;
                         menuKeep.Checked = false;
-                        menuPAC.Checked = true;
+                        menuKeepPAC.Checked = false;
+                        break;
+                    case 3:
+                        menuGlobal.Checked = false;
+                        menuGlobalPAC.Checked = false;
+                        menuKeep.Checked = true;
+                        menuKeepPAC.Checked = false;
+                        break;
+                    case 4:
+                        menuGlobal.Checked = false;
+                        menuGlobalPAC.Checked = false;
+                        menuKeep.Checked = false;
+                        menuKeepPAC.Checked = true;
                         break;
                 }
             }
@@ -1109,7 +1120,18 @@ namespace v2rayN.Forms
             pacListHandle.UpdatePACFromGFWList(config);
         }
 
-
+        private void tsbCheckClearPACList_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                File.WriteAllText(Utils.GetPath(Global.pacFILE), Utils.GetEmbedText(Global.BlankPacFileName), Encoding.UTF8);
+                v2rayHandler_ProcessEvent(false, "简化PAC成功！");
+            }
+            catch (Exception ex)
+            {
+                Utils.SaveLog(ex.Message, ex);
+            }
+        }
         #endregion
 
         #region Help

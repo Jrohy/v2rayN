@@ -36,9 +36,9 @@
             this.menuSysAgentEnabled = new System.Windows.Forms.ToolStripMenuItem();
             this.menuSysAgentMode = new System.Windows.Forms.ToolStripMenuItem();
             this.menuGlobal = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuPAC = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuGlobalPAC = new System.Windows.Forms.ToolStripMenuItem();
             this.menuKeep = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuKeepPAC = new System.Windows.Forms.ToolStripMenuItem();
             this.menuServers = new System.Windows.Forms.ToolStripMenuItem();
             this.menuAddServers2 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuScanScreen2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,6 +91,7 @@
             this.tsbCheckUpdateN = new System.Windows.Forms.ToolStripMenuItem();
             this.tsbCheckUpdateCore = new System.Windows.Forms.ToolStripMenuItem();
             this.tsbCheckUpdatePACList = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsbCheckClearPACList = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbHelp = new System.Windows.Forms.ToolStripDropDownButton();
             this.tsbGithubIssues = new System.Windows.Forms.ToolStripMenuItem();
@@ -135,51 +136,53 @@
             this.cmsMain.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.cmsMain.ShowCheckMargin = true;
             this.cmsMain.ShowImageMargin = false;
-            this.cmsMain.Size = new System.Drawing.Size(185, 164);
+            this.cmsMain.Size = new System.Drawing.Size(185, 186);
             // 
             // menuSysAgentEnabled
             // 
             this.menuSysAgentEnabled.Name = "menuSysAgentEnabled";
             this.menuSysAgentEnabled.Size = new System.Drawing.Size(184, 22);
-            this.menuSysAgentEnabled.Text = "启用系统代理";
+            this.menuSysAgentEnabled.Text = "启用Http代理";
             this.menuSysAgentEnabled.Click += new System.EventHandler(this.menuSysAgentEnabled_Click);
             // 
             // menuSysAgentMode
             // 
             this.menuSysAgentMode.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuGlobal,
-            this.menuPAC,
-            this.toolStripMenuItem2,
-            this.menuKeep});
+            this.menuGlobalPAC,
+            this.menuKeep,
+            this.menuKeepPAC});
             this.menuSysAgentMode.Name = "menuSysAgentMode";
             this.menuSysAgentMode.Size = new System.Drawing.Size(184, 22);
-            this.menuSysAgentMode.Text = "系统代理模式";
+            this.menuSysAgentMode.Text = "Http代理模式";
             // 
             // menuGlobal
             // 
             this.menuGlobal.Name = "menuGlobal";
-            this.menuGlobal.Size = new System.Drawing.Size(178, 22);
-            this.menuGlobal.Text = "全局模式";
+            this.menuGlobal.Size = new System.Drawing.Size(340, 22);
+            this.menuGlobal.Text = "开启Http代理,并自动配置代理服务器(全局模式)";
             this.menuGlobal.Click += new System.EventHandler(this.menuGlobal_Click);
             // 
-            // menuPAC
+            // menuGlobalPAC
             // 
-            this.menuPAC.Name = "menuPAC";
-            this.menuPAC.Size = new System.Drawing.Size(178, 22);
-            this.menuPAC.Text = "PAC模式";
-            this.menuPAC.Click += new System.EventHandler(this.menuPAC_Click);
-            // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(175, 6);
+            this.menuGlobalPAC.Name = "menuGlobalPAC";
+            this.menuGlobalPAC.Size = new System.Drawing.Size(340, 22);
+            this.menuGlobalPAC.Text = "开启PAC,并自动配置PAC(PAC模式)";
+            this.menuGlobalPAC.Click += new System.EventHandler(this.menuGlobalPAC_Click);
             // 
             // menuKeep
             // 
             this.menuKeep.Name = "menuKeep";
-            this.menuKeep.Size = new System.Drawing.Size(178, 22);
-            this.menuKeep.Text = "保持当前模式不变更";
+            this.menuKeep.Size = new System.Drawing.Size(340, 22);
+            this.menuKeep.Text = "仅开启Http代理,不自动配置代理服务器(直连模式)";
             this.menuKeep.Click += new System.EventHandler(this.menuKeep_Click);
+            // 
+            // menuKeepPAC
+            // 
+            this.menuKeepPAC.Name = "menuKeepPAC";
+            this.menuKeepPAC.Size = new System.Drawing.Size(340, 22);
+            this.menuKeepPAC.Text = "仅开启PAC,不自动配置PAC";
+            this.menuKeepPAC.Click += new System.EventHandler(this.menuKeepPAC_Click);
             // 
             // menuServers
             // 
@@ -483,7 +486,6 @@
             this.txtMsgBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(49)))), ((int)(((byte)(52)))));
             this.txtMsgBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtMsgBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtMsgBox.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMsgBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(226)))), ((int)(((byte)(228)))));
             this.txtMsgBox.Location = new System.Drawing.Point(3, 17);
             this.txtMsgBox.MaxLength = 0;
@@ -596,7 +598,8 @@
             this.tsbCheckUpdate.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbCheckUpdateN,
             this.tsbCheckUpdateCore,
-            this.tsbCheckUpdatePACList});
+            this.tsbCheckUpdatePACList,
+            this.tsbCheckClearPACList});
             this.tsbCheckUpdate.Image = global::v2rayN.Properties.Resources.checkupdate;
             this.tsbCheckUpdate.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCheckUpdate.Name = "tsbCheckUpdate";
@@ -607,23 +610,30 @@
             // tsbCheckUpdateN
             // 
             this.tsbCheckUpdateN.Name = "tsbCheckUpdateN";
-            this.tsbCheckUpdateN.Size = new System.Drawing.Size(220, 22);
+            this.tsbCheckUpdateN.Size = new System.Drawing.Size(226, 22);
             this.tsbCheckUpdateN.Text = "检查更新v2rayN";
             this.tsbCheckUpdateN.Click += new System.EventHandler(this.tsbCheckUpdateN_Click);
             // 
             // tsbCheckUpdateCore
             // 
             this.tsbCheckUpdateCore.Name = "tsbCheckUpdateCore";
-            this.tsbCheckUpdateCore.Size = new System.Drawing.Size(220, 22);
+            this.tsbCheckUpdateCore.Size = new System.Drawing.Size(226, 22);
             this.tsbCheckUpdateCore.Text = "检查更新v2rayCore";
             this.tsbCheckUpdateCore.Click += new System.EventHandler(this.tsbCheckUpdateCore_Click);
             // 
             // tsbCheckUpdatePACList
             // 
             this.tsbCheckUpdatePACList.Name = "tsbCheckUpdatePACList";
-            this.tsbCheckUpdatePACList.Size = new System.Drawing.Size(220, 22);
-            this.tsbCheckUpdatePACList.Text = "检查更新PAC(需要系统代理)";
+            this.tsbCheckUpdatePACList.Size = new System.Drawing.Size(226, 22);
+            this.tsbCheckUpdatePACList.Text = "检查更新PAC (需要Http代理)";
             this.tsbCheckUpdatePACList.Click += new System.EventHandler(this.tsbCheckUpdatePACList_Click);
+            // 
+            // tsbCheckClearPACList
+            // 
+            this.tsbCheckClearPACList.Name = "tsbCheckClearPACList";
+            this.tsbCheckClearPACList.Size = new System.Drawing.Size(226, 22);
+            this.tsbCheckClearPACList.Text = "简化PAC (请设置Core路由)";
+            this.tsbCheckClearPACList.Click += new System.EventHandler(this.tsbCheckClearPACList_Click);
             // 
             // toolStripSeparator10
             // 
@@ -759,8 +769,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
         private System.Windows.Forms.ToolStripMenuItem menuSysAgentMode;
         private System.Windows.Forms.ToolStripMenuItem menuGlobal;
-        private System.Windows.Forms.ToolStripMenuItem menuPAC;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem menuGlobalPAC;
         private System.Windows.Forms.ToolStripMenuItem menuKeep;
         private System.Windows.Forms.ToolStripMenuItem menuSysAgentEnabled;
         private System.Windows.Forms.ToolStripMenuItem menuCopyPACUrl;
@@ -791,6 +800,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripMenuItem tsbSubSetting;
         private System.Windows.Forms.ToolStripMenuItem tsbSubUpdate;
+        private System.Windows.Forms.ToolStripMenuItem tsbCheckClearPACList;
+        private System.Windows.Forms.ToolStripMenuItem menuKeepPAC;
     }
 }
 

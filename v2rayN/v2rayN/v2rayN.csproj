@@ -137,7 +137,6 @@
     <Compile Include="StringEx.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Tool\CDateTime.cs" />
     <Compile Include="Forms\AddServerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -284,6 +283,7 @@
     <None Include="Resources\minimize.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Sample\BlankPac.txt" />
     <None Include="Resources\sub.png" />
     <None Include="Resources\checkupdate.png" />
     <None Include="Resources\about.png" />

@@ -46,6 +46,7 @@ namespace v2rayN.Forms
             txtRequestHost.Text = vmessItem.requestHost;
             txtPath.Text = vmessItem.path;
             cmbStreamSecurity.Text = vmessItem.streamSecurity;
+            cmbAllowInsecure.Text = vmessItem.allowInsecure;
         }
 
 
@@ -65,6 +66,7 @@ namespace v2rayN.Forms
             cmbHeaderType.Text = Global.None;
             txtRequestHost.Text = "";
             cmbStreamSecurity.Text = "";
+            cmbAllowInsecure.Text = "";
             txtPath.Text = "";
         }
 
@@ -120,6 +122,7 @@ namespace v2rayN.Forms
             string requestHost = txtRequestHost.Text;
             string path = txtPath.Text;
             string streamSecurity = cmbStreamSecurity.Text;
+            string allowInsecure = cmbAllowInsecure.Text;
 
             if (Utils.IsNullOrEmpty(address))
             {
@@ -154,6 +157,7 @@ namespace v2rayN.Forms
             vmessItem.requestHost = requestHost.Replace(" ", "");
             vmessItem.path = path.Replace(" ", "");
             vmessItem.streamSecurity = streamSecurity;
+            vmessItem.allowInsecure = allowInsecure;
 
             if (ConfigHandler.AddServer(ref config, vmessItem, EditIndex) == 0)
             {
@@ -272,5 +276,17 @@ namespace v2rayN.Forms
         }
         #endregion
 
+        private void cmbStreamSecurity_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string security = cmbStreamSecurity.Text;
+            if (Utils.IsNullOrEmpty(security))
+            {
+                panTlsMore.Hide();
+            }
+            else
+            {
+                panTlsMore.Show();
+            }
+        }
     }
 }

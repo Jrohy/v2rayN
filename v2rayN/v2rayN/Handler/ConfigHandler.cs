@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using v2rayN.Mode;
 
 namespace v2rayN.Handler
@@ -322,13 +323,18 @@ namespace v2rayN.Handler
                 }
                 else if (vmessItem.configType == (int)EConfigType.Shadowsocks)
                 {
+                    var remark = string.Empty;
+                    if (!Utils.IsNullOrEmpty(vmessItem.remarks))
+                    {
+                        remark = "#" + WebUtility.UrlEncode(vmessItem.remarks);
+                    }
                     url = string.Format("{0}:{1}@{2}:{3}",
                         vmessItem.security,
                         vmessItem.id,
                         vmessItem.address,
                         vmessItem.port);
                     url = Utils.Base64Encode(url);
-                    url = string.Format("{0}{1}", Global.ssProtocol, url);
+                    url = string.Format("{0}{1}{2}", Global.ssProtocol, url, remark);
                 }
                 else
                 {
@@ -624,7 +630,7 @@ namespace v2rayN.Handler
             {
                 return -1;
             }
-            if (clipboardData.IndexOf("vmess") >=0 && clipboardData.IndexOf("vmess") == clipboardData.LastIndexOf("vmess"))
+            if (clipboardData.IndexOf("vmess") >= 0 && clipboardData.IndexOf("vmess") == clipboardData.LastIndexOf("vmess"))
             {
                 clipboardData = clipboardData.Replace("\r\n", "").Replace("\n", "");
             }

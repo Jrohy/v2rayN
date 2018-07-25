@@ -111,7 +111,7 @@ namespace v2rayN.Handler
                     }
                     else
                     {
-                        v2rayConfig.log.loglevel = "";
+                        v2rayConfig.log.loglevel = config.loglevel;
                         v2rayConfig.log.access = "";
                         v2rayConfig.log.error = "";
                     }
@@ -126,7 +126,7 @@ namespace v2rayN.Handler
                     }
                     else
                     {
-                        v2rayConfig.log.loglevel = "";
+                        v2rayConfig.log.loglevel = config.loglevel;
                         v2rayConfig.log.access = "";
                         v2rayConfig.log.error = "";
                     }
@@ -483,7 +483,7 @@ namespace v2rayN.Handler
                         streamSettings.wsSettings = wsSettings;
 
                         TlsSettings tlsSettings = new TlsSettings();
-                        tlsSettings.allowInsecure = true;
+                        tlsSettings.allowInsecure = config.allowInsecure();
                         streamSettings.tlsSettings = tlsSettings;
                         break;
                     //h2
@@ -500,7 +500,7 @@ namespace v2rayN.Handler
                         streamSettings.httpSettings = httpSettings;
 
                         TlsSettings tlsSettings2 = new TlsSettings();
-                        tlsSettings2.allowInsecure = true;
+                        tlsSettings2.allowInsecure = config.allowInsecure();
                         streamSettings.tlsSettings = tlsSettings2;
                         break;
                     default:

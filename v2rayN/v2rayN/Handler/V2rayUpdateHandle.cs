@@ -47,7 +47,7 @@ namespace v2rayN.Handler
         public void AbsoluteV2rayCore(Config config)
         {
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; //TLS 1.2
-
+            ServicePointManager.DefaultConnectionLimit = 256;
             WebRequest request = WebRequest.Create(latestUrl);
             request.BeginGetResponse(new AsyncCallback(OnResponse), request);
         }
@@ -91,6 +91,7 @@ namespace v2rayN.Handler
             try
             {
                 ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; //TLS 1.2
+                ServicePointManager.DefaultConnectionLimit = 256;
                 if (UpdateCompleted != null)
                 {
                     UpdateCompleted(this, new ResultEventArgs(false, url));
@@ -170,6 +171,7 @@ namespace v2rayN.Handler
             try
             {
                 ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; //TLS 1.2
+                ServicePointManager.DefaultConnectionLimit = 256;
 
                 WebClient ws = new WebClient();
                 ws.DownloadStringCompleted += Ws_DownloadStringCompleted;

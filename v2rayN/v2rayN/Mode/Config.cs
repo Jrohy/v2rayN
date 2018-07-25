@@ -69,14 +69,10 @@ namespace v2rayN.Mode
         /// KcpItem
         /// </summary>
         public KcpItem kcpItem { get; set; }
+              
 
         /// <summary>
-        /// 自动从网络同步本地时间
-        /// </summary>
-        public bool autoSyncTime { get; set; }
-
-        /// <summary>
-        /// 启用系统代理
+        /// 启用Http代理
         /// </summary>
         public bool sysAgentEnabled { get; set; }
 
@@ -199,6 +195,14 @@ namespace v2rayN.Mode
             }
             return vmess[index].streamSecurity;
         }
+        public bool allowInsecure()
+        {
+            if (index < 0 || Utils.IsNullOrEmpty(vmess[index].allowInsecure))
+            {
+                return true;
+            }
+            return Convert.ToBoolean(vmess[index].allowInsecure);
+        }
 
         public int GetLocalPort(string protocol)
         {
@@ -253,6 +257,7 @@ namespace v2rayN.Mode
             requestHost = string.Empty;
             path = string.Empty;
             streamSecurity = string.Empty;
+            allowInsecure = string.Empty;
             configType = (int)EConfigType.Vmess;
             testResult = string.Empty;
             subid = string.Empty;
@@ -363,6 +368,12 @@ namespace v2rayN.Mode
         /// 底层传输安全
         /// </summary>
         public string streamSecurity { get; set; }
+
+        /// <summary>
+        /// 是否允许不安全连接（用于客户端）
+        /// </summary>
+        public string allowInsecure { get; set; }
+
 
         /// <summary>
         /// config type(1=normal,2=custom)
