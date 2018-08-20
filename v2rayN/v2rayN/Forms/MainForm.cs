@@ -23,7 +23,10 @@ namespace v2rayN.Forms
         public MainForm()
         {
             InitializeComponent();
+            this.ShowInTaskbar = false;
+            this.WindowState = FormWindowState.Minimized;
             this.Text = Utils.GetVersion();
+
             Application.ApplicationExit += (sender, args) =>
             {
                 Utils.ClearTempPath();
@@ -32,10 +35,6 @@ namespace v2rayN.Forms
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            //隐藏窗体不应在构造时期
-            this.ShowInTaskbar = false;
-            this.WindowState = FormWindowState.Minimized;
-            HideForm();
             ConfigHandler.LoadConfig(ref config);
             v2rayHandler = new V2rayHandler();
             v2rayHandler.ProcessEvent += v2rayHandler_ProcessEvent;
@@ -48,6 +47,7 @@ namespace v2rayN.Forms
 
             LoadV2ray();
 
+            HideForm();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -742,6 +742,8 @@ namespace v2rayN.Forms
             this.Activate();
             //this.notifyIcon1.Visible = false;
             this.ShowInTaskbar = true;
+
+            SetVisibleCore(true);
         }
 
         private void HideForm()
@@ -750,6 +752,8 @@ namespace v2rayN.Forms
             this.Hide();
             this.notifyMain.Visible = true;
             this.ShowInTaskbar = false;
+
+            SetVisibleCore(false);
         }
 
         #endregion

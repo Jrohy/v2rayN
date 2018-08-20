@@ -22,6 +22,7 @@ namespace v2rayN.Handler
         private static string v2rayConfigRes = Global.v2rayConfigFileName;
         private List<string> lstV2ray;
         public event ProcessDelegate ProcessEvent;
+        private int processId = 0;
 
         public V2rayHandler()
         {
@@ -67,12 +68,25 @@ namespace v2rayN.Handler
         {
             try
             {
-                foreach (string vName in lstV2ray)
+                bool blExist = true;
+                if (processId > 0)
                 {
-                    Process[] killPro = Process.GetProcessesByName(vName);
-                    foreach (Process p in killPro)
+                    Process p1 = Process.GetProcessById(processId);
+                    if (p1 != null)
                     {
-                        p.Kill();
+                        p1.Kill();
+                        blExist = false;
+                    }
+                }
+                if (blExist)
+                {
+                    foreach (string vName in lstV2ray)
+                    {
+                        Process[] killPro = Process.GetProcessesByName(vName);
+                        foreach (Process p in killPro)
+                        {
+                            p.Kill();
+                        }
                     }
                 }
             }
@@ -105,7 +119,8 @@ namespace v2rayN.Handler
                 }
                 if (Utils.IsNullOrEmpty(fileName))
                 {
-                    string msg = "未找到v2ray文件";
+
+                    string msg = string.Format("未找到v2ray-core,下载地址:{0}", @"https://github.com/v2ray/v2ray-core/releases");
                     ShowMsg(true, msg);
                     return;
                 }
@@ -125,11 +140,12 @@ namespace v2rayN.Handler
                 });
                 p.Start();
                 p.BeginOutputReadLine();
+                processId = p.Id;
             }
             catch (Exception ex)
             {
                 Utils.SaveLog(ex.Message, ex);
-                string msg = "未找到v2ray文件...";
+                string msg = ex.Message;
                 ShowMsg(true, msg);
             }
         }

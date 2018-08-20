@@ -28,35 +28,29 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("");
             this.btnClose = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.txtUrl = new System.Windows.Forms.TextBox();
-            this.txtRemarks = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.btnRemove = new System.Windows.Forms.Button();
+            this.btnAdd = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lvSubs = new System.Windows.Forms.ListView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.txtUrl2 = new System.Windows.Forms.TextBox();
-            this.txtRemarks2 = new System.Windows.Forms.TextBox();
+            this.txtUrl = new System.Windows.Forms.TextBox();
+            this.txtRemarks = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.txtUrl3 = new System.Windows.Forms.TextBox();
-            this.txtRemarks3 = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.groupBox1.SuspendLayout();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.panel2.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnClose
             // 
             this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnClose.Location = new System.Drawing.Point(396, 17);
+            this.btnClose.Location = new System.Drawing.Point(448, 17);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 4;
@@ -64,66 +58,41 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.txtUrl);
-            this.groupBox1.Controls.Add(this.txtRemarks);
-            this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(0, 10);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(611, 162);
-            this.groupBox1.TabIndex = 3;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "订阅一";
-            // 
-            // txtUrl
-            // 
-            this.txtUrl.Location = new System.Drawing.Point(127, 62);
-            this.txtUrl.Multiline = true;
-            this.txtUrl.Name = "txtUrl";
-            this.txtUrl.Size = new System.Drawing.Size(432, 78);
-            this.txtUrl.TabIndex = 23;
-            // 
-            // txtRemarks
-            // 
-            this.txtRemarks.Location = new System.Drawing.Point(127, 23);
-            this.txtRemarks.Name = "txtRemarks";
-            this.txtRemarks.Size = new System.Drawing.Size(313, 21);
-            this.txtRemarks.TabIndex = 11;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 27);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(83, 12);
-            this.label6.TabIndex = 10;
-            this.label6.Text = "备注(remarks)";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 62);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(59, 12);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "地址(url)";
-            // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.btnRemove);
+            this.panel2.Controls.Add(this.btnAdd);
             this.panel2.Controls.Add(this.btnClose);
             this.panel2.Controls.Add(this.btnOK);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 502);
+            this.panel2.Location = new System.Drawing.Point(0, 374);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(611, 60);
+            this.panel2.Size = new System.Drawing.Size(581, 60);
             this.panel2.TabIndex = 7;
+            // 
+            // btnRemove
+            // 
+            this.btnRemove.Location = new System.Drawing.Point(143, 17);
+            this.btnRemove.Name = "btnRemove";
+            this.btnRemove.Size = new System.Drawing.Size(75, 23);
+            this.btnRemove.TabIndex = 7;
+            this.btnRemove.Text = "移除(&R)";
+            this.btnRemove.UseVisualStyleBackColor = true;
+            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
+            // 
+            // btnAdd
+            // 
+            this.btnAdd.Location = new System.Drawing.Point(47, 17);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnAdd.TabIndex = 6;
+            this.btnAdd.Text = "添加(&A)";
+            this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(303, 17);
+            this.btnOK.Location = new System.Drawing.Point(355, 17);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 5;
@@ -136,37 +105,57 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(611, 10);
+            this.panel1.Size = new System.Drawing.Size(581, 10);
             this.panel1.TabIndex = 6;
+            // 
+            // lvSubs
+            // 
+            this.lvSubs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvSubs.FullRowSelect = true;
+            this.lvSubs.GridLines = true;
+            this.lvSubs.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.lvSubs.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1});
+            this.lvSubs.Location = new System.Drawing.Point(0, 0);
+            this.lvSubs.MultiSelect = false;
+            this.lvSubs.Name = "lvSubs";
+            this.lvSubs.ShowGroups = false;
+            this.lvSubs.Size = new System.Drawing.Size(581, 231);
+            this.lvSubs.TabIndex = 8;
+            this.lvSubs.UseCompatibleStateImageBehavior = false;
+            this.lvSubs.View = System.Windows.Forms.View.Details;
+            this.lvSubs.SelectedIndexChanged += new System.EventHandler(this.lvSubs_SelectedIndexChanged);
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.txtUrl2);
-            this.groupBox2.Controls.Add(this.txtRemarks2);
+            this.groupBox2.Controls.Add(this.txtUrl);
+            this.groupBox2.Controls.Add(this.txtRemarks);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox2.Location = new System.Drawing.Point(0, 172);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.groupBox2.Location = new System.Drawing.Point(0, 231);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(611, 162);
-            this.groupBox2.TabIndex = 8;
+            this.groupBox2.Size = new System.Drawing.Size(581, 133);
+            this.groupBox2.TabIndex = 9;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "订阅二";
+            this.groupBox2.Text = "订阅详情";
             // 
-            // txtUrl2
+            // txtUrl
             // 
-            this.txtUrl2.Location = new System.Drawing.Point(127, 62);
-            this.txtUrl2.Multiline = true;
-            this.txtUrl2.Name = "txtUrl2";
-            this.txtUrl2.Size = new System.Drawing.Size(432, 78);
-            this.txtUrl2.TabIndex = 23;
+            this.txtUrl.Location = new System.Drawing.Point(127, 62);
+            this.txtUrl.Multiline = true;
+            this.txtUrl.Name = "txtUrl";
+            this.txtUrl.Size = new System.Drawing.Size(432, 57);
+            this.txtUrl.TabIndex = 23;
+            this.txtUrl.Leave += new System.EventHandler(this.txtRemarks_Leave);
             // 
-            // txtRemarks2
+            // txtRemarks
             // 
-            this.txtRemarks2.Location = new System.Drawing.Point(127, 23);
-            this.txtRemarks2.Name = "txtRemarks2";
-            this.txtRemarks2.Size = new System.Drawing.Size(313, 21);
-            this.txtRemarks2.TabIndex = 11;
+            this.txtRemarks.Location = new System.Drawing.Point(127, 23);
+            this.txtRemarks.Name = "txtRemarks";
+            this.txtRemarks.Size = new System.Drawing.Size(313, 21);
+            this.txtRemarks.TabIndex = 11;
+            this.txtRemarks.Leave += new System.EventHandler(this.txtRemarks_Leave);
             // 
             // label2
             // 
@@ -186,99 +175,50 @@
             this.label3.TabIndex = 0;
             this.label3.Text = "地址(url)";
             // 
-            // groupBox3
+            // panel3
             // 
-            this.groupBox3.Controls.Add(this.txtUrl3);
-            this.groupBox3.Controls.Add(this.txtRemarks3);
-            this.groupBox3.Controls.Add(this.label4);
-            this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox3.Location = new System.Drawing.Point(0, 334);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(611, 162);
-            this.groupBox3.TabIndex = 9;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "订阅三";
-            // 
-            // txtUrl3
-            // 
-            this.txtUrl3.Location = new System.Drawing.Point(127, 62);
-            this.txtUrl3.Multiline = true;
-            this.txtUrl3.Name = "txtUrl3";
-            this.txtUrl3.Size = new System.Drawing.Size(432, 78);
-            this.txtUrl3.TabIndex = 23;
-            // 
-            // txtRemarks3
-            // 
-            this.txtRemarks3.Location = new System.Drawing.Point(127, 23);
-            this.txtRemarks3.Name = "txtRemarks3";
-            this.txtRemarks3.Size = new System.Drawing.Size(313, 21);
-            this.txtRemarks3.TabIndex = 11;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 27);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(83, 12);
-            this.label4.TabIndex = 10;
-            this.label4.Text = "备注(remarks)";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 62);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(59, 12);
-            this.label5.TabIndex = 0;
-            this.label5.Text = "地址(url)";
+            this.panel3.Controls.Add(this.lvSubs);
+            this.panel3.Controls.Add(this.groupBox2);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(0, 10);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(581, 364);
+            this.panel3.TabIndex = 10;
             // 
             // SubSettingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnClose;
-            this.ClientSize = new System.Drawing.Size(611, 562);
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(581, 434);
+            this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "SubSettingForm";
             this.Text = "订阅设置";
             this.Load += new System.EventHandler(this.SubSettingForm_Load);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
+            this.panel3.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.TextBox txtRemarks;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.TextBox txtUrl;
+        private System.Windows.Forms.ListView lvSubs;
+        private System.Windows.Forms.Button btnRemove;
+        private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.TextBox txtUrl2;
-        private System.Windows.Forms.TextBox txtRemarks2;
+        private System.Windows.Forms.TextBox txtUrl;
+        private System.Windows.Forms.TextBox txtRemarks;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.TextBox txtUrl3;
-        private System.Windows.Forms.TextBox txtRemarks3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Panel panel3;
     }
 }

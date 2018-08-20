@@ -630,10 +630,10 @@ namespace v2rayN.Handler
             {
                 return -1;
             }
-            if (clipboardData.IndexOf("vmess") >= 0 && clipboardData.IndexOf("vmess") == clipboardData.LastIndexOf("vmess"))
-            {
-                clipboardData = clipboardData.Replace("\r\n", "").Replace("\n", "");
-            }
+            //if (clipboardData.IndexOf("vmess") >= 0 && clipboardData.IndexOf("vmess") == clipboardData.LastIndexOf("vmess"))
+            //{
+            //    clipboardData = clipboardData.Replace("\r\n", "").Replace("\n", "");
+            //}
             int countServers = 0;
 
             //string[] arrData = clipboardData.Split(new string[] { "\r\n" }, StringSplitOptions.None);
