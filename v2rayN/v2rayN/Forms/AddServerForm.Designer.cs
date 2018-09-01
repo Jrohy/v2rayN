@@ -327,7 +327,8 @@
             "srtp",
             "utp",
             "wechat-video",
-            "dtls"});
+            "dtls",
+            "wireguard"});
             this.cmbHeaderType.Location = new System.Drawing.Point(124, 30);
             this.cmbHeaderType.Name = "cmbHeaderType";
             this.cmbHeaderType.Size = new System.Drawing.Size(143, 20);

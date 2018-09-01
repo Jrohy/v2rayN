@@ -101,6 +101,7 @@ namespace v2rayN.Forms
                 cmbHeaderType.Items.Add("utp");
                 cmbHeaderType.Items.Add("wechat-video");
                 cmbHeaderType.Items.Add("dtls");
+                cmbHeaderType.Items.Add("wireguard");
             }
             else
             {
