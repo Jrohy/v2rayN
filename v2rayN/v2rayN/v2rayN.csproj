@@ -13,6 +13,8 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <PublishUrl>发布\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -28,8 +30,6 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -62,11 +62,16 @@
     <ManifestKeyFile>v2rayN_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
   </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup />
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
@@ -94,6 +99,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\SubSettingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SubSettingForm.Designer.cs">
+      <DependentUpon>SubSettingForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\AddServer2Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,7 +137,6 @@
     <Compile Include="StringEx.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Tool\CDateTime.cs" />
     <Compile Include="Forms\AddServerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -167,6 +177,9 @@
     <Compile Include="Tool\UI.cs" />
     <Compile Include="Tool\Utils.cs" />
     <Compile Include="Handler\V2rayConfigHandler.cs" />
+    <EmbeddedResource Include="Forms\SubSettingForm.resx">
+      <DependentUpon>SubSettingForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\AddServerForm.resx">
       <DependentUpon>AddServerForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -200,9 +213,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="app.config">
+    <EmbeddedResource Include="app.config">
       <SubType>Designer</SubType>
-    </None>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -270,6 +283,8 @@
     <None Include="Resources\minimize.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Sample\BlankPac.txt" />
+    <None Include="Resources\sub.png" />
     <None Include="Resources\checkupdate.png" />
     <None Include="Resources\about.png" />
     <Content Include="Resources\help.png" />

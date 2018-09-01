@@ -8,6 +8,7 @@ namespace v2rayN.Forms
     public partial class AddServerForm : BaseForm
     {
         public int EditIndex { get; set; }
+        VmessItem vmessItem = null;
 
         public AddServerForm()
         {
@@ -18,10 +19,12 @@ namespace v2rayN.Forms
         {
             if (EditIndex >= 0)
             {
+                vmessItem = config.vmess[EditIndex];
                 BindingServer();
             }
             else
             {
+                vmessItem = new VmessItem();
                 ClearServer();
             }
         }
@@ -31,8 +34,6 @@ namespace v2rayN.Forms
         /// </summary>
         private void BindingServer()
         {
-            VmessItem vmessItem = config.vmess[EditIndex];
-
             txtAddress.Text = vmessItem.address;
             txtPort.Text = vmessItem.port.ToString();
             txtId.Text = vmessItem.id;
@@ -45,6 +46,7 @@ namespace v2rayN.Forms
             txtRequestHost.Text = vmessItem.requestHost;
             txtPath.Text = vmessItem.path;
             cmbStreamSecurity.Text = vmessItem.streamSecurity;
+            cmbAllowInsecure.Text = vmessItem.allowInsecure;
         }
 
 
@@ -64,6 +66,7 @@ namespace v2rayN.Forms
             cmbHeaderType.Text = Global.None;
             txtRequestHost.Text = "";
             cmbStreamSecurity.Text = "";
+            cmbAllowInsecure.Text = "";
             txtPath.Text = "";
         }
 
@@ -119,6 +122,7 @@ namespace v2rayN.Forms
             string requestHost = txtRequestHost.Text;
             string path = txtPath.Text;
             string streamSecurity = cmbStreamSecurity.Text;
+            string allowInsecure = cmbAllowInsecure.Text;
 
             if (Utils.IsNullOrEmpty(address))
             {
@@ -141,7 +145,6 @@ namespace v2rayN.Forms
                 return;
             }
 
-            VmessItem vmessItem = new VmessItem();
             vmessItem.address = address;
             vmessItem.port = Utils.ToInt(port);
             vmessItem.id = id;
@@ -154,6 +157,7 @@ namespace v2rayN.Forms
             vmessItem.requestHost = requestHost.Replace(" ", "");
             vmessItem.path = path.Replace(" ", "");
             vmessItem.streamSecurity = streamSecurity;
+            vmessItem.allowInsecure = allowInsecure;
 
             if (ConfigHandler.AddServer(ref config, vmessItem, EditIndex) == 0)
             {
@@ -272,5 +276,17 @@ namespace v2rayN.Forms
         }
         #endregion
 
+        private void cmbStreamSecurity_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string security = cmbStreamSecurity.Text;
+            if (Utils.IsNullOrEmpty(security))
+            {
+                panTlsMore.Hide();
+            }
+            else
+            {
+                panTlsMore.Show();
+            }
+        }
     }
 }

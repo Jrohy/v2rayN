@@ -5,8 +5,9 @@
 - Also need to download v2ray core in the same folder
 - Run v2rayN.exe
 
-Project V core
-https://github.com/v2ray/v2ray-core/releases
+### Requirements  
+- Microsoft [.NET Framework 4.5](https://docs.microsoft.com/zh-cn/dotnet/framework/install/guide-for-developers) or higher
+- Project V core [https://github.com/v2ray/v2ray-core/releases](https://github.com/v2ray/v2ray-core/releases)
 
 User manual
 https://www.v2ray.com/

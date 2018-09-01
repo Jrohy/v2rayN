@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using v2rayN.Mode;
 
 namespace v2rayN.Handler
@@ -322,13 +323,18 @@ namespace v2rayN.Handler
                 }
                 else if (vmessItem.configType == (int)EConfigType.Shadowsocks)
                 {
+                    var remark = string.Empty;
+                    if (!Utils.IsNullOrEmpty(vmessItem.remarks))
+                    {
+                        remark = "#" + WebUtility.UrlEncode(vmessItem.remarks);
+                    }
                     url = string.Format("{0}:{1}@{2}:{3}",
                         vmessItem.security,
                         vmessItem.id,
                         vmessItem.address,
                         vmessItem.port);
                     url = Utils.Base64Encode(url);
-                    url = string.Format("{0}{1}", Global.ssProtocol, url);
+                    url = string.Format("{0}{1}{2}", Global.ssProtocol, url, remark);
                 }
                 else
                 {
@@ -608,6 +614,106 @@ namespace v2rayN.Handler
             catch
             {
             }
+            return 0;
+        }
+
+        /// <summary>
+        /// 批量添加服务器
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="clipboardData"></param>
+        /// <param name="subid"></param>
+        /// <returns></returns>
+        public static int AddBatchServers(ref Config config, string clipboardData, string subid = "")
+        {
+            if (Utils.IsNullOrEmpty(clipboardData))
+            {
+                return -1;
+            }
+            //if (clipboardData.IndexOf("vmess") >= 0 && clipboardData.IndexOf("vmess") == clipboardData.LastIndexOf("vmess"))
+            //{
+            //    clipboardData = clipboardData.Replace("\r\n", "").Replace("\n", "");
+            //}
+            int countServers = 0;
+
+            //string[] arrData = clipboardData.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+            string[] arrData = clipboardData.Split(Environment.NewLine.ToCharArray());
+            foreach (string str in arrData)
+            {
+                string msg;
+                VmessItem vmessItem = V2rayConfigHandler.ImportFromClipboardConfig(str, out msg);
+                if (vmessItem == null)
+                {
+                    continue;
+                }
+                vmessItem.subid = subid;
+                if (vmessItem.configType == (int)EConfigType.Vmess)
+                {
+                    if (AddServer(ref config, vmessItem, -1) == 0)
+                    {
+                        countServers++;
+                    }
+                }
+                else if (vmessItem.configType == (int)EConfigType.Shadowsocks)
+                {
+                    if (AddShadowsocksServer(ref config, vmessItem, -1) == 0)
+                    {
+                        countServers++;
+                    }
+                }
+            }
+            if (countServers > 0)
+            {
+                return 0;
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// save sub
+        /// </summary>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        public static int SaveSubItem(ref Config config)
+        {
+            if (config.subItem == null || config.subItem.Count <= 0)
+            {
+                return -1;
+            }
+
+            foreach (SubItem sub in config.subItem)
+            {
+                if (Utils.IsNullOrEmpty(sub.id))
+                {
+                    sub.id = Utils.GetGUID();
+                }
+            }
+
+            ToJsonFile(config);
+            return 0;
+        }
+
+        /// <summary>
+        /// 移除服务器
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="subid"></param>
+        /// <returns></returns>
+        public static int RemoveServerViaSubid(ref Config config, string subid)
+        {
+            if (Utils.IsNullOrEmpty(subid) || config.vmess.Count <= 0)
+            {
+                return -1;
+            }
+            for (int k = config.vmess.Count - 1; k >= 0; k--)
+            {
+                if (config.vmess[k].subid.Equals(subid))
+                {
+                    config.vmess.RemoveAt(k);
+                }
+            }
+
+            ToJsonFile(config);
             return 0;
         }
     }

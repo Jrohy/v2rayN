@@ -60,6 +60,10 @@ namespace v2rayN
         /// v2ray配置Httpresponse文件名
         /// </summary>
         public const string v2raySampleHttpresponseFileName = "v2rayN.Sample.SampleHttpresponse.txt";
+        /// <summary>
+        /// 空白的pac文件
+        /// </summary>
+        public const string BlankPacFileName = "v2rayN.Sample.BlankPac.txt";
 
 
         /// <summary>

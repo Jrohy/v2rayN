@@ -79,7 +79,6 @@
             this.txturlGFWList = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
-            this.chkAutoSyncTime = new System.Windows.Forms.CheckBox();
             this.chkAutoRun = new System.Windows.Forms.CheckBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.btnOK = new System.Windows.Forms.Button();
@@ -128,7 +127,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(520, 549);
+            this.tabPage1.Size = new System.Drawing.Size(520, 579);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "  Core:基础设置  ";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -154,7 +153,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(514, 543);
+            this.groupBox1.Size = new System.Drawing.Size(514, 573);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             // 
@@ -467,7 +466,7 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(520, 549);
+            this.tabPage6.Size = new System.Drawing.Size(520, 579);
             this.tabPage6.TabIndex = 2;
             this.tabPage6.Text = "  Core:KCP设置  ";
             this.tabPage6.UseVisualStyleBackColor = true;
@@ -584,12 +583,11 @@
             this.tabPage7.Controls.Add(this.txturlGFWList);
             this.tabPage7.Controls.Add(this.label13);
             this.tabPage7.Controls.Add(this.label12);
-            this.tabPage7.Controls.Add(this.chkAutoSyncTime);
             this.tabPage7.Controls.Add(this.chkAutoRun);
             this.tabPage7.Location = new System.Drawing.Point(4, 22);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(520, 549);
+            this.tabPage7.Size = new System.Drawing.Size(520, 579);
             this.tabPage7.TabIndex = 3;
             this.tabPage7.Text = "  v2rayN设置  ";
             this.tabPage7.UseVisualStyleBackColor = true;
@@ -625,20 +623,10 @@
             this.label12.ForeColor = System.Drawing.Color.Brown;
             this.label12.Location = new System.Drawing.Point(28, 152);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(375, 42);
+            this.label12.Size = new System.Drawing.Size(167, 74);
             this.label12.TabIndex = 25;
-            this.label12.Text = "*启用系统代理:\r\n全局模式:端口=socks端口+1\r\nPAC 模式:端口=socks端口+2;优先级PAC > v2ray路由";
-            // 
-            // chkAutoSyncTime
-            // 
-            this.chkAutoSyncTime.AutoSize = true;
-            this.chkAutoSyncTime.Location = new System.Drawing.Point(15, 275);
-            this.chkAutoSyncTime.Name = "chkAutoSyncTime";
-            this.chkAutoSyncTime.Size = new System.Drawing.Size(276, 16);
-            this.chkAutoSyncTime.TabIndex = 24;
-            this.chkAutoSyncTime.Text = "启动时自动从网络同步本地时间(可能会不成功)";
-            this.chkAutoSyncTime.UseVisualStyleBackColor = true;
-            this.chkAutoSyncTime.Visible = false;
+            this.label12.Text = "*启用Http代理:\r\n\r\nHttp端口=socks端口+1\r\n\r\nPAC端口 =socks端口+2";
+            this.label12.Visible = false;
             // 
             // chkAutoRun
             // 
@@ -765,7 +753,6 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.CheckBox chkKcpcongestion;
         private System.Windows.Forms.TabPage tabPage7;
-        private System.Windows.Forms.CheckBox chkAutoSyncTime;
         private System.Windows.Forms.CheckBox chkAutoRun;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;

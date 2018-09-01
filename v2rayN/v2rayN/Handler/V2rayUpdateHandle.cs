@@ -47,7 +47,7 @@ namespace v2rayN.Handler
         public void AbsoluteV2rayCore(Config config)
         {
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; //TLS 1.2
-
+            ServicePointManager.DefaultConnectionLimit = 256;
             WebRequest request = WebRequest.Create(latestUrl);
             request.BeginGetResponse(new AsyncCallback(OnResponse), request);
         }
@@ -91,6 +91,7 @@ namespace v2rayN.Handler
             try
             {
                 ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; //TLS 1.2
+                ServicePointManager.DefaultConnectionLimit = 256;
                 if (UpdateCompleted != null)
                 {
                     UpdateCompleted(this, new ResultEventArgs(false, url));
@@ -101,7 +102,7 @@ namespace v2rayN.Handler
                 WebClient ws = new WebClient();
                 ws.DownloadFileCompleted += ws_DownloadFileCompleted;
                 ws.DownloadProgressChanged += ws_DownloadProgressChanged;
-                ws.DownloadFileAsync(new Uri(url), DownloadFileName);
+                ws.DownloadFileAsync(new Uri(url), Utils.GetPath(DownloadFileName));
                 blFirst = true;
             }
             catch (Exception ex)
@@ -144,6 +145,55 @@ namespace v2rayN.Handler
                         TimeSpan ts = (DateTime.Now - totalDatetime);
                         string speed = string.Format("{0} M/s", (totalBytesToReceive / ts.TotalMilliseconds / 1000).ToString("#0.##"));
                         UpdateCompleted(this, new ResultEventArgs(true, speed));
+                    }
+                }
+                else
+                {
+                    throw e.Error;
+                }
+            }
+            catch (Exception ex)
+            {
+                Utils.SaveLog(ex.Message, ex);
+
+                if (Error != null)
+                    Error(this, new ErrorEventArgs(ex));
+            }
+        }
+
+        /// <summary>
+        /// DownloadString
+        /// </summary> 
+        /// <param name="url"></param>
+        public void WebDownloadString(string url)
+        {
+            string source = string.Empty;
+            try
+            {
+                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; //TLS 1.2
+                ServicePointManager.DefaultConnectionLimit = 256;
+
+                WebClient ws = new WebClient();
+                ws.DownloadStringCompleted += Ws_DownloadStringCompleted;
+                ws.DownloadStringAsync(new Uri(url));
+            }
+            catch (Exception ex)
+            {
+                Utils.SaveLog(ex.Message, ex);
+            }
+        }
+
+        private void Ws_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
+        {
+            try
+            {
+                if (e.Error == null
+                    || Utils.IsNullOrEmpty(e.Error.ToString()))
+                {
+                    string source = e.Result;
+                    if (UpdateCompleted != null)
+                    {
+                        UpdateCompleted(this, new ResultEventArgs(true, source));
                     }
                 }
                 else

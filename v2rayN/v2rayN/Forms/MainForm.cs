@@ -6,6 +6,7 @@ using v2rayN.Handler;
 using v2rayN.HttpProxyHandler;
 using v2rayN.Mode;
 using System.Collections.Generic;
+using System.IO;
 
 namespace v2rayN.Forms
 {
@@ -46,11 +47,7 @@ namespace v2rayN.Forms
 
             LoadV2ray();
 
-            //自动从网络同步本地时间
-            if (config.autoSyncTime)
-            {
-                //CDateTime.SetLocalTime();
-            }
+            HideForm();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -108,6 +105,7 @@ namespace v2rayN.Forms
             //lvServers.Columns.Add("额外ID(alterId)", 110, HorizontalAlignment.Left);
             lvServers.Columns.Add("加密方式", 100, HorizontalAlignment.Left);
             lvServers.Columns.Add("传输协议", 60, HorizontalAlignment.Left);
+            lvServers.Columns.Add("订阅", 50, HorizontalAlignment.Left);
             lvServers.Columns.Add("测试结果", 150, HorizontalAlignment.Left);
 
         }
@@ -139,6 +137,7 @@ namespace v2rayN.Forms
                     //item.alterId.ToString(),
                     item.security,
                     item.network,
+                    item.getSubRemarks(config),
                     item.testResult
                 });
                 lvServers.Items.Add(lvItem);
@@ -379,14 +378,14 @@ namespace v2rayN.Forms
         {
             if (!config.sysAgentEnabled || config.listenerType != 1)
             {
-                UI.Show("此功能依赖系统全局代理,请先设置正确。");
+                UI.Show("此功能依赖Http全局代理,请先设置正确。");
                 return;
             }
 
             UI.Show("注意：" +
-                  "\r\n此功能依赖系统全局代理!" +
+                  "\r\n此功能依赖Http全局代理!" +
                   "\r\n测试过程中,请不要操作任何功能!" +
-                  "\r\n测试完成后,请手工调整系统全局代理和活动节点。");
+                  "\r\n测试完成后,请手工调整Http全局代理和活动节点。");
 
             GetLvSelectedIndex();
             ServerSpeedTest();
@@ -615,42 +614,8 @@ namespace v2rayN.Forms
         private void menuAddServers_Click(object sender, EventArgs e)
         {
             string clipboardData = Utils.GetClipboardData();
-            if (Utils.IsNullOrEmpty(clipboardData))
+            if (AddBatchServers(clipboardData) == 0)
             {
-                return;
-            }
-            if (clipboardData.IndexOf("vmess") == clipboardData.LastIndexOf("vmess"))
-            {
-                clipboardData = clipboardData.Replace("\r\n", "").Replace("\n", "");
-            }
-            int countServers = 0;
-            string[] arrData = clipboardData.Split(new string[] { "\r\n" }, StringSplitOptions.None);
-            foreach (string str in arrData)
-            {
-                string msg;
-                VmessItem vmessItem = V2rayConfigHandler.ImportFromClipboardConfig(str, out msg);
-                if (vmessItem == null)
-                {
-                    continue;
-                }
-                if (vmessItem.configType == (int)EConfigType.Vmess)
-                {
-                    if (ConfigHandler.AddServer(ref config, vmessItem, -1) == 0)
-                    {
-                        countServers++;
-                    }
-                }
-                else if (vmessItem.configType == (int)EConfigType.Shadowsocks)
-                {
-                    if (ConfigHandler.AddShadowsocksServer(ref config, vmessItem, -1) == 0)
-                    {
-                        countServers++;
-                    }
-                }
-            }
-            if (countServers > 0)
-            {
-                RefreshServers();
                 UI.Show(string.Format("从剪贴板导入批量URL成功"));
             }
         }
@@ -659,6 +624,16 @@ namespace v2rayN.Forms
         {
             HideForm();
             bgwScan.RunWorkerAsync();
+        }
+
+        private int AddBatchServers(string clipboardData, string subid = "")
+        {
+            if (ConfigHandler.AddBatchServers(ref config, clipboardData, subid) == 0)
+            {
+                RefreshServers();
+                return 0;
+            }
+            return -1;
         }
 
         #endregion
@@ -767,6 +742,8 @@ namespace v2rayN.Forms
             this.Activate();
             //this.notifyIcon1.Visible = false;
             this.ShowInTaskbar = true;
+
+            SetVisibleCore(true);
         }
 
         private void HideForm()
@@ -775,6 +752,8 @@ namespace v2rayN.Forms
             this.Hide();
             this.notifyMain.Visible = true;
             this.ShowInTaskbar = false;
+
+            SetVisibleCore(false);
         }
 
         #endregion
@@ -955,19 +934,25 @@ namespace v2rayN.Forms
         private void menuGlobal_Click(object sender, EventArgs e)
         {
             config.listenerType = 1;
-            ChangePACButtonStatus(1);
+            ChangePACButtonStatus(config.listenerType);
         }
 
-        private void menuPAC_Click(object sender, EventArgs e)
+        private void menuGlobalPAC_Click(object sender, EventArgs e)
         {
             config.listenerType = 2;
-            ChangePACButtonStatus(2);
+            ChangePACButtonStatus(config.listenerType);
         }
 
         private void menuKeep_Click(object sender, EventArgs e)
         {
-            config.listenerType = 0;
-            ChangePACButtonStatus(0);
+            config.listenerType = 3;
+            ChangePACButtonStatus(config.listenerType);
+        }
+
+        private void menuKeepPAC_Click(object sender, EventArgs e)
+        {
+            config.listenerType = 4;
+            ChangePACButtonStatus(config.listenerType);
         }
 
         private void ChangePACButtonStatus(int type)
@@ -976,20 +961,29 @@ namespace v2rayN.Forms
             {
                 switch (type)
                 {
-                    case 0:
-                        menuGlobal.Checked = false;
-                        menuKeep.Checked = true;
-                        menuPAC.Checked = false;
-                        break;
                     case 1:
                         menuGlobal.Checked = true;
+                        menuGlobalPAC.Checked = false;
                         menuKeep.Checked = false;
-                        menuPAC.Checked = false;
+                        menuKeepPAC.Checked = false;
                         break;
                     case 2:
                         menuGlobal.Checked = false;
+                        menuGlobalPAC.Checked = true;
                         menuKeep.Checked = false;
-                        menuPAC.Checked = true;
+                        menuKeepPAC.Checked = false;
+                        break;
+                    case 3:
+                        menuGlobal.Checked = false;
+                        menuGlobalPAC.Checked = false;
+                        menuKeep.Checked = true;
+                        menuKeepPAC.Checked = false;
+                        break;
+                    case 4:
+                        menuGlobal.Checked = false;
+                        menuGlobalPAC.Checked = false;
+                        menuKeep.Checked = false;
+                        menuKeepPAC.Checked = true;
                         break;
                 }
             }
@@ -1131,7 +1125,18 @@ namespace v2rayN.Forms
             pacListHandle.UpdatePACFromGFWList(config);
         }
 
-
+        private void tsbCheckClearPACList_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                File.WriteAllText(Utils.GetPath(Global.pacFILE), Utils.GetEmbedText(Global.BlankPacFileName), Encoding.UTF8);
+                v2rayHandler_ProcessEvent(false, "简化PAC成功！");
+            }
+            catch (Exception ex)
+            {
+                Utils.SaveLog(ex.Message, ex);
+            }
+        }
         #endregion
 
         #region Help
@@ -1178,11 +1183,86 @@ namespace v2rayN.Forms
             }
             else
             {
-                Utils.SetClipboardData(result);
-                menuAddServers_Click(null, null);
+                if (AddBatchServers(result) == 0)
+                {
+                    UI.Show(string.Format("扫描导入URL成功"));
+                }
             }
         }
-        
+
+        #endregion
+
+        #region 订阅
+        private void tsbSubSetting_Click(object sender, EventArgs e)
+        {
+            SubSettingForm fm = new SubSettingForm();
+            if (fm.ShowDialog() == DialogResult.OK)
+            {
+            }
+        }
+
+        private void tsbSubUpdate_Click(object sender, EventArgs e)
+        {
+            v2rayHandler_ProcessEvent(false, "更新订阅开始");
+
+            if (config.subItem == null || config.subItem.Count <= 0)
+            {
+                v2rayHandler_ProcessEvent(false, "未设置有效的订阅");
+                return;
+            }
+
+            for (int k = 1; k <= config.subItem.Count; k++)
+            {
+                string id = config.subItem[k - 1].id.Trim();
+                string url = config.subItem[k - 1].url.Trim();
+                string hashCode = $"{k}->";
+                if (Utils.IsNullOrEmpty(id) || Utils.IsNullOrEmpty(url))
+                {
+                    v2rayHandler_ProcessEvent(false, $"{hashCode}未设置有效的订阅");
+                    continue;
+                }
+
+                V2rayUpdateHandle v2rayUpdateHandle3 = new V2rayUpdateHandle();
+                v2rayUpdateHandle3.UpdateCompleted += (sender2, args) =>
+                {
+                    if (args.Success)
+                    {
+                        v2rayHandler_ProcessEvent(false, $"{hashCode}获取订阅内容成功");
+                        var result = Utils.Base64Decode(args.Msg);
+                        if (Utils.IsNullOrEmpty(result))
+                        {
+                            v2rayHandler_ProcessEvent(false, $"{hashCode}订阅内容解码失败(非BASE64码)");
+                            return;
+                        }
+
+                        ConfigHandler.RemoveServerViaSubid(ref config, id);
+                        v2rayHandler_ProcessEvent(false, $"{hashCode}清除原订阅内容");
+                        RefreshServers();
+                        if (AddBatchServers(result, id) == 0)
+                        {
+                        }
+                        else
+                        {
+                            v2rayHandler_ProcessEvent(false, $"{hashCode}导入订阅内容失败");
+                        }
+                        v2rayHandler_ProcessEvent(false, $"{hashCode}更新订阅结束");
+                    }
+                    else
+                    {
+                        v2rayHandler_ProcessEvent(false, args.Msg);
+                    }
+                };
+                v2rayUpdateHandle3.Error += (sender2, args) =>
+                {
+                    v2rayHandler_ProcessEvent(true, args.GetException().Message);
+                };
+
+                v2rayUpdateHandle3.WebDownloadString(url);
+                v2rayHandler_ProcessEvent(false, $"{hashCode}开始获取订阅内容");
+            }
+
+
+        }
         #endregion
 
     }

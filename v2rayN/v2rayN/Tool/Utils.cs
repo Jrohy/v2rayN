@@ -22,8 +22,7 @@ namespace v2rayN
 {
     class Utils
     {
-        private static string autoRunName = "v2rayNAutoRun";
-        private static string autoRunRegPath = @"Software\Microsoft\Windows\CurrentVersion\Run";
+
 
         #region 资源Json操作
 
@@ -188,8 +187,9 @@ namespace v2rayN
                 var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
                 return Convert.ToBase64String(plainTextBytes);
             }
-            catch
+            catch (Exception ex)
             {
+                SaveLog("Base64Encode", ex);
                 return string.Empty;
             }
         }
@@ -203,11 +203,18 @@ namespace v2rayN
         {
             try
             {
+                plainText = plainText.Trim();
+                if (plainText.Length % 4 > 0)
+                {
+                    plainText = plainText.PadRight(plainText.Length + 4 - plainText.Length % 4, '=');
+                }
+
                 byte[] data = Convert.FromBase64String(plainText);
                 return Encoding.UTF8.GetString(data);
             }
-            catch
+            catch (Exception ex)
             {
+                SaveLog("Base64Decode", ex);
                 return string.Empty;
             }
         }
@@ -328,6 +335,23 @@ namespace v2rayN
 
         #region 开机自动启动
 
+        private static string autoRunName = "v2rayNAutoRun";
+        private static string autoRunRegPath
+        {
+            get
+            {
+                return @"Software\Microsoft\Windows\CurrentVersion\Run";
+                //if (Environment.Is64BitProcess)
+                //{
+                //    return @"Software\Microsoft\Windows\CurrentVersion\Run";
+                //}
+                //else
+                //{
+                //    return @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Run";
+                //}
+            }
+        }
+
         /// <summary>
         /// 开机自动启动
         /// </summary>
@@ -335,22 +359,26 @@ namespace v2rayN
         /// <returns></returns>
         public static int SetAutoRun(bool run)
         {
+            RegistryKey regKey = null;
             try
             {
-                RegistryKey regKey = Registry.LocalMachine.CreateSubKey(autoRunRegPath);
+                regKey = Registry.LocalMachine.CreateSubKey(autoRunRegPath);
                 if (run)
                 {
-                    string exePath = Application.ExecutablePath;
+                    string exePath = GetExePath();
                     regKey.SetValue(autoRunName, exePath);
                 }
                 else
                 {
                     regKey.DeleteValue(autoRunName, false);
                 }
-                regKey.Close();
             }
             catch
             {
+            }
+            finally
+            {
+                regKey?.Close();
             }
             return 0;
         }
@@ -361,18 +389,23 @@ namespace v2rayN
         /// <returns></returns>
         public static bool IsAutoRun()
         {
+            RegistryKey regKey = null;
             try
             {
-                RegistryKey regKey = Registry.LocalMachine.CreateSubKey(autoRunRegPath);
-                string value = regKey.GetValue(autoRunName).ToString();
+                regKey = Registry.LocalMachine.OpenSubKey(autoRunRegPath, false);
+                var value = regKey.GetValue(autoRunName) as string;
                 string exePath = GetExePath();
-                if (value.Equals(exePath))
+                if (value?.Equals(exePath) == true)
                 {
                     return true;
                 }
             }
             catch
             {
+            }
+            finally
+            {
+                regKey?.Close();
             }
             return false;
         }
@@ -383,13 +416,12 @@ namespace v2rayN
         /// <returns></returns>
         public static string GetPath(string fileName)
         {
-            string StartupPath = Application.StartupPath;
+            string startupPath = StartupPath();
             if (Utils.IsNullOrEmpty(fileName))
             {
-                return StartupPath;
+                return startupPath;
             }
-            return string.Format("{0}\\{1}", StartupPath, fileName);
-
+            return Path.Combine(startupPath, fileName);
         }
 
         /// <summary>
@@ -398,7 +430,20 @@ namespace v2rayN
         /// <returns></returns>
         public static string GetExePath()
         {
-            return System.Windows.Forms.Application.ExecutablePath;
+            return Application.ExecutablePath;
+        }
+
+        public static string StartupPath()
+        {
+            try
+            {
+                string exePath = GetExePath();
+                return exePath.Substring(0, exePath.LastIndexOf("\\", StringComparison.Ordinal));
+            }
+            catch
+            {
+                return Application.StartupPath;
+            }
         }
 
         #endregion
@@ -568,9 +613,9 @@ namespace v2rayN
         {
             if (_tempPath == null)
             {
-                Directory.CreateDirectory(Path.Combine(Application.StartupPath, "v2ray_win_temp"));
+                Directory.CreateDirectory(Path.Combine(StartupPath(), "v2ray_win_temp"));
                 // don't use "/", it will fail when we call explorer /select xxx/ss_win_temp\xxx.log
-                _tempPath = Path.Combine(Application.StartupPath, "v2ray_win_temp");
+                _tempPath = Path.Combine(StartupPath(), "v2ray_win_temp");
             }
             return _tempPath;
         }
@@ -617,7 +662,7 @@ namespace v2rayN
         {
             try
             {
-                string path = Path.Combine(Application.StartupPath, "guiLogs");
+                string path = Path.Combine(StartupPath(), "guiLogs");
                 string FilePath = Path.Combine(path, DateTime.Now.ToString("yyyyMMdd") + ".txt");
                 if (!Directory.Exists(path))
                 {
